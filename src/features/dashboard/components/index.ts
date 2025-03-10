@@ -2,7 +2,6 @@ export { AddSubscriptionButton } from "./add-subscription-button";
 export { AddSubscriptionForm } from "./add-subscription-form";
 export { AnalyticsTab } from "./analytics-tab";
 export { Dashboard } from "./dashboard";
-export { DashboardHeader } from "./dashboard-header";
 export { DashboardSummary } from "./dashboard-summary";
 export { EditSubscriptionForm } from "./edit-subscription-form";
 export { SubscriptionCard } from "./subscription-card";
