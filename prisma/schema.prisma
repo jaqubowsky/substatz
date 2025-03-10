@@ -11,10 +11,42 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String         @unique
   password      String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id              String           @id @default(cuid())
+  name            String
+  price           Float
+  category        String
+  billingCycle    BillingCycle
+  nextPaymentDate DateTime
+  isCancelled     Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments        PaymentHistory[]
+}
+
+model PaymentHistory {
+  id             String       @id @default(cuid())
+  amount         Float
+  paymentDate    DateTime
+  createdAt      DateTime     @default(now())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+}
+
+enum BillingCycle {
+  MONTHLY
+  QUARTERLY
+  BIANNUALLY
+  ANNUALLY
 }
