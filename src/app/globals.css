@@ -29,4 +29,28 @@
   --color-input: #e5e7eb;
 
   --color-ring: #ff7a00;
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1f2937;
+}
+
+[data-radix-popper-content-wrapper] {
+  background-color: var(--color-popover) !important;
+  z-index: 50 !important;
+}
+
+[data-radix-popper-content-wrapper] > * {
+  background-color: var(--color-popover) !important;
+}
+
+[role="listbox"] {
+  background-color: var(--color-popover) !important;
+}
+
+[role="menu"] {
+  background-color: var(--color-popover) !important;
+}
+
+[class*="bg-background/"] {
+  background-color: var(--color-background) !important;
 }
