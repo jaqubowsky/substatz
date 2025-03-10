@@ -9,7 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 export function getFirstErrorMessage(error: ZodError): string {
   const formattedErrors = error.format();
 
-  // Try to find the first field-specific error
   for (const [field, fieldError] of Object.entries(formattedErrors)) {
     // Skip the top-level _errors field
     if (field === "_errors") continue;
