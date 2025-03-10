@@ -1,9 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,7 +24,6 @@ import { CalendarIcon, CreditCard, DollarSign, Tag } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useUpdateSubscription } from "../hooks/use-update-subscription";
 import {
-  BillingCycle,
   Subscription,
   SubscriptionFormValues,
   subscriptionFormSchema,
@@ -41,19 +42,15 @@ export const EditSubscriptionForm = ({
     subscription.id
   );
 
-  const formattedDate =
-    subscription.nextPaymentDate instanceof Date
-      ? subscription.nextPaymentDate.toISOString().split("T")[0]
-      : subscription.nextPaymentDate.split("T")[0];
-
   const form = useForm<SubscriptionFormValues>({
     resolver: zodResolver(subscriptionFormSchema),
     defaultValues: {
+      id: subscription.id,
       name: subscription.name,
       price: subscription.price.toString(),
       category: subscription.category,
-      billingCycle: subscription.billingCycle as BillingCycle,
-      nextPaymentDate: formattedDate,
+      billingCycle: subscription.billingCycle,
+      startDate: new Date(subscription.startDate).toISOString().split("T")[0],
       isCancelled: subscription.isCancelled,
     },
   });
@@ -186,15 +183,23 @@ export const EditSubscriptionForm = ({
 
           <FormField
             control={form.control}
-            name="nextPaymentDate"
+            name="startDate"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
                   <CalendarIcon className="h-3.5 w-3.5" />
-                  Next Payment Date
+                  Start Date
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    date={field.value ? new Date(field.value) : undefined}
+                    onSelect={(date) =>
+                      field.onChange(
+                        date ? date.toISOString().split("T")[0] : ""
+                      )
+                    }
+                    placeholder="Select start date"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -211,15 +216,15 @@ export const EditSubscriptionForm = ({
                 <input
                   type="checkbox"
                   checked={field.value}
-                  onChange={field.onChange}
+                  onChange={(e) => field.onChange(e.target.checked)}
                   className="h-4 w-4 mt-1"
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Cancelled</FormLabel>
-                <p className="text-sm text-muted-foreground">
+                <FormDescription>
                   Mark this subscription as cancelled
-                </p>
+                </FormDescription>
               </div>
             </FormItem>
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
   FormControl,
@@ -42,7 +43,7 @@ export const AddSubscriptionForm = ({
       price: "",
       category: "",
       billingCycle: "MONTHLY",
-      nextPaymentDate: new Date().toISOString().split("T")[0],
+      startDate: new Date().toISOString().split("T")[0],
     },
   });
 
@@ -175,15 +176,19 @@ export const AddSubscriptionForm = ({
 
           <FormField
             control={form.control}
-            name="nextPaymentDate"
+            name="startDate"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
                   <CalendarIcon className="h-3.5 w-3.5" />
-                  Next Payment Date
+                  Start Date
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    date={field.value ? new Date(field.value) : undefined}
+                    onSelect={(date) => field.onChange(date ? date.toISOString().split('T')[0] : '')}
+                    placeholder="Select start date"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -89,11 +89,7 @@ export const DashboardSummary = () => {
                         {payment.name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {formatDate(
-                          typeof payment.nextPaymentDate === "string"
-                            ? payment.nextPaymentDate
-                            : payment.nextPaymentDate.toISOString()
-                        )}
+                        {formatDate(payment.nextPaymentDate.toISOString())}
                       </p>
                     </div>
                     <span className="font-semibold text-foreground">
