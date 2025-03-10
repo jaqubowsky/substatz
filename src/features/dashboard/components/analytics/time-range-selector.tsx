@@ -36,7 +36,6 @@ export const TimeRangeSelector = ({
     if (range && setCustomDateRange) {
       setCustomDateRange(range);
 
-      // If we're not already in custom mode, switch to it
       if (timeRange !== "custom") {
         setTimeRange("custom");
         setIsCustom(true);

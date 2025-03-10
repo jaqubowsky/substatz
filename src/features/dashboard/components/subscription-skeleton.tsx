@@ -1,31 +1,41 @@
 "use client";
 
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
 export const SubscriptionSkeleton = () => {
   return (
-    <div className="bg-card rounded-lg shadow-sm p-6 border border-border animate-pulse">
-      <div className="flex justify-between items-start">
-        <div>
-          <div className="h-6 w-32 bg-muted rounded mb-2"></div>
-          <div className="h-4 w-24 bg-muted rounded"></div>
+    <Card className="animate-pulse">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <Skeleton className="h-8 w-8 rounded-full" />
         </div>
-        <div className="text-right">
-          <div className="h-7 w-20 bg-muted rounded mb-2"></div>
-          <div className="h-4 w-16 bg-muted rounded"></div>
-        </div>
-      </div>
-
-      <div className="mt-4 pt-4 border-t border-border">
+      </CardHeader>
+      <CardContent>
         <div className="flex justify-between items-center">
-          <div>
-            <div className="h-4 w-24 bg-muted rounded mb-2"></div>
-            <div className="h-5 w-28 bg-muted rounded"></div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-5 w-28" />
           </div>
-          <div className="flex space-x-2">
-            <div className="h-9 w-20 bg-muted rounded"></div>
-            <div className="h-9 w-20 bg-muted rounded"></div>
+          <div className="text-right space-y-2">
+            <Skeleton className="h-7 w-20" />
+            <Skeleton className="h-4 w-16" />
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter className="pt-0 flex justify-end gap-2 sm:hidden">
+        <Skeleton className="h-9 w-20" />
+        <Skeleton className="h-9 w-20" />
+      </CardFooter>
+    </Card>
   );
 };

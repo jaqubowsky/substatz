@@ -1,6 +1,15 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar, LayoutDashboard } from "lucide-react";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics-tab";
 import { DashboardSummary } from "./dashboard-summary";
@@ -8,14 +17,37 @@ import { SubscriptionList } from "./subscription-list";
 
 export const Dashboard = () => {
   return (
-    <div className="bg-secondary/30 py-8">
+    <div className="bg-secondary/30 min-h-screen py-8">
       <div className="container mx-auto px-4">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your subscriptions in one place
-          </p>
-        </div>
+        <Card className="mb-6 border-none bg-transparent shadow-none">
+          <CardHeader className="px-0">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-md">
+                  <LayoutDashboard className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-3xl font-bold text-foreground">
+                    Dashboard
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground mt-1">
+                    Manage your subscriptions in one place
+                  </CardDescription>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="hidden md:flex">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  {new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
 
         <Tabs defaultValue="subscriptions" className="mt-8">
           <TabsList className="mb-6">
@@ -26,28 +58,34 @@ export const Dashboard = () => {
           <TabsContent value="subscriptions">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-card rounded-lg shadow-sm p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-foreground">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-2xl font-bold">
                       Your Subscriptions
-                    </h2>
+                    </CardTitle>
                     <AddSubscriptionButton />
-                  </div>
-                  <SubscriptionList />
-                </div>
+                  </CardHeader>
+                  <CardContent>
+                    <SubscriptionList />
+                  </CardContent>
+                </Card>
               </div>
               <div className="space-y-6">
-                <div className="bg-card rounded-lg shadow-sm p-6 sticky top-8">
-                  <DashboardSummary />
-                </div>
+                <Card className="sticky top-8">
+                  <CardContent className="pt-6">
+                    <DashboardSummary />
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </TabsContent>
 
           <TabsContent value="analytics">
-            <div className="bg-card rounded-lg shadow-sm p-6">
-              <AnalyticsTab />
-            </div>
+            <Card>
+              <CardContent className="pt-6">
+                <AnalyticsTab />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

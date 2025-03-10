@@ -1,31 +1,44 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
-import { PlusCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { AddSubscriptionForm } from "./add-subscription-form";
 
 export const AddSubscriptionButton = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <>
-      <Button onClick={openModal} variant="default" className="gap-1">
-        <PlusCircle className="h-4 w-4" />
-        Add Subscription
+      <Button
+        onClick={() => setIsDialogOpen(true)}
+        size="sm"
+        className="gap-1"
+        aria-label="Add subscription"
+      >
+        <Plus className="h-4 w-4" />
+        Add
       </Button>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title="Add New Subscription"
-      >
-        <AddSubscriptionForm onSuccess={closeModal} />
-      </Modal>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add New Subscription</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to add a new subscription to your
+              dashboard.
+            </DialogDescription>
+          </DialogHeader>
+          <AddSubscriptionForm onSuccess={() => setIsDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

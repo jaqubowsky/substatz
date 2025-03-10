@@ -1,5 +1,13 @@
 "use client";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
 import { PlusCircle } from "lucide-react";
 import { useSubscriptions } from "../hooks/use-subscriptions";
 import { Subscription } from "../schemas/subscription";
@@ -21,29 +29,33 @@ export const SubscriptionList = () => {
 
   if (error) {
     return (
-      <div className="bg-destructive/10 text-destructive p-6 rounded-lg">
-        <p className="font-medium">Failed to load subscriptions</p>
-        <p className="text-sm mt-1">
+      <Alert variant="destructive">
+        <AlertTitle>Failed to load subscriptions</AlertTitle>
+        <AlertDescription>
           Please try again later or contact support.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     );
   }
 
   if (subscriptions.length === 0) {
     return (
-      <div className="bg-accent rounded-lg p-8 text-center">
-        <div className="flex flex-col items-center justify-center">
-          <div className="bg-primary/10 p-3 rounded-full mb-4">
-            <PlusCircle className="h-8 w-8 text-primary" />
+      <Card className="bg-accent border-dashed">
+        <CardContent className="pt-6 pb-8 text-center">
+          <div className="flex flex-col items-center justify-center">
+            <div className="bg-primary/10 p-3 rounded-full mb-4">
+              <PlusCircle className="h-8 w-8 text-primary" />
+            </div>
+            <CardTitle className="text-xl font-semibold mb-2">
+              No subscriptions yet
+            </CardTitle>
+            <CardDescription className="mb-6 max-w-md mx-auto">
+              Add your first subscription to start tracking your expenses and
+              get insights about your spending.
+            </CardDescription>
           </div>
-          <h3 className="text-xl font-semibold mb-2">No subscriptions yet</h3>
-          <p className="text-muted-foreground mb-4 max-w-md mx-auto">
-            Add your first subscription to start tracking your expenses and get
-            insights about your spending.
-          </p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
