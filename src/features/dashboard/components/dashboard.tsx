@@ -1,6 +1,8 @@
 "use client";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AddSubscriptionButton } from "./add-subscription-button";
+import { AnalyticsTab } from "./analytics-tab";
 import { DashboardSummary } from "./dashboard-summary";
 import { SubscriptionList } from "./subscription-list";
 
@@ -15,24 +17,39 @@ export const Dashboard = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-card rounded-lg shadow-sm p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-foreground">
-                  Your Subscriptions
-                </h2>
-                <AddSubscriptionButton />
+        <Tabs defaultValue="subscriptions" className="mt-8">
+          <TabsList className="mb-6">
+            <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="subscriptions">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-6">
+                <div className="bg-card rounded-lg shadow-sm p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-foreground">
+                      Your Subscriptions
+                    </h2>
+                    <AddSubscriptionButton />
+                  </div>
+                  <SubscriptionList />
+                </div>
               </div>
-              <SubscriptionList />
+              <div className="space-y-6">
+                <div className="bg-card rounded-lg shadow-sm p-6 sticky top-8">
+                  <DashboardSummary />
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="space-y-6">
-            <div className="bg-card rounded-lg shadow-sm p-6 sticky top-8">
-              <DashboardSummary />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <div className="bg-card rounded-lg shadow-sm p-6">
+              <AnalyticsTab />
             </div>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
