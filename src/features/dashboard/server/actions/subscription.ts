@@ -4,208 +4,256 @@ import { auth } from "@/lib/auth";
 import { BillingCycle } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import {
-  subscriptionActionSchema,
+  subscriptionFormSchema,
   SubscriptionFormValues,
   type SubscriptionResponse,
   type SubscriptionsResponse,
   type SubscriptionSummaryResponse,
 } from "../../schemas/subscription";
-import * as db from "../db";
+import * as db from "../db/subscription";
 
 export async function getSubscriptions(): Promise<SubscriptionsResponse> {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session?.user?.id) {
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to view subscriptions",
+      };
+    }
+
+    const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
+
+    return {
+      success: true,
+      subscriptions,
+    };
+  } catch (error) {
+    console.error("Error fetching subscriptions:", error);
     return {
       success: false,
-      error: "Unauthorized",
+      error: "Failed to fetch subscriptions",
     };
   }
-
-  const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
-  return {
-    success: true,
-    subscriptions,
-  };
 }
 
 export async function addSubscription(
   unsafeData: SubscriptionFormValues
 ): Promise<SubscriptionResponse> {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session?.user?.id) {
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to add a subscription",
+      };
+    }
+
+    const result = subscriptionFormSchema.safeParse(unsafeData);
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: "Invalid subscription data",
+      };
+    }
+
+    const { name, price, category, billingCycle, startDate } = result.data;
+
+    const subscription = await db.createSubscription(
+      session.user.id,
+      name,
+      parseFloat(price),
+      category,
+      billingCycle as BillingCycle,
+      new Date(startDate)
+    );
+
+    revalidatePath("/dashboard");
+
+    return {
+      success: true,
+      subscription,
+    };
+  } catch (error) {
+    console.error("Error adding subscription:", error);
     return {
       success: false,
-      error: "Unauthorized",
+      error: "Failed to add subscription",
     };
   }
-
-  const validationResult = subscriptionActionSchema.safeParse({
-    name: unsafeData.name,
-    price: parseFloat(unsafeData.price),
-    category: unsafeData.category,
-    billingCycle: unsafeData.billingCycle,
-    nextPaymentDate: new Date(unsafeData.nextPaymentDate),
-    isCancelled: unsafeData.isCancelled || false,
-  });
-
-  if (!validationResult.success) {
-    return {
-      success: false,
-      error: "Invalid subscription data",
-    };
-  }
-
-  const validData = validationResult.data;
-
-  const subscription = await db.createSubscription(
-    session.user.id,
-    validData.name,
-    validData.price,
-    validData.category,
-    validData.billingCycle as BillingCycle,
-    validData.nextPaymentDate
-  );
-
-  revalidatePath("/dashboard");
-  return {
-    success: true,
-    subscription,
-  };
 }
 
 export async function updateSubscription(
   id: string,
   unsafeData: SubscriptionFormValues
 ): Promise<SubscriptionResponse> {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session?.user?.id) {
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to update a subscription",
+      };
+    }
+
+    const subscription = await db.getSubscriptionById(id);
+
+    if (!subscription) {
+      return {
+        success: false,
+        error: "Subscription not found",
+      };
+    }
+
+    if (subscription.userId !== session.user.id) {
+      return {
+        success: false,
+        error: "You do not have permission to update this subscription",
+      };
+    }
+
+    const result = subscriptionFormSchema.safeParse(unsafeData);
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: "Invalid subscription data",
+      };
+    }
+
+    const { name, price, category, billingCycle, startDate, isCancelled } =
+      result.data;
+
+    const updatedSubscription = await db.updateSubscription(id, {
+      name,
+      price: parseFloat(price),
+      category,
+      billingCycle: billingCycle as BillingCycle,
+      startDate: new Date(startDate),
+      isCancelled,
+    });
+
+    revalidatePath("/dashboard");
+
+    return {
+      success: true,
+      subscription: updatedSubscription,
+    };
+  } catch (error) {
+    console.error("Error updating subscription:", error);
     return {
       success: false,
-      error: "Unauthorized",
+      error: "Failed to update subscription",
     };
   }
-
-  const subscription = await db.getSubscriptionById(id);
-
-  if (!subscription || subscription.userId !== session.user.id) {
-    return {
-      success: false,
-      error: "Subscription not found",
-    };
-  }
-
-  const validationResult = subscriptionActionSchema.safeParse({
-    name: unsafeData.name,
-    price: parseFloat(unsafeData.price),
-    category: unsafeData.category,
-    billingCycle: unsafeData.billingCycle,
-    nextPaymentDate: new Date(unsafeData.nextPaymentDate),
-    isCancelled: unsafeData.isCancelled || false,
-  });
-
-  if (!validationResult.success) {
-    return {
-      success: false,
-      error: "Invalid subscription data",
-    };
-  }
-
-  const validData = validationResult.data;
-
-  const updatedSubscription = await db.updateSubscription(id, {
-    name: validData.name,
-    price: validData.price,
-    category: validData.category,
-    billingCycle: validData.billingCycle as BillingCycle,
-    nextPaymentDate: validData.nextPaymentDate,
-    isCancelled: validData.isCancelled,
-  });
-
-  revalidatePath("/dashboard");
-  return {
-    success: true,
-    subscription: updatedSubscription,
-  };
 }
 
 export async function removeSubscription(
   id: string
 ): Promise<SubscriptionResponse> {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session?.user?.id) {
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to delete a subscription",
+      };
+    }
+
+    const subscription = await db.getSubscriptionById(id);
+
+    if (!subscription) {
+      return {
+        success: false,
+        error: "Subscription not found",
+      };
+    }
+
+    if (subscription.userId !== session.user.id) {
+      return {
+        success: false,
+        error: "You do not have permission to delete this subscription",
+      };
+    }
+
+    await db.deleteSubscription(id);
+
+    revalidatePath("/dashboard");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error deleting subscription:", error);
     return {
       success: false,
-      error: "Unauthorized",
+      error: "Failed to delete subscription",
     };
   }
-
-  const subscription = await db.getSubscriptionById(id);
-
-  if (!subscription || subscription.userId !== session.user.id) {
-    return {
-      success: false,
-      error: "Subscription not found",
-    };
-  }
-
-  await db.deleteSubscription(id);
-
-  revalidatePath("/dashboard");
-  return {
-    success: true,
-  };
 }
 
 export async function getSubscriptionSummary(): Promise<SubscriptionSummaryResponse> {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session?.user?.id) {
-    return {
-      success: false,
-      error: "Unauthorized",
-    };
-  }
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to view subscription summary",
+      };
+    }
 
-  const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
-  const upcomingPayments = await db.getUpcomingPayments(session.user.id);
-  const categoriesBreakdown = await db.getSubscriptionsByCategory(
-    session.user.id
-  );
+    const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
+    const upcomingPayments = await db.getUpcomingPayments(session.user.id);
+    const categoriesBreakdown = await db.getSubscriptionsByCategory(
+      session.user.id
+    );
 
-  let totalMonthly = 0;
+    let totalMonthly = 0;
+    let totalYearly = 0;
 
-  subscriptions.forEach(
-    (subscription: { billingCycle: string; price: number; isCancelled: boolean }) => {
+    subscriptions.forEach((subscription) => {
       if (subscription.isCancelled) return;
+
+      const price = subscription.price;
 
       switch (subscription.billingCycle) {
         case "MONTHLY":
-          totalMonthly += subscription.price;
+          totalMonthly += price;
+          totalYearly += price * 12;
           break;
         case "QUARTERLY":
-          totalMonthly += subscription.price / 3;
+          totalMonthly += price / 3;
+          totalYearly += price * 4;
           break;
         case "BIANNUALLY":
-          totalMonthly += subscription.price / 6;
+          totalMonthly += price / 6;
+          totalYearly += price * 2;
           break;
         case "ANNUALLY":
-          totalMonthly += subscription.price / 12;
+          totalMonthly += price / 12;
+          totalYearly += price;
           break;
       }
-    }
-  );
+    });
 
-  const totalYearly = totalMonthly * 12;
-
-  return {
-    success: true,
-    totalMonthly,
-    totalYearly,
-    upcomingPayments,
-    categoriesBreakdown,
-  };
+    return {
+      success: true,
+      totalMonthly,
+      totalYearly,
+      upcomingPayments,
+      categoriesBreakdown,
+    };
+  } catch (error) {
+    console.error("Error fetching subscription summary:", error);
+    return {
+      success: false,
+      error: "Failed to fetch subscription summary",
+    };
+  }
 }

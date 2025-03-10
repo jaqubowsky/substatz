@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { BillingCycle, Subscription } from "@prisma/client";
+import { calculateNextPaymentDate } from "../../lib/calculate-next-payment-date";
 
 export async function getSubscriptionsByUserId(userId: string) {
   return prisma.subscription.findMany({
     where: { userId },
-    orderBy: { nextPaymentDate: "asc" },
   });
 }
 
@@ -20,7 +20,7 @@ export async function createSubscription(
   price: number,
   category: string,
   billingCycle: BillingCycle,
-  nextPaymentDate: Date
+  startDate: Date
 ) {
   return prisma.subscription.create({
     data: {
@@ -29,7 +29,8 @@ export async function createSubscription(
       price,
       category,
       billingCycle,
-      nextPaymentDate,
+      startDate,
+      isCancelled: false,
     },
   });
 }
@@ -41,7 +42,7 @@ export async function updateSubscription(
     price?: number;
     category?: string;
     billingCycle?: BillingCycle;
-    nextPaymentDate?: Date;
+    startDate?: Date;
     isCancelled?: boolean;
   }
 ) {
@@ -58,23 +59,38 @@ export async function deleteSubscription(id: string) {
 }
 
 export async function getUpcomingPayments(userId: string, days: number = 30) {
+  const subscriptions = await prisma.subscription.findMany({
+    where: {
+      userId,
+      isCancelled: false,
+    },
+  });
+
   const today = new Date();
   const endDate = new Date();
   endDate.setDate(today.getDate() + days);
 
-  return prisma.subscription.findMany({
-    where: {
-      userId,
-      nextPaymentDate: {
-        gte: today,
-        lte: endDate,
-      },
-      isCancelled: false,
-    },
-    orderBy: {
-      nextPaymentDate: "asc",
-    },
-  });
+  const upcomingPayments = subscriptions
+    .map((subscription) => {
+      const nextPaymentDate = calculateNextPaymentDate(
+        subscription.startDate,
+        subscription.billingCycle
+      );
+
+      return {
+        ...subscription,
+        nextPaymentDate,
+      };
+    })
+    .filter((subscription) => {
+      return (
+        subscription.nextPaymentDate >= today &&
+        subscription.nextPaymentDate <= endDate
+      );
+    })
+    .sort((a, b) => a.nextPaymentDate.getTime() - b.nextPaymentDate.getTime());
+
+  return upcomingPayments;
 }
 
 export async function getSubscriptionsByCategory(userId: string) {

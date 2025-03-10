@@ -10,17 +10,13 @@ export const billingCycleEnum = z.enum([
 export type BillingCycle = z.infer<typeof billingCycleEnum>;
 
 export const subscriptionFormSchema = z.object({
-  name: z.string().min(1, "Subscription name is required"),
-  price: z
-    .string()
-    .min(1, "Price is required")
-    .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
-      message: "Price must be a positive number",
-    }),
+  id: z.string().optional(),
+  name: z.string().min(1, "Name is required"),
+  price: z.string().min(1, "Price is required"),
   category: z.string().min(1, "Category is required"),
   billingCycle: billingCycleEnum,
-  nextPaymentDate: z.string().min(1, "Next payment date is required"),
-  isCancelled: z.boolean().optional(),
+  startDate: z.string().min(1, "Start date is required"),
+  isCancelled: z.boolean().optional().default(false),
 });
 
 export type SubscriptionFormValues = z.infer<typeof subscriptionFormSchema>;
@@ -30,8 +26,8 @@ export const subscriptionActionSchema = z.object({
   price: z.number().positive("Price must be a positive number"),
   category: z.string().min(1, "Category is required"),
   billingCycle: billingCycleEnum,
-  nextPaymentDate: z.date({
-    required_error: "Next payment date is required",
+  startDate: z.date({
+    required_error: "Start date is required",
   }),
   isCancelled: z.boolean().optional(),
 });
@@ -43,19 +39,16 @@ export interface Subscription {
   name: string;
   price: number;
   category: string;
-  billingCycle: string;
-  nextPaymentDate: string | Date;
+  billingCycle: BillingCycle;
+  startDate: string | Date;
   isCancelled: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
   userId: string;
 }
 
-export interface UpcomingPayment {
-  id: string;
-  name: string;
-  price: number;
-  nextPaymentDate: string | Date;
+export interface UpcomingPayment extends Subscription {
+  nextPaymentDate: Date;
 }
 
 export interface CategoryBreakdown {
