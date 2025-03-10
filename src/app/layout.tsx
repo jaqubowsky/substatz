@@ -1,65 +1,32 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
-import { SiteHeader } from "@/components/site-header";
+import "@/app/globals.css";
+import { Providers } from "@/app/providers";
 import { SiteFooter } from "@/components/site-footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { SiteHeader } from "@/components/site-header";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: {
-    template: "%s | SubscriptEase",
-    default: "SubscriptEase - Manage All Your Subscriptions in One Place",
-  },
-  description:
-    "SubscriptEase helps you track all your subscriptions in one place, with timely reminders and detailed insights on your spending.",
-  keywords: [
-    "subscription management",
-    "subscription tracker",
-    "manage subscriptions",
-    "subscription reminder",
-  ],
-  authors: [{ name: "SubscriptEase Team" }],
-  creator: "SubscriptEase",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://subscriptease.com",
-    title: "SubscriptEase - Manage All Your Subscriptions in One Place",
-    description:
-      "SubscriptEase helps you track all your subscriptions in one place, with timely reminders and detailed insights on your spending.",
-    siteName: "SubscriptEase",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "SubscriptEase - Manage All Your Subscriptions in One Place",
-    description:
-      "SubscriptEase helps you track all your subscriptions in one place, with timely reminders and detailed insights on your spending.",
-    creator: "@subscriptease",
-  },
+  title: "SubscriptEase - Manage Your Subscriptions",
+  description: "Track and manage all your subscriptions in one place",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="scroll-smooth light">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}
+        className={`${GeistSans.variable} ${GeistMono.variable} min-h-screen bg-background font-sans antialiased`}
       >
         <Providers>
-          {children}
+          <div className="relative flex min-h-screen flex-col">
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+          </div>
         </Providers>
       </body>
     </html>
