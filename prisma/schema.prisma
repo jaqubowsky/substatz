@@ -32,16 +32,6 @@ model Subscription {
   updatedAt       DateTime         @updatedAt
   userId          String
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  payments        PaymentHistory[]
-}
-
-model PaymentHistory {
-  id             String       @id @default(cuid())
-  amount         Float
-  paymentDate    DateTime
-  createdAt      DateTime     @default(now())
-  subscriptionId String
-  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
 }
 
 enum BillingCycle {
