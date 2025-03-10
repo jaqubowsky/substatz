@@ -7,6 +7,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { Calendar, CreditCard, Edit, Tag, Trash } from "lucide-react";
 import { useState } from "react";
 import { useDeleteSubscription } from "../hooks/use-delete-subscription";
+import { calculateNextPaymentDate } from "../lib/calculate-next-payment-date";
 import { formatCurrency } from "../lib/format-currency";
 import { formatDate } from "../lib/format-date";
 import { Subscription } from "../schemas/subscription";
@@ -26,11 +27,12 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
     },
   });
 
-  const formattedDate = formatDate(
-    subscription.nextPaymentDate instanceof Date
-      ? subscription.nextPaymentDate.toISOString()
-      : subscription.nextPaymentDate
+  const nextPaymentDate = calculateNextPaymentDate(
+    new Date(subscription.startDate),
+    subscription.billingCycle
   );
+
+  const formattedDate = formatDate(nextPaymentDate.toISOString());
 
   const getBadge = () => {
     if (subscription.isCancelled) {
@@ -41,10 +43,9 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
       );
     }
 
-    const nextPayment = new Date(subscription.nextPaymentDate);
     const today = new Date();
     const daysUntilPayment = Math.ceil(
-      (nextPayment.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      (nextPaymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     if (daysUntilPayment < 0) return null;
