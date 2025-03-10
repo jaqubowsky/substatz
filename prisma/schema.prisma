@@ -21,17 +21,19 @@ model User {
 }
 
 model Subscription {
-  id              String           @id @default(cuid())
-  name            String
-  price           Float
-  category        String
-  billingCycle    BillingCycle
-  nextPaymentDate DateTime
-  isCancelled     Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  userId          String
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  userId         String
+  name           String
+  price          Float
+  category       String
+  billingCycle   BillingCycle
+  startDate      DateTime     @default(now())
+  isCancelled    Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 enum BillingCycle {
