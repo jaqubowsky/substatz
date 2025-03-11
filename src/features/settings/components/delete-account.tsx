@@ -1,45 +1,39 @@
 "use client";
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useClientAuth } from "@/hooks/use-client-auth";
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useDeleteAccount } from "../hooks";
-
+import { deleteAccountAction } from "../server/actions/settings";
 export function DeleteAccount() {
-  const router = useRouter();
-  const { deleteAccount, isLoading, error, success, reset } = useDeleteAccount();
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (success) {
+  const router = useRouter();
+  const { logout } = useClientAuth();
+
+  const action = useAction(deleteAccountAction, {
+    onSuccess: () => {
       toast.success("Account deleted successfully! Redirecting to homepage...");
 
       setTimeout(() => {
+        logout();
         router.push("/");
       }, 2000);
-    }
-    if (error) {
-      toast.error(error);
-    }
-  }, [success, error, router]);
-
-  const handleDelete = async () => {
-    reset();
-    deleteAccount();
-    setIsOpen(false);
-  };
+    },
+  });
 
   return (
     <div className="space-y-4">
@@ -65,11 +59,11 @@ export function DeleteAccount() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
-              disabled={isLoading}
+              onClick={() => action.execute()}
+              disabled={action.isExecuting}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isLoading ? "Deleting..." : "Delete Account"}
+              {action.isExecuting ? "Deleting..." : "Delete Account"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

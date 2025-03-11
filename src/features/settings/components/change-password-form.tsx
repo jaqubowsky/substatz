@@ -11,43 +11,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { toast } from "sonner";
-import { useChangePassword } from "../hooks";
-import {
-  ChangePasswordFormValues,
-  changePasswordSchema,
-} from "../schemas/settings";
+import { changePasswordSchema } from "../schemas/settings";
+import { changePasswordAction } from "../server/actions/settings";
 
 export function ChangePasswordForm() {
-  const { changePassword, isLoading, error, success, reset } =
-    useChangePassword();
-
-  const form = useForm<ChangePasswordFormValues>({
-    resolver: zodResolver(changePasswordSchema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    },
-  });
-
-  useEffect(() => {
-    if (success) {
-      toast.success("Password changed successfully!");
-      form.reset();
+  const { form, handleSubmitWithAction } = useHookFormAction(
+    changePasswordAction,
+    zodResolver(changePasswordSchema),
+    {
+      actionProps: {
+        onSuccess: () => {
+          toast.success("Password changed successfully!");
+        },
+        onError: (data) => {
+          toast.error(data.error.serverError || "An error occurred");
+        },
+      },
     }
-    if (error) {
-      toast.error(error);
-    }
-  }, [success, error, form]);
-
-  const onSubmit = (data: ChangePasswordFormValues) => {
-    reset();
-    changePassword(data);
-  };
-
+  );
   return (
     <div className="space-y-4">
       <div>
@@ -58,7 +41,7 @@ export function ChangePasswordForm() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmitWithAction} className="space-y-4">
           <FormField
             control={form.control}
             name="currentPassword"
@@ -113,8 +96,10 @@ export function ChangePasswordForm() {
             )}
           />
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Changing Password..." : "Change Password"}
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting
+              ? "Changing Password..."
+              : "Change Password"}
           </Button>
         </form>
       </Form>

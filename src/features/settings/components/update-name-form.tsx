@@ -10,38 +10,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useClientAuth } from "@/hooks/use-client-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { toast } from "sonner";
-import { useUpdateName } from "../hooks";
-import { UpdateNameFormValues, updateNameSchema } from "../schemas/settings";
-
+import { updateNameSchema } from "../schemas/settings";
+import { updateNameAction } from "../server/actions/settings";
 export function UpdateNameForm() {
-  const { updateName, isLoading, error, success, reset } = useUpdateName();
+  const { updateSession } = useClientAuth();
 
-  const form = useForm<UpdateNameFormValues>({
-    resolver: zodResolver(updateNameSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
+  const { form, handleSubmitWithAction } = useHookFormAction(
+    updateNameAction,
+    zodResolver(updateNameSchema),
+    {
+      actionProps: {
+        onSuccess: (data) => {
+          toast.success("Name updated successfully!");
 
-  useEffect(() => {
-    if (success) {
-      toast.success("Name updated successfully!");
-      form.reset();
+          updateSession({
+            name: data.input.name,
+          });
+        },
+        onError: (data) => {
+          toast.error(data.error.serverError || "An error occurred");
+        },
+      },
     }
-    if (error) {
-      toast.error(error);
-    }
-  }, [success, error, form]);
-
-  const onSubmit = (data: UpdateNameFormValues) => {
-    reset();
-    updateName(data);
-  };
-
+  );
   return (
     <div className="space-y-4">
       <div>
@@ -52,7 +47,7 @@ export function UpdateNameForm() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmitWithAction} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
@@ -67,8 +62,8 @@ export function UpdateNameForm() {
             )}
           />
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Updating..." : "Update Name"}
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Updating..." : "Update Name"}
           </Button>
         </form>
       </Form>
