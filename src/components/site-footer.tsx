@@ -1,18 +1,17 @@
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
+import { useClientAuth } from "@/hooks";
 import { ClipboardList, Github, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function SiteFooter() {
+  const { isLoading } = useClientAuth();
+
   const pathname = usePathname();
-  const { isLoading } = useAuth();
   const isAuthPage = pathname === "/login" || pathname === "/register";
 
-  if (isAuthPage || isLoading) {
-    return null;
-  }
+  if (isAuthPage || isLoading) return null;
 
   const navigation = {
     product: [

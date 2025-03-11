@@ -2,17 +2,19 @@
 
 import { MobileMenu } from "@/components/mobile-menu";
 import { UserNav } from "@/components/user-nav";
-import { useAuth } from "@/hooks/use-auth";
+import { useClientAuth } from "@/hooks/use-client-auth";
 import { ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const { isLoading, isAuthenticated } = useAuth();
-  const isAuthPage = pathname === "/login" || pathname === "/register";
+  const { isLoading } = useClientAuth();
 
+  const isAuthPage =
+    pathname?.includes("/login") || pathname?.includes("/register");
   if (isAuthPage) return null;
+
   const isLandingPage = pathname === "/";
 
   return (
@@ -27,7 +29,10 @@ export function SiteHeader() {
           aria-label="Global"
         >
           <div className="flex items-center flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link
+              href={isLandingPage ? "/" : "/dashboard"}
+              className="flex items-center space-x-2"
+            >
               <ClipboardList className="w-8 h-8 text-primary" />
               <span className="text-xl font-bold text-gray-900">
                 SubscriptEase
@@ -58,48 +63,17 @@ export function SiteHeader() {
                     FAQ
                   </Link>
                 </>
-              ) : (
-                <>
-                  <Link
-                    href="/"
-                    className={`text-sm font-semibold leading-6 ${
-                      pathname === "/" ? "text-primary" : "text-gray-900"
-                    } hover:text-primary transition-colors`}
-                  >
-                    Home
-                  </Link>
-                  {isAuthenticated && (
-                    <>
-                      <Link
-                        href="/dashboard"
-                        className={`text-sm font-semibold leading-6 ${
-                          pathname === "/dashboard"
-                            ? "text-primary"
-                            : "text-gray-900"
-                        } hover:text-primary transition-colors`}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/settings"
-                        className={`text-sm font-semibold leading-6 ${
-                          pathname === "/settings"
-                            ? "text-primary"
-                            : "text-gray-900"
-                        } hover:text-primary transition-colors`}
-                      >
-                        Settings
-                      </Link>
-                    </>
-                  )}
-                </>
-              )}
+              ) : null}
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             {isLoading ? (
-              <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+              <>
+                <div className="w-12 h-3 bg-gray-200 rounded-md animate-pulse hidden md:block" />
+                <div className="w-12 h-3 bg-gray-200 rounded-md animate-pulse hidden md:block" />
+                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse hidden md:block" />
+              </>
             ) : (
               <div className="hidden md:block">
                 <UserNav />

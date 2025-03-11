@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
+import { useClientAuth } from "@/hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { ClipboardList, Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +11,7 @@ export const MobileMenu = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useClientAuth();
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
 
