@@ -1,14 +1,4 @@
-// Export components
-export * from "./components";
+import { LoginForm } from "./components/login-form";
+import { RegisterForm } from "./components/register-form";
 
-// Export hooks
-export * from "./hooks";
-
-// Export schemas
-export * from "./schemas";
-
-// Export server actions
-export * from "./server/actions";
-
-// Export lib utilities
-export * from "./lib/auth";
+export { LoginForm, RegisterForm };

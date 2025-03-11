@@ -1,8 +1,10 @@
 import { loginAction } from "@/features/auth/server/actions/auth";
-import NextAuth from "next-auth";
+import { updateUserLastLogin } from "@/features/auth/server/db/user";
+import { errors } from "@/lib/errorMessages";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -12,35 +14,27 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required");
+          throw new Error(errors.AUTH.EMAIL_AND_PASSWORD_REQUIRED.message);
         }
 
-        const actionResult = await loginAction(credentials);
+        const response = await loginAction(credentials);
+        if (response?.serverError) throw new Error(response.serverError);
 
-        if (!actionResult.success) {
-          throw new Error(actionResult.error || "Authentication failed");
+        if (!response?.data) {
+          throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
         }
 
-        if (!actionResult.user) {
-          throw new Error("User data is missing");
-        }
+        const user = response.data;
+        await updateUserLastLogin(user.id);
 
         return {
-          id: actionResult.user.id,
-          name: actionResult.user.name || "",
-          email: actionResult.user.email,
+          id: user.id,
+          name: user.name || "",
+          email: user.email,
         };
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/login",
-    signOut: "/",
-    error: "/login",
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -55,6 +49,30 @@ const handler = NextAuth({
       return session;
     },
   },
-});
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: "/login",
+    signOut: "/",
+    error: "/login",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

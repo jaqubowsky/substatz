@@ -1,90 +1,46 @@
 "use server";
 
-import { getFirstErrorMessage } from "@/lib/utils";
+import { errors } from "@/lib/errorMessages";
+import { ActionError, publicAction } from "@/lib/safe-action";
 import { hashPassword, verifyPassword } from "../../lib/auth";
-import {
-  LoginFormValues,
-  RegisterFormValues,
-  loginSchema,
-  registerSchema,
-} from "../../schemas/auth";
+import { loginSchema, registerSchema } from "../../schemas/auth";
 import { createUser, getUserByEmail } from "../db";
 
-export async function registerAction(unsafeData: RegisterFormValues) {
-  const validationResult = registerSchema.safeParse(unsafeData);
-
-  if (!validationResult.success) {
-    return {
-      success: false,
-      error: getFirstErrorMessage(validationResult.error),
-    };
-  }
-
-  const validData = validationResult.data;
-
-  const existingUser = await getUserByEmail(validData.email);
-
-  if (existingUser) {
-    return {
-      success: false,
-      error: "User with this email already exists",
-    };
-  }
-
-  const hashedPassword = await hashPassword(validData.password);
-
-  const user = await createUser(
-    validData.name,
-    validData.email,
-    hashedPassword
-  );
-
-  return {
-    success: true,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    },
-  };
+export interface User {
+  id: string;
+  name: string;
+  email: string;
 }
 
-export async function loginAction(unsafeData: LoginFormValues) {
-  const validationResult = loginSchema.safeParse(unsafeData);
+export const registerAction = publicAction
+  .schema(registerSchema)
+  .action(async ({ parsedInput: { name, email, password } }) => {
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
 
-  if (!validationResult.success) {
+    const hashedPassword = await hashPassword(password);
+    const user = await createUser(name, email, hashedPassword);
+
     return {
-      success: false,
-      error: getFirstErrorMessage(validationResult.error),
-    };
-  }
-
-  const validData = validationResult.data;
-
-  const user = await getUserByEmail(validData.email);
-
-  if (!user) {
-    return {
-      success: false,
-      error: "Invalid email or password",
-    };
-  }
-
-  const isValid = await verifyPassword(validData.password, user.password);
-
-  if (!isValid) {
-    return {
-      success: false,
-      error: "Invalid email or password",
-    };
-  }
-
-  return {
-    success: true,
-    user: {
       id: user.id,
-      name: user.name,
+    };
+  });
+
+export const loginAction = publicAction
+  .schema(loginSchema)
+  .action(async ({ parsedInput: { email, password } }) => {
+    const user = await getUserByEmail(email);
+    if (!user) throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
+
+    const isValid = await verifyPassword(password, user.password);
+    if (!isValid) {
+      throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
+    }
+
+    return {
+      id: user.id,
+      name: user.name || "",
       email: user.email,
-    },
-  };
-}
+      password,
+    };
+  });

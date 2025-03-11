@@ -19,3 +19,10 @@ export async function getUserByEmail(email: string) {
     where: { email },
   });
 }
+
+export function updateUserLastLogin(userId: string) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { lastLogin: new Date() },
+  });
+}

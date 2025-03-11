@@ -1,9 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,29 +13,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useFormCleanup } from "@/hooks";
 import { useLogin } from "../hooks";
-import { loginSchema, type LoginFormValues } from "../schemas/auth";
 
 export function LoginForm() {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-
-  const { login, isLoading, error, reset } = useLogin(callbackUrl);
-
-  useFormCleanup(reset);
-
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  function onSubmit(data: LoginFormValues) {
-    login(data);
-  }
+  const { form, action, handleSubmitWithAction } = useLogin();
 
   return (
     <div className="space-y-6">
@@ -48,7 +27,7 @@ export function LoginForm() {
         </p>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmitWithAction} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
@@ -85,11 +64,15 @@ export function LoginForm() {
               </FormItem>
             )}
           />
-          {error && (
-            <div className="text-sm font-medium text-destructive">{error}</div>
-          )}
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+          <Button type="submit" className="w-full" disabled={action.isPending}>
+            {action.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              "Sign in"
+            )}
           </Button>
         </form>
       </Form>
