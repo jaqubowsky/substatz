@@ -2,9 +2,14 @@ import "@/app/globals.css";
 import { Providers } from "@/app/providers";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { checkDatabaseConnection } from "@/lib/db-check";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { Metadata } from "next";
+
+if (process.env.NODE_ENV === "production") {
+  checkDatabaseConnection().catch(console.error);
+}
 
 export const metadata: Metadata = {
   title: "SubscriptEase - Manage Your Subscriptions",
