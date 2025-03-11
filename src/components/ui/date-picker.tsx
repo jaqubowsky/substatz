@@ -27,7 +27,7 @@ export function DatePicker({
   placeholder = "Pick a date",
 }: DatePickerProps) {
   return (
-    <Popover>
+    <Popover modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
