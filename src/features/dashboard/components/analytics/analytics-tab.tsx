@@ -1,18 +1,18 @@
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
-import { Subscription } from "@prisma/client";
-import { SubscriptionSummary } from "../../server/queries";
+import { getSubscriptions, getSubscriptionSummary } from "../../server/queries";
 import { AnalyticsTabClient } from "./analytics-tab-client";
 
-export const AnalyticsTab = ({
-  subscriptions,
-  summary,
-}: {
-  subscriptions: Subscription[];
-  summary: SubscriptionSummary;
-}) => {
+const AnalyticsTabContent = async () => {
+  const subscriptions = await getSubscriptions();
+  const summary = await getSubscriptionSummary();
+
+  return <AnalyticsTabClient subscriptions={subscriptions} summary={summary} />;
+};
+
+export const AnalyticsTab = async () => {
   return (
     <ErrorBoundaryWrapper componentName="Analytics">
-      <AnalyticsTabClient subscriptions={subscriptions} summary={summary} />
+      <AnalyticsTabContent />
     </ErrorBoundaryWrapper>
   );
 };
