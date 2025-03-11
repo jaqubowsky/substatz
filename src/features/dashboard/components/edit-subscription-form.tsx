@@ -20,69 +20,76 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, CreditCard, DollarSign, Tag } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { useUpdateSubscription } from "../hooks/use-update-subscription";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { Subscription } from "@prisma/client";
 import {
-  Subscription,
-  SubscriptionFormValues,
-  subscriptionFormSchema,
+  CalendarIcon,
+  CreditCard,
+  DollarSign,
+  Loader2,
+  Tag,
+} from "lucide-react";
+import { toast } from "sonner";
+import {
+  editSubscriptionSchema,
+  EditSubscriptionValues,
 } from "../schemas/subscription";
+import { updateSubscriptionAction } from "../server/actions/subscription";
 
 interface EditSubscriptionFormProps {
   subscription: Subscription;
   onSuccess: () => void;
 }
 
+const CATEGORIES = [
+  "Entertainment",
+  "Productivity",
+  "Utilities",
+  "Health & Fitness",
+  "Education",
+  "Food & Drink",
+  "Shopping",
+  "Other",
+];
+
 export const EditSubscriptionForm = ({
   subscription,
   onSuccess,
 }: EditSubscriptionFormProps) => {
-  const { updateSubscription, isLoading, error } = useUpdateSubscription(
-    subscription.id
+  const { form, action } = useHookFormAction(
+    updateSubscriptionAction,
+    zodResolver(editSubscriptionSchema),
+    {
+      actionProps: {
+        onSuccess: () => {
+          toast.success("Subscription updated successfully.");
+
+          onSuccess?.();
+        },
+        onError: (error) => {
+          toast.error(
+            error.error.serverError || "Failed to update subscription."
+          );
+        },
+      },
+      formProps: {
+        defaultValues: {
+          ...subscription,
+        },
+      },
+    }
   );
 
-  const form = useForm<SubscriptionFormValues>({
-    resolver: zodResolver(subscriptionFormSchema),
-    defaultValues: {
-      id: subscription.id,
-      name: subscription.name,
-      price: subscription.price.toString(),
-      category: subscription.category,
-      billingCycle: subscription.billingCycle,
-      startDate: new Date(subscription.startDate).toISOString().split("T")[0],
-      isCancelled: subscription.isCancelled,
-    },
-  });
-
-  const onSubmit = async (data: SubscriptionFormValues) => {
-    const success = await updateSubscription(data);
-
-    if (success) {
-      onSuccess();
-    }
+  const handleSubmitForm = (data: EditSubscriptionValues) => {
+    action.execute({ ...data, id: subscription.id });
   };
-
-  const categories = [
-    "Entertainment",
-    "Productivity",
-    "Utilities",
-    "Health & Fitness",
-    "Education",
-    "Food & Drink",
-    "Shopping",
-    "Other",
-  ];
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        {error && (
-          <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">
-            {error}
-          </div>
-        )}
-
+      <form
+        onSubmit={form.handleSubmit(handleSubmitForm)}
+        className="space-y-6"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -138,7 +145,7 @@ export const EditSubscriptionForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {categories.map((category) => (
+                  {CATEGORIES.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -192,12 +199,14 @@ export const EditSubscriptionForm = ({
                 </FormLabel>
                 <FormControl>
                   <DatePicker
-                    date={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) =>
-                      field.onChange(
-                        date ? date.toISOString().split("T")[0] : ""
-                      )
-                    }
+                    date={field.value}
+                    onSelect={(date) => {
+                      if (date) {
+                        field.onChange(date);
+                      } else {
+                        field.onChange("");
+                      }
+                    }}
                     placeholder="Select start date"
                   />
                 </FormControl>
@@ -230,14 +239,16 @@ export const EditSubscriptionForm = ({
           )}
         />
 
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="outline" onClick={onSuccess}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Changes"}
-          </Button>
-        </div>
+        <Button type="submit" className="w-full" disabled={action.isPending}>
+          {action.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Updating...
+            </>
+          ) : (
+            "Update Subscription"
+          )}
+        </Button>
       </form>
     </Form>
   );
