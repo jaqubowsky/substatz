@@ -1,4 +1,5 @@
 import { BillingCycle } from "@prisma/client";
+import { addMonths, isBefore, isSameDay } from "date-fns";
 
 export function calculateNextPaymentDate(
   startDate: Date,
@@ -6,35 +7,46 @@ export function calculateNextPaymentDate(
 ): Date {
   const today = new Date();
   const start = new Date(startDate);
-  const result = new Date(start);
 
-  let periodInMonths = 1;
-  switch (billingCycle) {
-    case "MONTHLY":
-      periodInMonths = 1;
-      break;
-    case "QUARTERLY":
-      periodInMonths = 3;
-      break;
-    case "BIANNUALLY":
-      periodInMonths = 6;
-      break;
-    case "ANNUALLY":
-      periodInMonths = 12;
-      break;
-  }
+  const cycleToMonths = {
+    MONTHLY: 1,
+    QUARTERLY: 3,
+    BIANNUALLY: 6,
+    ANNUALLY: 12,
+  };
 
-  const monthsSinceStart =
+  const periodInMonths = cycleToMonths[billingCycle];
+
+  let monthsSinceStart =
     (today.getFullYear() - start.getFullYear()) * 12 +
     (today.getMonth() - start.getMonth());
 
-  const periodsElapsed = Math.floor(monthsSinceStart / periodInMonths);
-
-  result.setMonth(start.getMonth() + (periodsElapsed + 1) * periodInMonths);
-
-  if (result < today) {
-    result.setMonth(result.getMonth() + periodInMonths);
+  if (today.getDate() < start.getDate()) {
+    monthsSinceStart--;
   }
 
-  return result;
+  const periodsElapsed = Math.max(
+    0,
+    Math.floor(monthsSinceStart / periodInMonths)
+  );
+
+  let nextPaymentDate = new Date(start);
+  nextPaymentDate.setMonth(
+    start.getMonth() + (periodsElapsed + 1) * periodInMonths
+  );
+
+  const originalDay = start.getDate();
+  const lastDayOfMonth = new Date(
+    nextPaymentDate.getFullYear(),
+    nextPaymentDate.getMonth() + 1,
+    0
+  ).getDate();
+
+  nextPaymentDate.setDate(Math.min(originalDay, lastDayOfMonth));
+
+  if (isBefore(nextPaymentDate, today) || isSameDay(nextPaymentDate, today)) {
+    nextPaymentDate = addMonths(nextPaymentDate, periodInMonths);
+  }
+
+  return nextPaymentDate;
 }

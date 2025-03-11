@@ -1,7 +1,3 @@
-"use client";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,34 +5,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlusCircle } from "lucide-react";
-import { useSubscriptions } from "../hooks/use-subscriptions";
 import { Subscription } from "../schemas/subscription";
+import { getSubscriptions } from "../server/queries";
 import { SubscriptionCard } from "./subscription-card";
-import { SubscriptionSkeleton } from "./subscription-skeleton";
 
-export const SubscriptionList = () => {
-  const { subscriptions, isLoading, error } = useSubscriptions();
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <SubscriptionSkeleton />
-        <SubscriptionSkeleton />
-        <SubscriptionSkeleton />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertTitle>Failed to load subscriptions</AlertTitle>
-        <AlertDescription>
-          Please try again later or contact support.
-        </AlertDescription>
-      </Alert>
-    );
-  }
+export const SubscriptionList = async () => {
+  const subscriptions = await getSubscriptions();
 
   if (subscriptions.length === 0) {
     return (

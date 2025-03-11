@@ -1,6 +1,3 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,7 +11,6 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Calendar,
   CreditCard,
@@ -23,45 +19,18 @@ import {
   PieChart,
   Tag,
 } from "lucide-react";
-import { useSubscriptionSummary } from "../hooks/use-subscription-summary";
 import { formatCurrency } from "../lib/format-currency";
 import { formatDate } from "../lib/format-date";
 import { UpcomingPayment } from "../schemas/subscription";
+import { getSubscriptionSummary } from "../server/queries";
 
-export const DashboardSummary = () => {
-  const {
-    totalMonthly,
-    totalYearly,
-    upcomingPayments,
-    categoriesBreakdown,
-    isLoading,
-    error,
-  } = useSubscriptionSummary();
+export const DashboardSummary = async () => {
+  const data = await getSubscriptionSummary();
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-5 w-24" />
-        <Skeleton className="h-8 w-32" />
-        <Skeleton className="h-5 w-24 mt-4" />
-        <Skeleton className="h-7 w-28" />
-        <Separator className="my-4" />
-        <Skeleton className="h-5 w-32" />
-        <div className="space-y-2 mt-3">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">
-        Failed to load summary. Please try again later.
-      </div>
-    );
-  }
+  const totalMonthly = data?.totalMonthly || 0;
+  const totalYearly = data?.totalYearly || 0;
+  const upcomingPayments = data?.upcomingPayments || [];
+  const categoriesBreakdown = data?.categoriesBreakdown || {};
 
   return (
     <div>

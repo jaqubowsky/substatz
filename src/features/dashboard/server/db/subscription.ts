@@ -5,6 +5,7 @@ import { calculateNextPaymentDate } from "../../lib/calculate-next-payment-date"
 export async function getSubscriptionsByUserId(userId: string) {
   return prisma.subscription.findMany({
     where: { userId },
+    orderBy: [{ isCancelled: "asc" }, { name: "asc" }],
   });
 }
 
@@ -36,7 +37,7 @@ export async function createSubscription(
 }
 
 export async function updateSubscription(
-  id: string,
+  subscriptionId: string,
   data: {
     name?: string;
     price?: number;
@@ -47,7 +48,7 @@ export async function updateSubscription(
   }
 ) {
   return prisma.subscription.update({
-    where: { id },
+    where: { id: subscriptionId },
     data,
   });
 }

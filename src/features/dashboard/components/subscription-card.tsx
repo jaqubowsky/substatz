@@ -27,12 +27,14 @@ import {
   Tag,
   Trash,
 } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
-import { useDeleteSubscription } from "../hooks/use-delete-subscription";
+import { toast } from "sonner";
 import { calculateNextPaymentDate } from "../lib/calculate-next-payment-date";
 import { formatCurrency } from "../lib/format-currency";
 import { formatDate } from "../lib/format-date";
 import { BillingCycle, Subscription } from "../schemas/subscription";
+import { removeSubscriptionAction } from "../server/actions";
 import { EditSubscriptionForm } from "./edit-subscription-form";
 
 interface SubscriptionCardProps {
@@ -40,14 +42,20 @@ interface SubscriptionCardProps {
 }
 
 export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
-  const { deleteSubscription, isDeleting } = useDeleteSubscription();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const handleDelete = async () => {
-    await deleteSubscription(subscription.id);
-    setIsDeleteDialogOpen(false);
-  };
+  const deleteAction = useAction(removeSubscriptionAction, {
+    onSuccess: () => {
+      toast.success("Subscription deleted successfully.");
+    },
+    onError: (data) => {
+      toast.error(data.error.serverError || "Failed to delete subscription.");
+    },
+    onSettled: () => {
+      setIsEditDialogOpen(false);
+    },
+  });
 
   const nextPaymentDate = calculateNextPaymentDate(
     new Date(subscription.startDate),
@@ -148,7 +156,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
       <ConfirmationDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
-        onConfirm={handleDelete}
+        onConfirm={() => deleteAction.execute({ id: subscription.id })}
         title="Delete Subscription"
         description={
           <>
@@ -158,11 +166,12 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
           </>
         }
         icon={<AlertTriangle className="h-12 w-12 text-destructive" />}
-        isProcessing={isDeleting}
-        confirmText="Delete"
+        isProcessing={deleteAction.status === "executing"}
+        confirmText={
+          deleteAction.status === "executing" ? "Deleting..." : "Delete"
+        }
         cancelText="Cancel"
         variant="destructive"
-        processingText="Deleting..."
       />
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

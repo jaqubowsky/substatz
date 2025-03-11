@@ -19,42 +19,57 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, CreditCard, DollarSign, Tag } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { useAddSubscription } from "../hooks/use-add-subscription";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { BillingCycle } from "@prisma/client";
 import {
-  SubscriptionFormValues,
-  subscriptionFormSchema,
+  CalendarIcon,
+  CreditCard,
+  DollarSign,
+  Loader2,
+  Tag,
+} from "lucide-react";
+import { toast } from "sonner";
+import {
+  addSubscriptionSchema,
+  AddSubscriptionValues,
 } from "../schemas/subscription";
+import { addSubscriptionAction } from "../server/actions/subscription";
 
 interface AddSubscriptionFormProps {
   onSuccess: () => void;
 }
 
+const defaultValues: AddSubscriptionValues = {
+  name: "",
+  price: 0,
+  category: "",
+  billingCycle: BillingCycle.MONTHLY,
+  startDate: new Date(),
+  isCancelled: false,
+};
+
 export const AddSubscriptionForm = ({
   onSuccess,
 }: AddSubscriptionFormProps) => {
-  const { addSubscription, isLoading, error } = useAddSubscription();
+  const { form, action, handleSubmitWithAction } = useHookFormAction(
+    addSubscriptionAction,
+    zodResolver(addSubscriptionSchema),
+    {
+      actionProps: {
+        onSuccess: () => {
+          toast.success("Subscription added successfully.");
 
-  const form = useForm<SubscriptionFormValues>({
-    resolver: zodResolver(subscriptionFormSchema),
-    defaultValues: {
-      name: "",
-      price: "",
-      category: "",
-      billingCycle: "MONTHLY",
-      startDate: new Date().toISOString().split("T")[0],
-    },
-  });
-
-  const onSubmit = async (data: SubscriptionFormValues) => {
-    const success = await addSubscription(data);
-
-    if (success) {
-      form.reset();
-      onSuccess();
+          onSuccess?.();
+        },
+        onError: (error) => {
+          toast.error(error.error.serverError || "Failed to add subscription.");
+        },
+      },
+      formProps: {
+        defaultValues,
+      },
     }
-  };
+  );
 
   const categories = [
     "Entertainment",
@@ -69,13 +84,7 @@ export const AddSubscriptionForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        {error && (
-          <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">
-            {error}
-          </div>
-        )}
-
+      <form onSubmit={handleSubmitWithAction} className="space-y-6">
         <FormField
           control={form.control}
           name="name"
@@ -185,8 +194,14 @@ export const AddSubscriptionForm = ({
                 </FormLabel>
                 <FormControl>
                   <DatePicker
-                    date={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) => field.onChange(date ? date.toISOString().split('T')[0] : '')}
+                    date={field.value}
+                    onSelect={(date) => {
+                      if (date) {
+                        field.onChange(date);
+                      } else {
+                        field.onChange("");
+                      }
+                    }}
                     placeholder="Select start date"
                   />
                 </FormControl>
@@ -197,8 +212,15 @@ export const AddSubscriptionForm = ({
         </div>
 
         <div className="pt-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Adding..." : "Add Subscription"}
+          <Button type="submit" className="w-full" disabled={action.isPending}>
+            {action.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Adding...
+              </>
+            ) : (
+              "Add Subscription"
+            )}
           </Button>
         </div>
       </form>

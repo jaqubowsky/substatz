@@ -1,5 +1,3 @@
-"use client";
-
 import { LineChart, PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import {
   Area,

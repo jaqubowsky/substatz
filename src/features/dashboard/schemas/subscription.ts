@@ -1,3 +1,4 @@
+import { Subscription } from "@prisma/client";
 import { z } from "zod";
 
 export const billingCycleEnum = z.enum([
@@ -9,43 +10,34 @@ export const billingCycleEnum = z.enum([
 
 export type BillingCycle = z.infer<typeof billingCycleEnum>;
 
-export const subscriptionFormSchema = z.object({
+export const editSubscriptionSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
-  price: z.string().min(1, "Price is required"),
+  price: z.coerce.number().min(0.01, "Price must be greater than 0"),
   category: z.string().min(1, "Category is required"),
   billingCycle: billingCycleEnum,
-  startDate: z.string().min(1, "Start date is required"),
+  startDate: z.coerce.date(),
   isCancelled: z.boolean().optional().default(false),
+  notes: z.string().optional(),
+  logoUrl: z.string().url().optional().or(z.literal("")),
+  websiteUrl: z.string().url().optional().or(z.literal("")),
 });
 
-export type SubscriptionFormValues = z.infer<typeof subscriptionFormSchema>;
+export type EditSubscriptionValues = z.infer<typeof editSubscriptionSchema>;
 
-export const subscriptionActionSchema = z.object({
+export const addSubscriptionSchema = z.object({
   name: z.string().min(1, "Subscription name is required"),
-  price: z.number().positive("Price must be a positive number"),
+  price: z.coerce.number().min(0.01, "Price must be greater than 0"),
   category: z.string().min(1, "Category is required"),
   billingCycle: billingCycleEnum,
-  startDate: z.date({
-    required_error: "Start date is required",
-  }),
-  isCancelled: z.boolean().optional(),
+  startDate: z.coerce.date(),
+  isCancelled: z.boolean().optional().default(false),
+  notes: z.string().optional(),
+  logoUrl: z.string().url().optional().or(z.literal("")),
+  websiteUrl: z.string().url().optional().or(z.literal("")),
 });
 
-export type SubscriptionActionValues = z.infer<typeof subscriptionActionSchema>;
-
-export interface Subscription {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  billingCycle: BillingCycle;
-  startDate: string | Date;
-  isCancelled: boolean;
-  createdAt: string | Date;
-  updatedAt: string | Date;
-  userId: string;
-}
+export type AddSubscriptionValues = z.infer<typeof addSubscriptionSchema>;
 
 export interface UpcomingPayment extends Subscription {
   nextPaymentDate: Date;
@@ -53,24 +45,4 @@ export interface UpcomingPayment extends Subscription {
 
 export interface CategoryBreakdown {
   [category: string]: number;
-}
-
-export interface BaseResponse {
-  success: boolean;
-  error?: string;
-}
-
-export interface SubscriptionResponse extends BaseResponse {
-  subscription?: Subscription;
-}
-
-export interface SubscriptionsResponse extends BaseResponse {
-  subscriptions?: Subscription[];
-}
-
-export interface SubscriptionSummaryResponse extends BaseResponse {
-  totalMonthly?: number;
-  totalYearly?: number;
-  upcomingPayments?: UpcomingPayment[];
-  categoriesBreakdown?: CategoryBreakdown;
 }
