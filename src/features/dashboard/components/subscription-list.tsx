@@ -1,15 +1,16 @@
+import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
+import { Subscription } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
-import { Subscription } from "../schemas/subscription";
 import { getSubscriptions } from "../server/queries";
 import { SubscriptionCard } from "./subscription-card";
 
-export const SubscriptionList = async () => {
+const SubscriptionListContent = async () => {
   const subscriptions = await getSubscriptions();
 
   if (subscriptions.length === 0) {
@@ -39,5 +40,13 @@ export const SubscriptionList = async () => {
         <SubscriptionCard key={subscription.id} subscription={subscription} />
       ))}
     </div>
+  );
+};
+
+export const SubscriptionList = () => {
+  return (
+    <ErrorBoundaryWrapper componentName="Subscription List">
+      <SubscriptionListContent />
+    </ErrorBoundaryWrapper>
   );
 };

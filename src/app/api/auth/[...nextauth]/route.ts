@@ -1,5 +1,8 @@
-import { loginAction } from "@/features/auth/server/actions/auth";
-import { updateUserLastLogin } from "@/features/auth/server/db/user";
+import { verifyPassword } from "@/features/auth/lib/auth";
+import {
+  getUserByEmail,
+  updateUserLastLogin,
+} from "@/features/auth/server/db/user";
 import { errors } from "@/lib/errorMessages";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -17,14 +20,14 @@ export const authOptions: NextAuthOptions = {
           throw new Error(errors.AUTH.EMAIL_AND_PASSWORD_REQUIRED.message);
         }
 
-        const response = await loginAction(credentials);
-        if (response?.serverError) throw new Error(response.serverError);
+        const isValid = await verifyPassword(
+          credentials.password,
+          credentials.email
+        );
+        if (isValid) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
 
-        if (!response?.data) {
-          throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
-        }
-
-        const user = response.data;
+        const user = await getUserByEmail(credentials.email);
+        if (!user) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
         await updateUserLastLogin(user.id);
 
         return {

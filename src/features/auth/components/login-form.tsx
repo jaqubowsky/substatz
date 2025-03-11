@@ -13,10 +13,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useLogin } from "../hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { loginSchema } from "../schemas/auth";
+import { loginAction } from "../server/actions/auth";
 
 export function LoginForm() {
-  const { form, action, handleSubmitWithAction } = useLogin();
+  const router = useRouter();
+
+  const { form, action, handleSubmitWithAction } = useHookFormAction(
+    loginAction,
+    zodResolver(loginSchema),
+    {
+      actionProps: {
+        onSuccess: async ({ data }) => {
+          await signIn("credentials", {
+            email: data?.email,
+            password: data?.password,
+            redirect: false,
+          });
+
+          router.push("/dashboard");
+          router.refresh();
+        },
+        onError: (error) => {
+          toast.error(error.error.serverError);
+        },
+      },
+    }
+  );
 
   return (
     <div className="space-y-6">

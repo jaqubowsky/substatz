@@ -9,11 +9,5 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  return (
-    <html>
-      <body>
-        <ErrorBoundary error={error} reset={reset} />
-      </body>
-    </html>
-  );
+  return <ErrorBoundary error={error} reset={reset} />;
 }

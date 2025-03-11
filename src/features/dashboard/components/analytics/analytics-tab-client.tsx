@@ -1,5 +1,6 @@
 "use client";
 
+import { Subscription } from "@prisma/client";
 import { useState } from "react";
 import {
   CategoryBreakdownChart,
@@ -16,7 +17,6 @@ import {
   groupByCategory,
   TimeRange,
 } from "../../lib/analytics";
-import { Subscription } from "../../schemas/subscription";
 import { SubscriptionSummary } from "../../server/queries";
 
 export const AnalyticsTabClient = ({

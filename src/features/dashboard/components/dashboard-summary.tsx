@@ -1,3 +1,4 @@
+import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import {
   Card,
   CardContent,
@@ -24,7 +25,7 @@ import { formatDate } from "../lib/format-date";
 import { UpcomingPayment } from "../schemas/subscription";
 import { getSubscriptionSummary } from "../server/queries";
 
-export const DashboardSummary = async () => {
+const DashboardSummaryContent = async () => {
   const data = await getSubscriptionSummary();
 
   const totalMonthly = data?.totalMonthly || 0;
@@ -165,5 +166,13 @@ export const DashboardSummary = async () => {
         )}
       </div>
     </div>
+  );
+};
+
+export const DashboardSummary = () => {
+  return (
+    <ErrorBoundaryWrapper componentName="Dashboard Summary">
+      <DashboardSummaryContent />
+    </ErrorBoundaryWrapper>
   );
 };

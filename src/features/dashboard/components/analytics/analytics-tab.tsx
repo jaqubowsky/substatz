@@ -1,15 +1,18 @@
-import { Suspense } from "react";
-import { getSubscriptions, getSubscriptionSummary } from "../../server/queries";
+import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
+import { Subscription } from "@prisma/client";
+import { SubscriptionSummary } from "../../server/queries";
 import { AnalyticsTabClient } from "./analytics-tab-client";
-import { LoadingAnalytics } from "./loading-analytics";
 
-export const AnalyticsTab = async () => {
-  const subscriptions = await getSubscriptions();
-  const summary = await getSubscriptionSummary();
-
+export const AnalyticsTab = ({
+  subscriptions,
+  summary,
+}: {
+  subscriptions: Subscription[];
+  summary: SubscriptionSummary;
+}) => {
   return (
-    <Suspense fallback={<LoadingAnalytics />}>
+    <ErrorBoundaryWrapper componentName="Analytics">
       <AnalyticsTabClient subscriptions={subscriptions} summary={summary} />
-    </Suspense>
+    </ErrorBoundaryWrapper>
   );
 };

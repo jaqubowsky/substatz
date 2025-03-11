@@ -13,11 +13,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRegister } from "../hooks";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { toast } from "sonner";
+import { registerSchema } from "../schemas/auth";
+import { registerAction } from "../server/actions/auth";
 
 export function RegisterForm() {
-  const { form, action, handleSubmitWithAction } = useRegister();
-  
+  const { form, action, handleSubmitWithAction } = useHookFormAction(
+    registerAction,
+    zodResolver(registerSchema),
+    {
+      actionProps: {
+        onSuccess: () => {
+          toast.success("Account created successfully.");
+        },
+        onError: (error) => {
+          toast.error(error.error.serverError);
+        },
+      },
+    }
+  );
+
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">

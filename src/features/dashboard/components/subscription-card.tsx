@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Subscription } from "@prisma/client";
 import {
   AlertTriangle,
   Calendar,
@@ -33,7 +34,7 @@ import { toast } from "sonner";
 import { calculateNextPaymentDate } from "../lib/calculate-next-payment-date";
 import { formatCurrency } from "../lib/format-currency";
 import { formatDate } from "../lib/format-date";
-import { BillingCycle, Subscription } from "../schemas/subscription";
+import { BillingCycle } from "../schemas/subscription";
 import { removeSubscriptionAction } from "../server/actions";
 import { EditSubscriptionForm } from "./edit-subscription-form";
 

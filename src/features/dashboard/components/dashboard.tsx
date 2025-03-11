@@ -5,16 +5,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutDashboard } from "lucide-react";
 import { Suspense } from "react";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics/analytics-tab";
 import { DashboardSummary } from "./dashboard-summary";
+import { LoadingSubscriptionList } from "./loading-subscription-list";
+import { LoadingSummary } from "./loading-summary";
 import { SubscriptionList } from "./subscription-list";
-import { SubscriptionSkeleton } from "./subscription-skeleton";
 
 export const Dashboard = () => {
   return (
@@ -57,15 +56,7 @@ export const Dashboard = () => {
                     <AddSubscriptionButton />
                   </CardHeader>
                   <CardContent>
-                    <Suspense
-                      fallback={
-                        <div className="space-y-4">
-                          <SubscriptionSkeleton />
-                          <SubscriptionSkeleton />
-                          <SubscriptionSkeleton />
-                        </div>
-                      }
-                    >
+                    <Suspense fallback={<LoadingSubscriptionList />}>
                       <SubscriptionList />
                     </Suspense>
                   </CardContent>
@@ -74,24 +65,7 @@ export const Dashboard = () => {
               <div className="space-y-6">
                 <Card className="sticky top-8">
                   <CardContent className="pt-6">
-                    <Suspense
-                      fallback={
-                        <>
-                          <div className="space-y-6">
-                            <Skeleton className="h-5 w-24" />
-                            <Skeleton className="h-8 w-32" />
-                            <Skeleton className="h-5 w-24 mt-4" />
-                            <Skeleton className="h-7 w-28" />
-                            <Separator className="my-4" />
-                            <Skeleton className="h-5 w-32" />
-                            <div className="space-y-2 mt-3">
-                              <Skeleton className="h-16 w-full" />
-                              <Skeleton className="h-16 w-full" />
-                            </div>
-                          </div>
-                        </>
-                      }
-                    >
+                    <Suspense fallback={<LoadingSummary />}>
                       <DashboardSummary />
                     </Suspense>
                   </CardContent>

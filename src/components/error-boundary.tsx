@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
-import { useEffect } from "react";
 
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };
@@ -17,10 +16,6 @@ interface ErrorBoundaryProps {
 }
 
 export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
-  useEffect(() => {
-    console.error("Unhandled error:", error);
-  }, [error]);
-
   return (
     <div className="flex items-center justify-center min-h-[400px] p-4">
       <Card className="w-full max-w-md">
