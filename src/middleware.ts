@@ -15,27 +15,28 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const publicRoutes = ["/login", "/register", "/"];
-  const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
-  );
-
   const appRoutes = ["/dashboard", "/settings"];
   const isAppRoute = appRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
-  const token = await getToken({ req: request });
-  const isAuthenticated = !!token;
+  if (isAppRoute) {
+    const token = await getToken({ req: request });
+    const isAuthenticated = !!token;
 
-  if (!isAuthenticated && isAppRoute) {
-    const url = new URL("/login", request.url);
-    url.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(url);
+    if (!isAuthenticated) {
+      const url = new URL("/login", request.url);
+      return NextResponse.redirect(url);
+    }
   }
 
-  if (isAuthenticated && isPublicRoute && pathname !== "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (pathname === "/login" || pathname === "/register") {
+    const token = await getToken({ req: request });
+    const isAuthenticated = !!token;
+
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 
   return NextResponse.next();
@@ -45,10 +46,8 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/settings/:path*",
-
     "/login",
     "/register",
-
     "/api/:path*",
   ],
 };

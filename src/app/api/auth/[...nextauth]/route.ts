@@ -20,14 +20,15 @@ export const authOptions: NextAuthOptions = {
           throw new Error(errors.AUTH.EMAIL_AND_PASSWORD_REQUIRED.message);
         }
 
+        const user = await getUserByEmail(credentials.email);
+        if (!user) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
+
         const isValid = await verifyPassword(
           credentials.password,
           credentials.email
         );
-        if (isValid) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
+        if (!isValid) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
 
-        const user = await getUserByEmail(credentials.email);
-        if (!user) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
         await updateUserLastLogin(user.id);
 
         return {
@@ -65,7 +66,10 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name:
+        process.env.NODE_ENV === "production"
+          ? `__Secure-next-auth.session-token`
+          : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
