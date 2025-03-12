@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RegisterFormValues, registerSchema } from "../schemas/auth";
@@ -37,21 +36,12 @@ export function RegisterForm() {
     zodResolver(registerSchema),
     {
       actionProps: {
-        onSuccess: async ({ input }) => {
-          toast.success("Account created successfully. Redirecting..");
+        onSuccess: async (result) => {
+          toast.success(
+            result?.data?.message || "Account created successfully!"
+          );
 
-          const result = await signIn("credentials", {
-            email: input.email,
-            password: input.password,
-            redirect: false,
-          });
-
-          if (result?.error) {
-            toast.error(result.error);
-            return;
-          }
-
-          router.push("/dashboard");
+          router.push("/login?verification=pending");
           router.refresh();
         },
         onError: (error) => {

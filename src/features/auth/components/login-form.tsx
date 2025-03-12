@@ -2,6 +2,8 @@
 
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +15,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { signIn } from "next-auth/react";
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoginFormValues, loginSchema } from "../schemas/auth";
-import { loginAction } from "../server/actions/auth";
+import { loginAction, resendVerificationAction } from "../server/actions/auth";
+import { GoogleSignInButton } from "./google-sign-in-button";
+import { VerificationMessages } from "./login-verification-messages";
 
 const defaultValues: LoginFormValues = {
   email: "",
@@ -28,6 +34,29 @@ const defaultValues: LoginFormValues = {
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const clearUrlParams = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (
+      params.has("verification") ||
+      params.has("error") ||
+      params.has("success")
+    ) {
+      router.replace("/login", { scroll: false });
+    }
+  }, [router, searchParams]);
+
+  const resendVerification = useAction(resendVerificationAction, {
+    onSuccess: (result) => {
+      toast.success(result.message || "Verification email sent!");
+    },
+    onError: (error) => {
+      toast.error(
+        error.error.serverError || "Failed to send verification email"
+      );
+    },
+  });
 
   const { form, action, handleSubmitWithAction } = useHookFormAction(
     loginAction,
@@ -42,15 +71,28 @@ export function LoginForm() {
           });
 
           if (result?.error) {
-            toast.error(result.error);
+            toast.error("Something went wrong. Please try again later.");
             return;
           }
 
           router.push("/dashboard");
           router.refresh();
         },
-        onError: (error) => {
-          toast.error(error.error.serverError);
+        onError: (err) => {
+          const errorMessage = err.error.serverError || "An error occurred";
+          if (!errorMessage.includes("Email not verified")) return;
+
+          toast.error(errorMessage);
+
+          toast.info("Need a new verification email?", {
+            action: {
+              label: "Resend",
+              onClick: () =>
+                resendVerification.execute({
+                  email: form.getValues().email,
+                }),
+            },
+          });
         },
       },
       formProps: {
@@ -61,6 +103,8 @@ export function LoginForm() {
 
   return (
     <div className="space-y-6">
+      <VerificationMessages />
+
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold text-card-foreground">Sign in</h1>
         <p className="text-muted-foreground">
@@ -81,6 +125,10 @@ export function LoginForm() {
                     type="email"
                     autoComplete="email"
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      clearUrlParams();
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -99,6 +147,10 @@ export function LoginForm() {
                     type="password"
                     autoComplete="current-password"
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      clearUrlParams();
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -117,6 +169,20 @@ export function LoginForm() {
           </Button>
         </form>
       </Form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <GoogleSignInButton />
+
       <div className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
         <Link

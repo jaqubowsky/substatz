@@ -13,6 +13,22 @@ export const errors = {
     UNAUTHORIZED: {
       message: "Unauthorized. Please log in to continue.",
     },
+    EMAIL_NOT_VERIFIED: {
+      message: "Email not verified. Please verify your email to continue.",
+    },
+    USER_NOT_FOUND: {
+      message: "User not found. Please check your credentials.",
+    },
+    VERIFICATION_TOKEN_EXPIRED: {
+      message:
+        "Verification token expired or account already verified. Please try again",
+    },
+    VERIFICATION_TOKEN_INVALID: {
+      message: "Verification token invalid. Please request a new one.",
+    },
+    VERIFICATION_EMAIL_ERROR: {
+      message: "Failed to send verification email. Please try again later.",
+    },
   },
   SUBSCRIPTION: {
     INVALID_SUBSCRIPTION_DATA: {
