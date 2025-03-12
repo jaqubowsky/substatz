@@ -9,6 +9,8 @@ import { Subscription } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 import { getSubscriptions } from "../server/queries";
 import { SubscriptionCard } from "./subscription-card";
+import { LoadingSubscriptionList } from "./loading-subscription-list";
+import { Suspense } from "react";
 
 const SubscriptionListContent = async () => {
   const subscriptions = await getSubscriptions();
@@ -46,7 +48,9 @@ const SubscriptionListContent = async () => {
 export const SubscriptionList = () => {
   return (
     <ErrorBoundaryWrapper componentName="Subscription List">
-      <SubscriptionListContent />
+      <Suspense fallback={<LoadingSubscriptionList />}>
+        <SubscriptionListContent />
+      </Suspense>
     </ErrorBoundaryWrapper>
   );
 };

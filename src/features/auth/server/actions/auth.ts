@@ -19,11 +19,9 @@ export const registerAction = publicAction
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
 
     const hashedPassword = await hashPassword(password);
-    const user = await createUser(name, email, hashedPassword);
+    await createUser(name, email, hashedPassword);
 
-    return {
-      id: user.id,
-    };
+    return { success: true };
   });
 
 export const loginAction = publicAction
@@ -37,10 +35,5 @@ export const loginAction = publicAction
       throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
     }
 
-    return {
-      id: user.id,
-      name: user.name || "",
-      email: user.email,
-      password,
-    };
+    return { success: true };
   });

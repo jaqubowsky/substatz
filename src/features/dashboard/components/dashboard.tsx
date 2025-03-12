@@ -7,12 +7,9 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutDashboard } from "lucide-react";
-import { Suspense } from "react";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics/analytics-tab";
 import { DashboardSummary } from "./dashboard-summary";
-import { LoadingSubscriptionList } from "./loading-subscription-list";
-import { LoadingSummary } from "./loading-summary";
 import { SubscriptionList } from "./subscription-list";
 
 export const Dashboard = () => {
@@ -56,18 +53,14 @@ export const Dashboard = () => {
                     <AddSubscriptionButton />
                   </CardHeader>
                   <CardContent>
-                    <Suspense fallback={<LoadingSubscriptionList />}>
-                      <SubscriptionList />
-                    </Suspense>
+                    <SubscriptionList />
                   </CardContent>
                 </Card>
               </div>
               <div className="space-y-6">
                 <Card className="sticky top-8">
                   <CardContent className="pt-6">
-                    <Suspense fallback={<LoadingSummary />}>
-                      <DashboardSummary />
-                    </Suspense>
+                    <DashboardSummary />
                   </CardContent>
                 </Card>
               </div>

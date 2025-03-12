@@ -18,8 +18,13 @@ import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hoo
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { loginSchema } from "../schemas/auth";
+import { LoginFormValues, loginSchema } from "../schemas/auth";
 import { loginAction } from "../server/actions/auth";
+
+const defaultValues: LoginFormValues = {
+  email: "",
+  password: "",
+};
 
 export function LoginForm() {
   const router = useRouter();
@@ -29,12 +34,17 @@ export function LoginForm() {
     zodResolver(loginSchema),
     {
       actionProps: {
-        onSuccess: async ({ data }) => {
-          await signIn("credentials", {
-            email: data?.email,
-            password: data?.password,
+        onSuccess: async ({ input }) => {
+          const result = await signIn("credentials", {
+            email: input.email,
+            password: input.password,
             redirect: false,
           });
+
+          if (result?.error) {
+            toast.error(result.error);
+            return;
+          }
 
           router.push("/dashboard");
           router.refresh();
@@ -42,6 +52,9 @@ export function LoginForm() {
         onError: (error) => {
           toast.error(error.error.serverError);
         },
+      },
+      formProps: {
+        defaultValues,
       },
     }
   );

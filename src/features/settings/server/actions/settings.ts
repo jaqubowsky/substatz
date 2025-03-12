@@ -13,7 +13,9 @@ export const updateNameAction = privateAction
 
     const updatedUser = await db.updateUserName(ctx.session.user.id, name);
 
-    return updatedUser;
+    return {
+      name: updatedUser.name,
+    };
   });
 
 export const changePasswordAction = privateAction
@@ -29,8 +31,6 @@ export const changePasswordAction = privateAction
 
     const hashedPassword = await hashPassword(newPassword);
     await db.updateUserPassword(ctx.session.user.id, hashedPassword);
-
-    
   });
 
 export const deleteAccountAction = privateAction.action(async ({ ctx }) => {

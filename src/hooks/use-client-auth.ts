@@ -21,11 +21,17 @@ export function useClientAuth() {
 
   const updateSession = useCallback(
     async (data: Partial<Session["user"]>) => {
-      update({
-        ...data,
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          ...data,
+        },
       });
+
+      router.refresh();
     },
-    [update]
+    [update, session, router]
   );
 
   return {

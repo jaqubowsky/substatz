@@ -17,7 +17,7 @@ import Link from "next/link";
 export function UserNav() {
   const { user, isAuthenticated, logout } = useClientAuth();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return (
       <div className="flex items-center gap-4">
         <Link href="/login">
@@ -42,8 +42,8 @@ export function UserNav() {
   }
 
   const userInitials = (
-    user?.name?.slice(0, 2) ||
-    user?.email?.slice(0, 2) ||
+    user.name.slice(0, 2) ||
+    user.email.slice(0, 2) ||
     "U"
   ).toUpperCase();
 
@@ -68,10 +68,10 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal p-2">
           <div className="flex flex-col space-y-1.5">
             <p className="text-sm font-semibold leading-none">
-              {user?.name || "User"}
+              {user.name || "User"}
             </p>
             <p className="text-xs text-muted-foreground truncate">
-              {user?.email}
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>

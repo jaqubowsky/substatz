@@ -14,8 +14,13 @@ import { useClientAuth } from "@/hooks/use-client-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { toast } from "sonner";
-import { updateNameSchema } from "../schemas/settings";
+import { UpdateNameFormValues, updateNameSchema } from "../schemas/settings";
 import { updateNameAction } from "../server/actions/settings";
+
+const defaultValues: UpdateNameFormValues = {
+  name: "",
+};
+
 export function UpdateNameForm() {
   const { updateSession } = useClientAuth();
 
@@ -24,16 +29,19 @@ export function UpdateNameForm() {
     zodResolver(updateNameSchema),
     {
       actionProps: {
-        onSuccess: (data) => {
+        onSuccess: ({ data }) => {
           toast.success("Name updated successfully!");
 
           updateSession({
-            name: data.input.name,
+            name: data.name,
           });
         },
         onError: (data) => {
           toast.error(data.error.serverError || "An error occurred");
         },
+      },
+      formProps: {
+        defaultValues,
       },
     }
   );

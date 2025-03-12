@@ -20,10 +20,12 @@ import {
   PieChart,
   Tag,
 } from "lucide-react";
+import { Suspense } from "react";
 import { formatCurrency } from "../lib/format-currency";
 import { formatDate } from "../lib/format-date";
 import { UpcomingPayment } from "../schemas/subscription";
 import { getSubscriptionSummary } from "../server/queries";
+import { LoadingSummary } from "./loading-summary";
 
 const DashboardSummaryContent = async () => {
   const data = await getSubscriptionSummary();
@@ -172,7 +174,9 @@ const DashboardSummaryContent = async () => {
 export const DashboardSummary = () => {
   return (
     <ErrorBoundaryWrapper componentName="Dashboard Summary">
-      <DashboardSummaryContent />
+      <Suspense fallback={<LoadingSummary />}>
+        <DashboardSummaryContent />
+      </Suspense>
     </ErrorBoundaryWrapper>
   );
 };

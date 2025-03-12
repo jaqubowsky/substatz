@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
 
         const isValid = await verifyPassword(
           credentials.password,
-          credentials.email
+          user.password
         );
         if (!isValid) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
 
@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user.id,
-          name: user.name || "",
+          name: user.name,
           email: user.email,
         };
       },
@@ -49,6 +49,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
       }
       return session;
     },

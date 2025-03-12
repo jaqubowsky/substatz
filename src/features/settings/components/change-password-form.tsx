@@ -13,8 +13,17 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { toast } from "sonner";
-import { changePasswordSchema } from "../schemas/settings";
+import {
+  ChangePasswordFormValues,
+  changePasswordSchema,
+} from "../schemas/settings";
 import { changePasswordAction } from "../server/actions/settings";
+
+const defaultValues: ChangePasswordFormValues = {
+  currentPassword: "",
+  newPassword: "",
+  confirmNewPassword: "",
+};
 
 export function ChangePasswordForm() {
   const { form, handleSubmitWithAction } = useHookFormAction(
@@ -28,6 +37,9 @@ export function ChangePasswordForm() {
         onError: (data) => {
           toast.error(data.error.serverError || "An error occurred");
         },
+      },
+      formProps: {
+        defaultValues,
       },
     }
   );

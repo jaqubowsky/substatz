@@ -16,22 +16,50 @@ import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { registerSchema } from "../schemas/auth";
+import { RegisterFormValues, registerSchema } from "../schemas/auth";
 import { registerAction } from "../server/actions/auth";
 
+const defaultValues: RegisterFormValues = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
 export function RegisterForm() {
+  const router = useRouter();
+
   const { form, action, handleSubmitWithAction } = useHookFormAction(
     registerAction,
     zodResolver(registerSchema),
     {
       actionProps: {
-        onSuccess: () => {
-          toast.success("Account created successfully.");
+        onSuccess: async ({ input }) => {
+          toast.success("Account created successfully. Redirecting..");
+
+          const result = await signIn("credentials", {
+            email: input.email,
+            password: input.password,
+            redirect: false,
+          });
+
+          if (result?.error) {
+            toast.error(result.error);
+            return;
+          }
+
+          router.push("/dashboard");
+          router.refresh();
         },
         onError: (error) => {
           toast.error(error.error.serverError);
         },
+      },
+      formProps: {
+        defaultValues,
       },
     }
   );
