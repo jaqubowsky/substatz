@@ -80,7 +80,7 @@ const authCallbacks = {
     const existingUser = await getUserByEmail(user.email);
     if (existingUser) {
       await updateUserLastLogin(existingUser.id);
-      return existingUser;
+      return true;
     }
 
     await createUserFromOAuth({
@@ -90,7 +90,7 @@ const authCallbacks = {
       emailVerified: new Date(),
     });
 
-    return user;
+    return true;
   },
 
   async jwt({ token, user }: { token: JWT; user?: ExtendedUser }) {
