@@ -2,6 +2,7 @@
 
 import { errors } from "@/lib/errorMessages";
 import { ActionError, publicAction } from "@/lib/safe-action";
+import { Provider } from "@prisma/client";
 import { z } from "zod";
 import { hashPassword, verifyPassword } from "../../lib/auth";
 import {
@@ -23,7 +24,6 @@ import {
   resetUserPassword,
   verifyUserEmail,
 } from "../db/user";
-import { Provider } from "@prisma/client";
 
 export const registerAction = publicAction
   .schema(registerSchema)
@@ -32,12 +32,12 @@ export const registerAction = publicAction
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
 
     const hashedPassword = await hashPassword(password);
-    const user = await createUser(name, email, hashedPassword);
+    const result = await createUser(name, email, hashedPassword);
 
     try {
-      if (!user.verificationToken) return;
+      if (!result.verificationToken) return;
 
-      await sendVerificationEmail(email, name, user.verificationToken);
+      await sendVerificationEmail(email, name, result.verificationToken);
     } catch {
       throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
     }
@@ -106,16 +106,16 @@ export const resendVerificationAction = publicAction
       };
     }
 
-    const updatedUser = await generateNewVerificationToken(email);
-    if (!updatedUser.verificationToken) {
+    const result = await generateNewVerificationToken(email);
+    if (!result || !result.verificationToken) {
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
     try {
       await sendVerificationEmail(
-        updatedUser.email,
-        updatedUser.name,
-        updatedUser.verificationToken
+        result.email,
+        result.name,
+        result.verificationToken
       );
     } catch {
       throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
@@ -149,16 +149,16 @@ export const forgotPasswordAction = publicAction
       };
     }
 
-    const updatedUser = await createPasswordResetToken(email);
-    if (!updatedUser.resetToken) {
+    const result = await createPasswordResetToken(email);
+    if (!result || !result.resetToken) {
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
     try {
       await sendPasswordResetEmail(
-        updatedUser.email,
-        updatedUser.name,
-        updatedUser.resetToken
+        result.email,
+        result.name,
+        result.resetToken
       );
     } catch {
       throw new ActionError(errors.AUTH.PASSWORD_RESET_EMAIL_ERROR.message);
