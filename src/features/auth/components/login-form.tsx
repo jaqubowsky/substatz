@@ -154,6 +154,14 @@ export function LoginForm() {
                   />
                 </FormControl>
                 <FormMessage />
+                <div className="text-right">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-primary hover:text-primary/90"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
               </FormItem>
             )}
           />

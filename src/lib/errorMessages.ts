@@ -32,6 +32,12 @@ export const errors = {
     VERIFICATION_EMAIL_ERROR: {
       message: "Failed to send verification email. Please try again later.",
     },
+    PASSWORD_RESET_EMAIL_ERROR: {
+      message: "Failed to send password reset email. Please try again later.",
+    },
+    RESET_TOKEN_INVALID: {
+      message: "Reset token invalid or expired. Please request a new one.",
+    },
   },
   SUBSCRIPTION: {
     INVALID_SUBSCRIPTION_DATA: {

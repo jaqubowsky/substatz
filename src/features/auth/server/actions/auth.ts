@@ -4,14 +4,26 @@ import { errors } from "@/lib/errorMessages";
 import { ActionError, publicAction } from "@/lib/safe-action";
 import { z } from "zod";
 import { hashPassword, verifyPassword } from "../../lib/auth";
-import { sendVerificationEmail, sendWelcomeEmail } from "../../lib/email";
-import { emailSchema, loginSchema, registerSchema } from "../../schemas/auth";
 import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
+} from "../../lib/email";
+import {
+  emailSchema,
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "../../schemas/auth";
+import {
+  createPasswordResetToken,
   createUser,
   generateNewVerificationToken,
   getUserByEmail,
+  resetUserPassword,
   verifyUserEmail,
 } from "../db/user";
+import { Provider } from "@prisma/client";
 
 export const registerAction = publicAction
   .schema(registerSchema)
@@ -112,5 +124,68 @@ export const resendVerificationAction = publicAction
     return {
       success: true,
       message: "Verification email sent!",
+    };
+  });
+
+export const forgotPasswordAction = publicAction
+  .schema(emailSchema)
+  .action(async ({ parsedInput }) => {
+    const { email } = parsedInput;
+
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return {
+        success: true,
+        message:
+          "If your email is registered, you will receive a password reset link.",
+      };
+    }
+
+    if (user.provider !== Provider.CREDENTIALS) {
+      return {
+        success: true,
+        message:
+          "If your email is registered, you will receive a password reset link.",
+      };
+    }
+
+    const updatedUser = await createPasswordResetToken(email);
+    if (!updatedUser.resetToken) {
+      throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
+    }
+
+    try {
+      await sendPasswordResetEmail(
+        updatedUser.email,
+        updatedUser.name,
+        updatedUser.resetToken
+      );
+    } catch {
+      throw new ActionError(errors.AUTH.PASSWORD_RESET_EMAIL_ERROR.message);
+    }
+
+    return {
+      success: true,
+      message:
+        "If your email is registered, you will receive a password reset link.",
+    };
+  });
+
+export const resetPasswordAction = publicAction
+  .schema(resetPasswordSchema)
+  .action(async ({ parsedInput }) => {
+    const { token, password } = parsedInput;
+
+    const hashedPassword = await hashPassword(password);
+    const user = await resetUserPassword(token, hashedPassword);
+
+    if (!user) {
+      throw new ActionError(errors.AUTH.RESET_TOKEN_INVALID.message);
+    }
+
+    return {
+      success: true,
+      message:
+        "Password reset successfully. You can now log in with your new password.",
     };
   });
