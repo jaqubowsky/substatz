@@ -1,4 +1,5 @@
 import { verifyPassword } from "@/features/auth/lib/auth";
+import { sendWelcomeEmail } from "@/features/auth/lib/email";
 import {
   createUserFromOAuth,
   getUserByEmail,
@@ -82,6 +83,8 @@ const authCallbacks = {
         image: user.image || "",
         emailVerified: new Date(),
       });
+
+      await sendWelcomeEmail(user.email, user.name || "");
 
       return true;
     }
