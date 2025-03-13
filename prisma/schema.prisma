@@ -11,34 +11,39 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @default(cuid())
-  name                  String
-  email                 String         @unique
-  password              String?
-  emailVerified         DateTime?
-  verificationToken     String?
+  id                      String         @id @default(cuid())
+  name                    String
+  email                   String         @unique
+  password                String?
+  emailVerified           DateTime?
+  verificationToken       String?
   verificationTokenExpiry DateTime?
-  image                 String?
-  lastLogin             DateTime?
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
-  subscriptions         Subscription[]
+  image                   String?
+  provider                Provider       @default(CREDENTIALS)
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  subscriptions           Subscription[]
 }
 
 model Subscription {
-  id             String       @id @default(cuid())
-  userId         String
-  name           String
-  price          Float
-  category       String
-  billingCycle   BillingCycle
-  startDate      DateTime     @default(now())
-  isCancelled    Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String       @id @default(cuid())
+  userId       String
+  name         String
+  price        Float
+  category     String
+  billingCycle BillingCycle
+  startDate    DateTime     @default(now())
+  isCancelled  Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+enum Provider {
+  CREDENTIALS
+  GOOGLE
 }
 
 enum BillingCycle {

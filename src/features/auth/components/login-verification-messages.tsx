@@ -52,7 +52,7 @@ export const VerificationMessages = () => {
         errorMessage = "An error occurred. Please try again later.";
         break;
       default:
-        errorMessage = messages.error;
+        errorMessage = "Access denied. Please try again later.";
     }
 
     alertContent = (

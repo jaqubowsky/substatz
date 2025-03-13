@@ -40,6 +40,8 @@ export function ChangePasswordForm() {
       actionProps: {
         onSuccess: () => {
           toast.success("Password changed successfully!");
+
+          form.reset();
         },
         onError: (data) => {
           toast.error(data.error.serverError || "An error occurred");

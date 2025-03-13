@@ -2,10 +2,10 @@
 
 import { Separator } from "@/components/ui/separator";
 import { useClientAuth } from "@/hooks";
+import { Provider } from "@prisma/client";
 import { Billing } from "./billing";
 import { ChangePasswordForm } from "./change-password-form";
 import { DeleteAccount } from "./delete-account";
-
 export function Settings() {
   const { user, isLoading } = useClientAuth();
 
@@ -21,7 +21,7 @@ export function Settings() {
       <div className="space-y-6">
         <Billing />
 
-        {user?.provider === "credentials" && !isLoading ? (
+        {user?.provider === Provider.CREDENTIALS && !isLoading ? (
           <>
             <ChangePasswordForm />
             <Separator />

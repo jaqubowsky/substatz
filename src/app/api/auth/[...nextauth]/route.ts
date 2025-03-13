@@ -2,9 +2,9 @@ import { verifyPassword } from "@/features/auth/lib/auth";
 import {
   createUserFromOAuth,
   getUserByEmail,
-  updateUserLastLogin,
 } from "@/features/auth/server/db/user";
 import { errors } from "@/lib/errorMessages";
+import { Provider } from "@prisma/client";
 import NextAuth, {
   type Account,
   type NextAuthOptions,
@@ -40,6 +40,10 @@ const credentialsConfig = {
     const user = await getUserByEmail(credentials.email);
     if (!user) throw new Error(errors.AUTH.INVALID_CREDENTIALS.message);
 
+    if (user.provider === Provider.GOOGLE && !user.password) {
+      throw new Error(errors.AUTH.GOOGLE_ACCOUNT.message);
+    }
+
     const isValid = await verifyPassword(
       credentials.password,
       user.password || ""
@@ -54,8 +58,7 @@ const credentialsConfig = {
       id: user.id,
       name: user.name,
       email: user.email,
-      image: user.image,
-      provider: user.password ? "credentials" : "google",
+      provider: user.provider,
     };
   },
 };
@@ -63,47 +66,58 @@ const credentialsConfig = {
 const googleConfig = {
   clientId: process.env.GOOGLE_CLIENT_ID!,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-  authorization: {
-    params: {
-      prompt: "consent",
-      access_type: "offline",
-      response_type: "code",
-    },
-  },
 };
 
 const authCallbacks = {
   async signIn({ user, account }: { user: User; account: Account | null }) {
-    if (account?.provider === "credentials") return true;
     if (!account || !user.email) return false;
 
     const existingUser = await getUserByEmail(user.email);
-    if (existingUser) {
-      await updateUserLastLogin(existingUser.id);
+    const normalizedProvider = account.provider.toUpperCase();
+
+    if (!existingUser) {
+      await createUserFromOAuth({
+        email: user.email,
+        name: user.name || "",
+        image: user.image || "",
+        emailVerified: new Date(),
+      });
+
       return true;
     }
 
-    await createUserFromOAuth({
-      email: user.email,
-      name: user.name || "",
-      image: user.image || "",
-      emailVerified: new Date(),
-    });
+    if (existingUser.provider === normalizedProvider) return true;
 
-    return true;
+    return false;
   },
 
-  async jwt({ token, user }: { token: JWT; user?: ExtendedUser }) {
-    if (!user) return token;
-    token.id = user.id;
-    token.provider = user.provider;
+  async jwt({
+    token,
+    user,
+    account,
+  }: {
+    token: JWT;
+    user?: ExtendedUser;
+    account?: Account | null;
+  }) {
+    if (user) {
+      token.id = user.id;
+      token.provider = user.provider;
+    }
+
+    if (account && !token.provider) {
+      token.provider = account.provider.toUpperCase();
+    }
+
     return token;
   },
 
   async session({ session, token }: { session: Session; token: JWT }) {
-    if (!session.user) return session;
-    session.user.id = token.id as string;
-    session.user.provider = token.provider as string;
+    if (session.user) {
+      session.user.id = token.id as string;
+      session.user.provider = token.provider as string;
+    }
+
     return session;
   },
 };

@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-background">
+    <div className="flex flex-1 items-center justify-center p-4 bg-secondary/30">
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-center gap-2">

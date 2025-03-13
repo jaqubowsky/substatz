@@ -14,7 +14,7 @@ import { SubscriptionList } from "./subscription-list";
 
 export const Dashboard = () => {
   return (
-    <div className="bg-secondary/30 min-h-screen py-8">
+    <div className="flex-1 py-8">
       <div className="container mx-auto px-4">
         <Card className="mb-6 border-none bg-transparent shadow-none">
           <CardHeader className="px-0">

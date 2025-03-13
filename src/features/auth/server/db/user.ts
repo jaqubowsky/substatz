@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Provider } from "@prisma/client";
 import crypto from "crypto";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -18,56 +19,7 @@ export async function createUser(
       password: hashedPassword,
       verificationToken,
       verificationTokenExpiry,
-    },
-  });
-}
-
-export async function getUserByEmail(email: string) {
-  return prisma.user.findUnique({
-    where: { email },
-  });
-}
-
-export function updateUserLastLogin(userId: string) {
-  return prisma.user.update({
-    where: { id: userId },
-    data: { lastLogin: new Date() },
-  });
-}
-
-export async function verifyUserEmail(token: string) {
-  const user = await prisma.user.findFirst({
-    where: {
-      verificationToken: token,
-      verificationTokenExpiry: {
-        gt: new Date(),
-      },
-    },
-  });
-
-  if (!user) {
-    return null;
-  }
-
-  return prisma.user.update({
-    where: { id: user.id },
-    data: {
-      emailVerified: new Date(),
-      verificationToken: null,
-      verificationTokenExpiry: null,
-    },
-  });
-}
-
-export async function generateNewVerificationToken(email: string) {
-  const verificationToken = crypto.randomBytes(32).toString("hex");
-  const verificationTokenExpiry = new Date(Date.now() + ONE_DAY);
-
-  return prisma.user.update({
-    where: { email },
-    data: {
-      verificationToken,
-      verificationTokenExpiry,
+      provider: Provider.CREDENTIALS,
     },
   });
 }
@@ -89,6 +41,48 @@ export async function createUserFromOAuth({
       name,
       image,
       emailVerified,
+      provider: Provider.GOOGLE,
+    },
+  });
+}
+
+export async function getUserByEmail(email: string) {
+  return prisma.user.findUnique({
+    where: { email },
+  });
+}
+
+export async function verifyUserEmail(token: string) {
+  const user = await prisma.user.findFirst({
+    where: {
+      verificationToken: token,
+      verificationTokenExpiry: {
+        gt: new Date(),
+      },
+    },
+  });
+
+  if (!user) return null;
+
+  return prisma.user.update({
+    where: { id: user.id },
+    data: {
+      emailVerified: new Date(),
+      verificationToken: null,
+      verificationTokenExpiry: null,
+    },
+  });
+}
+
+export async function generateNewVerificationToken(email: string) {
+  const verificationToken = crypto.randomBytes(32).toString("hex");
+  const verificationTokenExpiry = new Date(Date.now() + ONE_DAY);
+
+  return prisma.user.update({
+    where: { email },
+    data: {
+      verificationToken,
+      verificationTokenExpiry,
     },
   });
 }
