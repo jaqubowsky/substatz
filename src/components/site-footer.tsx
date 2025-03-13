@@ -52,7 +52,7 @@ export function SiteFooter() {
   if (!isLandingPage) {
     return (
       <footer className="bg-background border-t border-border">
-        <div className="container flex flex-col items-center justify-between gap-4 py-6 md:flex-row px-4 sm:px-8">
+        <div className="mx-auto container flex flex-col items-center justify-between gap-4 py-6 md:flex-row px-4 sm:px-8 w-full">
           <p className="text-center text-sm text-muted-foreground md:text-left">
             &copy; {new Date().getFullYear()} SubscriptEase. All rights
             reserved.

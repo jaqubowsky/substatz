@@ -25,9 +25,6 @@ export async function createUser(
 export async function getUserByEmail(email: string) {
   return prisma.user.findUnique({
     where: { email },
-    include: {
-      accounts: true,
-    },
   });
 }
 
@@ -71,46 +68,6 @@ export async function generateNewVerificationToken(email: string) {
     data: {
       verificationToken,
       verificationTokenExpiry,
-    },
-  });
-}
-
-export async function getUserByAccount(
-  provider: string,
-  providerAccountId: string
-) {
-  const account = await prisma.account.findUnique({
-    where: {
-      provider_providerAccountId: {
-        provider,
-        providerAccountId,
-      },
-    },
-    include: {
-      user: true,
-    },
-  });
-
-  return account?.user ?? null;
-}
-
-export async function linkAccount(
-  userId: string,
-  provider: string,
-  providerAccountId: string,
-  accessToken: string,
-  refreshToken?: string,
-  expiresAt?: number
-) {
-  return prisma.account.create({
-    data: {
-      userId,
-      provider,
-      providerAccountId,
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      expires_at: expiresAt,
-      type: "oauth",
     },
   });
 }

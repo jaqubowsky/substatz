@@ -21,29 +21,18 @@ export function Billing() {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-lg font-medium">Billing</h3>
-        <p className="text-sm text-muted-foreground">
-          Manage your billing information and subscription
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Plan</CardTitle>
-          <CardDescription>
-            You are currently on the Premium plan
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">$9.99</div>
-          <p className="text-sm text-muted-foreground">One-time payment</p>
-        </CardContent>
-        <CardFooter>
-          <Button onClick={handleManageBilling}>Manage Billing</Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Your Plan</CardTitle>
+        <CardDescription>You are currently on the Premium plan</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">$9.99</div>
+        <p className="text-sm text-muted-foreground">One-time payment</p>
+      </CardContent>
+      <CardFooter>
+        <Button onClick={handleManageBilling}>Manage Billing</Button>
+      </CardFooter>
+    </Card>
   );
 }

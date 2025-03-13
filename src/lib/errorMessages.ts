@@ -58,6 +58,10 @@ export const errors = {
     INVALID_PASSWORD: {
       message: "Invalid password. Please check your credentials.",
     },
+    NO_PASSWORD: {
+      message:
+        "No password set up for this account. Use your provider to login.",
+    },
   },
   GENERAL: {
     NETWORK_ERROR: {

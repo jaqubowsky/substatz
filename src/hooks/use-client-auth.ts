@@ -1,12 +1,11 @@
 "use client";
 
-import { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 export function useClientAuth() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   const isAuthenticated = status === "authenticated";
@@ -19,26 +18,10 @@ export function useClientAuth() {
     router.push("/login");
   }, [router]);
 
-  const updateSession = useCallback(
-    async (data: Partial<Session["user"]>) => {
-      await update({
-        ...session,
-        user: {
-          ...session?.user,
-          ...data,
-        },
-      });
-
-      router.refresh();
-    },
-    [update, session, router]
-  );
-
   return {
     user,
     isAuthenticated,
     isLoading,
     logout,
-    updateSession,
   };
 }
