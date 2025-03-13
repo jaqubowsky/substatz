@@ -114,3 +114,24 @@ export async function linkAccount(
     },
   });
 }
+
+export async function createUserFromOAuth({
+  email,
+  name,
+  image,
+  emailVerified,
+}: {
+  email: string;
+  name: string;
+  image?: string;
+  emailVerified: Date;
+}) {
+  return prisma.user.create({
+    data: {
+      email,
+      name,
+      image,
+      emailVerified,
+    },
+  });
+}

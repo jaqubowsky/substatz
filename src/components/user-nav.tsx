@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useClientAuth } from "@/hooks";
 import { LogOut, Settings, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function UserNav() {
@@ -41,22 +42,34 @@ export function UserNav() {
     );
   }
 
-  const userInitials = (
-    user.name.slice(0, 2) ||
-    user.email.slice(0, 2) ||
-    "U"
-  ).toUpperCase();
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("");
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-11 w-11 rounded-full border-2 border-primary/20 hover:bg-primary/5 transition-all duration-200"
+          className="relative cursor-pointer h-11 w-11 rounded-full overflow-hidden border border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all duration-200 p-0"
         >
-          <span className="flex items-center justify-center w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-transparent text-primary font-semibold text-sm">
-            {userInitials}
-          </span>
+          {user.image ? (
+            <Image
+              src={user.image}
+              alt={user.name || "User"}
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
+              priority
+            />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 text-primary font-medium text-sm">
+              {getInitials(user.name || user.email || "User")}
+            </div>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

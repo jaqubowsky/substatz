@@ -49,7 +49,7 @@ export function LoginForm() {
 
   const resendVerification = useAction(resendVerificationAction, {
     onSuccess: (result) => {
-      toast.success(result.message || "Verification email sent!");
+      toast.success(result.data?.message || "Verification email sent!");
     },
     onError: (error) => {
       toast.error(
@@ -80,9 +80,9 @@ export function LoginForm() {
         },
         onError: (err) => {
           const errorMessage = err.error.serverError || "An error occurred";
-          if (!errorMessage.includes("Email not verified")) return;
-
           toast.error(errorMessage);
+
+          if (!errorMessage.includes("Email not verified")) return;
 
           toast.info("Need a new verification email?", {
             action: {

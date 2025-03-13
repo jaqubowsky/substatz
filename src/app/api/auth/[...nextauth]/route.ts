@@ -1,5 +1,6 @@
 import { verifyPassword } from "@/features/auth/lib/auth";
 import {
+  createUserFromOAuth,
   getUserByEmail,
   linkAccount,
   updateUserLastLogin,
@@ -63,20 +64,20 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       if (user) token.id = user.id;
 
-      if (account && user) {
-        const existingUser = await getUserByEmail(user.email!);
-        if (!existingUser) return token;
+      if (!account || !user) return token;
 
-        const hasLinkedAccount = existingUser.accounts?.some(
-          (acc: { provider: string; providerAccountId: string }) =>
-            acc.provider === account.provider &&
-            acc.providerAccountId === account.providerAccountId
-        );
+      const existingUser = await getUserByEmail(user.email!);
 
-        if (hasLinkedAccount) return token;
+      if (!existingUser) {
+        const newUser = await createUserFromOAuth({
+          email: user.email!,
+          name: user.name || "",
+          image: user.image || "",
+          emailVerified: new Date(),
+        });
 
         await linkAccount(
-          existingUser.id,
+          newUser.id,
           account.provider,
           account.providerAccountId,
           account.access_token!,
@@ -84,10 +85,30 @@ export const authOptions: NextAuthOptions = {
           account.expires_at
         );
 
-        if (existingUser.emailVerified) return token;
-
-        await verifyUserEmail(token.id);
+        token.id = newUser.id;
+        return token;
       }
+
+      const hasLinkedAccount = existingUser.accounts?.some(
+        (acc: { provider: string; providerAccountId: string }) =>
+          acc.provider === account.provider &&
+          acc.providerAccountId === account.providerAccountId
+      );
+
+      if (hasLinkedAccount) return token;
+
+      await linkAccount(
+        existingUser.id,
+        account.provider,
+        account.providerAccountId,
+        account.access_token!,
+        account.refresh_token,
+        account.expires_at
+      );
+
+      if (existingUser.emailVerified) return token;
+
+      await verifyUserEmail(token.id);
 
       return token;
     },

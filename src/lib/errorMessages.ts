@@ -1,5 +1,8 @@
 export const errors = {
   AUTH: {
+    GOOGLE_ACCOUNT: {
+      message: "Account is using Google. Please use Google to login.",
+    },
     INVALID_CREDENTIALS: {
       message:
         "Invalid credentials provided. Please check your email and password.",

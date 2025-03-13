@@ -2,7 +2,6 @@
 
 import { errors } from "@/lib/errorMessages";
 import { ActionError, publicAction } from "@/lib/safe-action";
-import { User } from "@prisma/client";
 import { z } from "zod";
 import { hashPassword, verifyPassword } from "../../lib/auth";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../lib/email";
@@ -40,7 +39,7 @@ export const registerAction = publicAction
 export const loginAction = publicAction
   .schema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
-    const user = (await getUserByEmail(email)) as User;
+    const user = await getUserByEmail(email);
     if (!user) throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
 
     const isValid = await verifyPassword(password, user.password || "");

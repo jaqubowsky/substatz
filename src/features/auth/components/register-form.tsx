@@ -14,12 +14,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RegisterFormValues, registerSchema } from "../schemas/auth";
 import { registerAction } from "../server/actions/auth";
+import { GoogleSignInButton } from "./google-sign-in-button";
 
 const defaultValues: RegisterFormValues = {
   name: "",
@@ -149,6 +151,20 @@ export function RegisterForm() {
           </Button>
         </form>
       </Form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <GoogleSignInButton />
+
       <div className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link
