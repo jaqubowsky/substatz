@@ -8,7 +8,11 @@ export function LogoutButton() {
   const { logout } = useClientAuth();
 
   return (
-    <DropdownMenuItem className="cursor-pointer" onClick={() => logout()}>
+    <DropdownMenuItem
+      className="cursor-pointer"
+      onClick={() => logout()}
+      role="menuitem"
+    >
       <LogOut className="mr-2 h-4 w-4" />
       <span>Log out</span>
     </DropdownMenuItem>

@@ -17,8 +17,12 @@ export const DashboardTabs = ({ tabs }: DashboardTabsProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <>
-      <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:space-x-1 space-y-2 sm:space-y-0 rounded-lg">
+    <div className="w-full">
+      <div
+        className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:space-x-1 space-y-2 sm:space-y-0 rounded-lg"
+        role="tablist"
+        aria-orientation="horizontal"
+      >
         {tabs.map((tab, index) => (
           <div className="flex-1 bg-white rounded-lg" key={index}>
             <Button
@@ -27,8 +31,9 @@ export const DashboardTabs = ({ tabs }: DashboardTabsProps) => {
               className="w-full text-xs sm:text-sm md:text-base"
               aria-selected={activeTab === index}
               role="tab"
-              aria-controls={`tab-panel-${index}`}
+              aria-controls={`tabpanel-${index}`}
               id={`tab-${index}`}
+              tabIndex={activeTab === index ? 0 : -1}
             >
               {tab.name}
             </Button>
@@ -40,19 +45,19 @@ export const DashboardTabs = ({ tabs }: DashboardTabsProps) => {
         {tabs.map((tab, index) => (
           <div
             key={index}
-            id={`tab-panel-${index}`}
+            id={`tabpanel-${index}`}
             role="tabpanel"
             aria-labelledby={`tab-${index}`}
             className={cn(
               "transition-all",
               activeTab === index ? "opacity-100 block" : "opacity-0 hidden"
             )}
-            tabIndex={activeTab === index ? 0 : -1}
+            tabIndex={0}
           >
             {tab.content}
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };

@@ -13,18 +13,21 @@ export function AppFooter() {
           <Link
             href="/terms"
             className="hover:underline hover:text-foreground transition-colors"
+            role="link"
           >
             Terms
           </Link>
           <Link
             href="/privacy"
             className="hover:underline hover:text-foreground transition-colors"
+            role="link"
           >
             Privacy
           </Link>
           <Link
             href="/contact"
             className="hover:underline hover:text-foreground transition-colors"
+            role="link"
           >
             Contact
           </Link>

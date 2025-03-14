@@ -44,10 +44,13 @@ export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           <Button
             variant="outline"
             onClick={() => (window.location.href = "/")}
+            role="button"
           >
             Go Home
           </Button>
-          <Button onClick={reset}>Try Again</Button>
+          <Button onClick={reset} role="button">
+            Try Again
+          </Button>
         </CardFooter>
       </Card>
     </div>
