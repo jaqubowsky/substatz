@@ -1,3 +1,6 @@
+"use client";
+
+import { Currency } from "@prisma/client";
 import { LineChart, PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import {
   Area,
@@ -15,8 +18,8 @@ import {
   YAxis,
 } from "recharts";
 import { formatCurrencyValue } from "../../lib/analytics";
+import { formatCurrency } from "../../lib/format-currency";
 import { CustomTooltip } from "./tooltip";
-
 const COLORS = [
   "#FF7A00",
   "#FF9A3D",
@@ -28,9 +31,13 @@ const COLORS = [
 
 export interface MonthlySpendingChartProps {
   data: Array<{ month: string; amount: number }>;
+  defaultCurrency: Currency;
 }
 
-export const MonthlySpendingChart = ({ data }: MonthlySpendingChartProps) => (
+export const MonthlySpendingChart = ({
+  data,
+  defaultCurrency,
+}: MonthlySpendingChartProps) => (
   <div className="bg-card rounded-lg shadow-sm p-6">
     <div className="flex items-center mb-4">
       <TrendingUp className="h-5 w-5 text-primary mr-2" />
@@ -44,9 +51,17 @@ export const MonthlySpendingChart = ({ data }: MonthlySpendingChartProps) => (
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
-          <YAxis tickFormatter={(value) => `$${value}`} />
+          <YAxis
+            tickFormatter={(value) => formatCurrency(value, defaultCurrency)}
+          />
           <Tooltip
-            content={<CustomTooltip formatter={formatCurrencyValue} />}
+            content={
+              <CustomTooltip
+                formatter={(value) =>
+                  formatCurrencyValue(value, defaultCurrency)
+                }
+              />
+            }
           />
           <Area
             type="monotone"
@@ -63,10 +78,12 @@ export const MonthlySpendingChart = ({ data }: MonthlySpendingChartProps) => (
 
 export interface CategoryBreakdownChartProps {
   data: Array<{ name: string; value: number }>;
+  defaultCurrency: Currency;
 }
 
 export const CategoryBreakdownChart = ({
   data,
+  defaultCurrency,
 }: CategoryBreakdownChartProps) => (
   <div className="bg-card rounded-lg shadow-sm p-6">
     <div className="flex items-center mb-4">
@@ -121,7 +138,13 @@ export const CategoryBreakdownChart = ({
             ))}
           </Pie>
           <Tooltip
-            content={<CustomTooltip formatter={formatCurrencyValue} />}
+            content={
+              <CustomTooltip
+                formatter={(value) =>
+                  formatCurrencyValue(value, defaultCurrency)
+                }
+              />
+            }
           />
           <Legend />
         </PieChart>
@@ -132,10 +155,12 @@ export const CategoryBreakdownChart = ({
 
 export interface ProjectedSpendingChartProps {
   data: Array<{ month: string; amount: number }>;
+  defaultCurrency: Currency;
 }
 
 export const ProjectedSpendingChart = ({
   data,
+  defaultCurrency,
 }: ProjectedSpendingChartProps) => (
   <div className="bg-card rounded-lg shadow-sm p-6">
     <div className="flex items-center mb-4">
@@ -150,9 +175,17 @@ export const ProjectedSpendingChart = ({
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
-          <YAxis tickFormatter={(value) => `$${value}`} />
+          <YAxis
+            tickFormatter={(value) => formatCurrency(value, defaultCurrency)}
+          />
           <Tooltip
-            content={<CustomTooltip formatter={formatCurrencyValue} />}
+            content={
+              <CustomTooltip
+                formatter={(value) =>
+                  formatCurrencyValue(value, defaultCurrency)
+                }
+              />
+            }
           />
           <Bar dataKey="amount" fill="#FF7A00" />
         </BarChart>

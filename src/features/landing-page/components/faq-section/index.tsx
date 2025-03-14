@@ -1,3 +1,5 @@
+"use client";
+
 import { FAQItem } from "./faq-item";
 
 export const FAQSection = () => {

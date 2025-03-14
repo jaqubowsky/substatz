@@ -1,14 +1,9 @@
-"use client";
-
-import { MobileMenu } from "@/components/mobile-menu";
-import { UserNav } from "@/components/user-nav";
-import { useClientAuth } from "@/hooks/use-client-auth";
 import { ClipboardList } from "lucide-react";
 import Link from "next/link";
+import { MobileMenuClient } from "../../../components/mobile-menu-client";
+import { UserNav } from "../../../components/user-nav";
 
 export function LandingHeader() {
-  const { isLoading } = useClientAuth();
-
   return (
     <header className="absolute inset-x-0 z-40 w-full border-b border-border bg-background backdrop-blur supports-[backdrop-filter]:bg-background/95">
       <div className="container px-4 sm:px-8 mx-auto">
@@ -49,18 +44,10 @@ export function LandingHeader() {
           </div>
 
           <div className="flex items-center gap-4">
-            {isLoading ? (
-              <>
-                <div className="w-12 h-3 bg-gray-200 rounded-md animate-pulse hidden md:block" />
-                <div className="w-12 h-3 bg-gray-200 rounded-md animate-pulse hidden md:block" />
-                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse hidden md:block" />
-              </>
-            ) : (
-              <div className="hidden md:block">
-                <UserNav />
-              </div>
-            )}
-            <MobileMenu />
+            <div className="hidden md:block">
+              <UserNav />
+            </div>
+            <MobileMenuClient />
           </div>
         </nav>
       </div>

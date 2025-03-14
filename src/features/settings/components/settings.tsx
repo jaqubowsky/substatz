@@ -9,9 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings as SettingsIcon } from "lucide-react";
 import { Billing } from "./billing";
 import { ChangePasswordForm } from "./change-password-form";
-import { CurrencySettings } from "./currency-settings";
-import { DeleteAccount } from "./delete-account";
 import { CurrencySettingsForm } from "./currency-settings-form";
+import { DeleteAccount } from "./delete-account";
 
 export const Settings = () => {
   return (

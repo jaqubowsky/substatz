@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,17 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "sonner";
+import { ManageBillingButton } from "./manage-billing-button";
 
 export function Billing() {
-  const handleManageBilling = () => {
-    toast.info("Redirecting to Stripe billing portal...", {
-      description:
-        "This is a placeholder. In a real app, this would redirect to Stripe.",
-    });
-    console.log("Redirecting to Stripe billing portal");
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -31,7 +22,7 @@ export function Billing() {
         <p className="text-sm text-muted-foreground">One-time payment</p>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleManageBilling}>Manage Billing</Button>
+        <ManageBillingButton />
       </CardFooter>
     </Card>
   );

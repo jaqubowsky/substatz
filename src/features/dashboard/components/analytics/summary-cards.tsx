@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Currency } from "@prisma/client";
 import { CreditCard, DollarSign, Layers } from "lucide-react";
 import { formatCurrency } from "../../lib/format-currency";
 
@@ -12,12 +13,14 @@ export interface SubscriptionSummaryCardsProps {
   activeSubscriptions: number;
   totalMonthly: number;
   totalYearly: number;
+  defaultCurrency: Currency;
 }
 
 export const SubscriptionSummaryCards = ({
   activeSubscriptions,
   totalMonthly,
   totalYearly,
+  defaultCurrency,
 }: SubscriptionSummaryCardsProps) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
     <Card className="transition-all hover:shadow-md hover:border-primary/50">
@@ -46,7 +49,9 @@ export const SubscriptionSummaryCards = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{formatCurrency(totalMonthly)}</div>
+        <div className="text-2xl font-bold">
+          {formatCurrency(totalMonthly, defaultCurrency)}
+        </div>
         <CardDescription>Average monthly cost</CardDescription>
       </CardContent>
     </Card>
@@ -59,7 +64,9 @@ export const SubscriptionSummaryCards = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{formatCurrency(totalYearly)}</div>
+        <div className="text-2xl font-bold">
+          {formatCurrency(totalYearly, defaultCurrency)}
+        </div>
         <CardDescription>Total annual cost</CardDescription>
       </CardContent>
     </Card>

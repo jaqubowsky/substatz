@@ -2,7 +2,7 @@
 
 import { Currency } from "@prisma/client";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 type UpdateSessionData = {
@@ -11,19 +11,19 @@ type UpdateSessionData = {
 
 export function useClientAuth() {
   const { data: session, status, update: updateSession } = useSession();
+
   const router = useRouter();
+  const pathname = usePathname();
 
   const isAuthenticated = status === "authenticated";
   const isLoading = status === "loading";
   const user = session?.user;
 
-  console.log(user, "user");
-
   const logout = useCallback(async () => {
     await signOut({ redirect: false });
     router.refresh();
-    router.push("/login");
-  }, [router]);
+    router.push(pathname === "/" ? "/" : "/login");
+  }, [router, pathname]);
 
   const update = useCallback(
     async (data: UpdateSessionData) => {

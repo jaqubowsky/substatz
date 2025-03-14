@@ -1,5 +1,7 @@
-import { BillingCycle, Subscription } from "../schemas/subscription";
+import { Currency, Subscription } from "@prisma/client";
+import { BillingCycle } from "../schemas/subscription";
 import { calculateNextPaymentDate } from "./calculate-next-payment-date";
+import { formatCurrency } from "./format-currency";
 
 export const getMonthName = (date: Date): string => {
   return new Intl.DateTimeFormat("en-US", { month: "short" }).format(date);
@@ -9,10 +11,10 @@ export const getMonthYear = (date: Date): string => {
   return `${getMonthName(date)} ${date.getFullYear()}`;
 };
 
-export const formatCurrencyValue = (value: number): [string, string] => [
-  `$${value.toFixed(2)}`,
-  "Amount",
-];
+export const formatCurrencyValue = (
+  value: number,
+  defaultCurrency: Currency
+): [string, string] => [formatCurrency(value, defaultCurrency), "Amount"];
 
 export type TimeRange = "3months" | "6months" | "12months" | "all" | "custom";
 

@@ -57,6 +57,9 @@ export const TestimonialsSection = () => {
                         alt={testimonial.author.name}
                         fill
                         className="object-cover"
+                        sizes="40px"
+                        priority={index < 2}
+                        loading={index < 2 ? "eager" : "lazy"}
                       />
                     </div>
                     <div>

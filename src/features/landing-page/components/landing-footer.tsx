@@ -1,5 +1,3 @@
-"use client";
-
 import { ClipboardList, Github, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
 
@@ -37,6 +35,8 @@ export function LandingFooter() {
       },
     ],
   };
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-white" aria-labelledby="footer-heading">
@@ -143,8 +143,7 @@ export function LandingFooter() {
         </div>
         <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24">
           <p className="text-xs leading-5 text-gray-500">
-            &copy; {new Date().getFullYear()} SubscriptEase. All rights
-            reserved.
+            &copy; {currentYear} SubscriptEase. All rights reserved.
           </p>
         </div>
       </div>

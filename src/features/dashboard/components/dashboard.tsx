@@ -9,8 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutDashboard } from "lucide-react";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics/analytics-tab";
-import { DashboardSummary } from "./dashboard-summary";
 import { SubscriptionList } from "./subscription-list";
+import { DashboardSummary } from "./summary/dashboard-summary";
 
 export const Dashboard = () => {
   return (

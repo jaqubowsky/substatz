@@ -1,14 +1,9 @@
-"use client";
-
-import { MobileMenu } from "@/components/mobile-menu";
-import { UserNav } from "@/components/user-nav";
-import { useClientAuth } from "@/hooks/use-client-auth";
+import { MobileMenuClient } from "@/components/mobile-menu-client";
 import { ClipboardList } from "lucide-react";
 import Link from "next/link";
+import { UserNav } from "./user-nav";
 
 export function AppHeader() {
-  const { isLoading } = useClientAuth();
-
   return (
     <header className="sticky top-0 inset-x-0 z-40 w-full border-b border-border bg-background backdrop-blur supports-[backdrop-filter]:bg-background/95">
       <div className="container px-4 sm:px-8 mx-auto">
@@ -25,23 +20,11 @@ export function AppHeader() {
             </Link>
           </div>
 
-          <div className="hidden md:flex md:items-center md:justify-center md:flex-1">
-            {/* App navigation can be added here if needed */}
-          </div>
-
           <div className="flex items-center gap-4">
-            {isLoading ? (
-              <>
-                <div className="w-12 h-3 bg-gray-200 rounded-md animate-pulse hidden md:block" />
-                <div className="w-12 h-3 bg-gray-200 rounded-md animate-pulse hidden md:block" />
-                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse hidden md:block" />
-              </>
-            ) : (
-              <div className="hidden md:block">
-                <UserNav />
-              </div>
-            )}
-            <MobileMenu />
+            <div className="hidden md:block">
+              <UserNav />
+            </div>
+            <MobileMenuClient />
           </div>
         </nav>
       </div>

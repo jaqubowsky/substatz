@@ -1,14 +1,13 @@
-"use client";
-
 import Link from "next/link";
 
 export function AppFooter() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-background border-t border-border">
       <div className="mx-auto container flex flex-col items-center justify-between gap-4 py-6 md:flex-row px-4 sm:px-8 w-full">
         <p className="text-center text-sm text-muted-foreground md:text-left">
-          &copy; {new Date().getFullYear()} SubscriptEase. All rights
-          reserved.
+          &copy; {currentYear} SubscriptEase. All rights reserved.
         </p>
         <nav className="flex gap-4 text-sm text-muted-foreground">
           <Link
