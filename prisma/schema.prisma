@@ -89,3 +89,13 @@ enum Currency {
   INR
   PLN
 }
+
+model CurrencyRate {
+  id        String   @id @default(cuid())
+  currency  Currency
+  rate      Float
+  updatedAt DateTime @default(now())
+
+  @@unique([currency])
+  @@index([currency])
+}

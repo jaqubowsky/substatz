@@ -7,6 +7,7 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/api/") &&
     !pathname.startsWith("/api/auth") &&
+    !pathname.startsWith("/api/cron/currency-rates") &&
     !pathname.includes("public")
   ) {
     const token = await getToken({ req: request });
