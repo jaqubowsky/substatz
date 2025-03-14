@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,14 +12,12 @@ import {
 import { toast } from "sonner";
 
 export function Billing() {
-  // In a real app, this would redirect to Stripe billing portal
   const handleManageBilling = () => {
     toast.info("Redirecting to Stripe billing portal...", {
       description:
         "This is a placeholder. In a real app, this would redirect to Stripe.",
     });
     console.log("Redirecting to Stripe billing portal");
-    // window.location.href = "https://billing.stripe.com/p/session/...";
   };
 
   return (

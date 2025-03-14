@@ -1,11 +1,10 @@
 import { verifyPassword } from "@/features/auth/lib/auth";
-import { sendWelcomeEmail } from "@/features/auth/lib/email";
 import {
   createUserFromOAuth,
   getUserByEmail,
 } from "@/features/auth/server/db/user";
 import { errors } from "@/lib/errorMessages";
-import { Provider } from "@prisma/client";
+import { Currency, Provider } from "@prisma/client";
 import NextAuth, {
   type Account,
   type NextAuthOptions,
@@ -23,6 +22,7 @@ interface CredentialsType {
 
 interface ExtendedUser extends User {
   provider?: string;
+  defaultCurrency?: Currency;
 }
 
 const credentialsConfig = {
@@ -70,26 +70,37 @@ const googleConfig = {
 };
 
 const authCallbacks = {
-  async signIn({ user, account }: { user: User; account: Account | null }) {
+  async signIn({
+    user,
+    account,
+  }: {
+    user: ExtendedUser;
+    account: Account | null;
+  }) {
     if (!account || !user.email) return false;
 
     const existingUser = await getUserByEmail(user.email);
     const normalizedProvider = account.provider.toUpperCase();
 
     if (!existingUser) {
-      await createUserFromOAuth({
+      const newUser = await createUserFromOAuth({
         email: user.email,
         name: user.name || "",
         image: user.image || "",
         emailVerified: new Date(),
       });
 
-      await sendWelcomeEmail(user.email, user.name || "");
-
+      user.id = newUser.id;
+      user.defaultCurrency = newUser.defaultCurrency;
       return true;
     }
 
-    if (existingUser.provider === normalizedProvider) return true;
+    if (existingUser.provider === normalizedProvider) {
+      user.id = existingUser.id;
+      user.defaultCurrency = existingUser.defaultCurrency;
+
+      return true;
+    }
 
     return false;
   },
@@ -98,14 +109,26 @@ const authCallbacks = {
     token,
     user,
     account,
+    trigger,
+    session,
   }: {
     token: JWT;
     user?: ExtendedUser;
     account?: Account | null;
+    trigger?: string;
+    session?: Session;
   }) {
+    console.log("JWT callback triggered:", { trigger, session });
+
+    if (trigger === "update" && session?.user) {
+      console.log("Updating token with:", session.user);
+      return { ...token, ...session.user };
+    }
+
     if (user) {
       token.id = user.id;
       token.provider = user.provider;
+      token.defaultCurrency = user.defaultCurrency;
     }
 
     if (account && !token.provider) {
@@ -119,6 +142,7 @@ const authCallbacks = {
     if (session.user) {
       session.user.id = token.id as string;
       session.user.provider = token.provider as string;
+      session.user.defaultCurrency = token.defaultCurrency as Currency;
     }
 
     return session;
@@ -162,7 +186,7 @@ export const authOptions: NextAuthOptions = {
   pages: pagesConfig,
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
-  cookies: cookieConfig,
+  // cookies: cookieConfig,
 };
 
 const handler = NextAuth(authOptions);

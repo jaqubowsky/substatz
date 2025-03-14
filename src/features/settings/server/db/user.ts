@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
+import { Currency } from "@prisma/client";
 
 export async function updateUserPassword(
   userId: string,
@@ -21,4 +21,25 @@ export async function deleteUser(userId: string) {
   return prisma.user.delete({
     where: { id: userId },
   });
+}
+
+export async function updateUserCurrency(
+  userId: string,
+  defaultCurrency: Currency
+) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { defaultCurrency },
+  });
+}
+
+export async function getUserDefaultCurrency(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      defaultCurrency: true,
+    },
+  });
+
+  return user?.defaultCurrency;
 }

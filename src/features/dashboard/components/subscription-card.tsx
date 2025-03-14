@@ -142,7 +142,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-foreground">
-                {formatCurrency(subscription.price)}
+                {formatCurrency(subscription.price, subscription.currency)}
               </p>
               <p className="text-sm text-muted-foreground flex items-center justify-end">
                 <CreditCard className="h-3.5 w-3.5 mr-1" />

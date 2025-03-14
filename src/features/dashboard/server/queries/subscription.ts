@@ -1,4 +1,7 @@
 import { getServerAuth } from "@/server";
+import { Currency } from "@prisma/client";
+import { calculateNextPaymentDate } from "../../lib/calculate-next-payment-date";
+import { convertCurrency } from "../../lib/format-currency";
 import { CategoryBreakdown, UpcomingPayment } from "../../schemas/subscription";
 import * as db from "../db/subscription";
 
@@ -21,38 +24,68 @@ export const getSubscriptionSummary = async () => {
   if (!session?.user?.id) throw new Error("User not found");
 
   const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
-  const upcomingPayments = await db.getUpcomingPayments(session.user.id);
-  const categoriesBreakdown = await db.getSubscriptionsByCategory(
-    session.user.id
-  );
 
   let totalMonthly = 0;
   let totalYearly = 0;
 
-  subscriptions.forEach((subscription) => {
-    if (subscription.isCancelled) return;
+  const categoriesBreakdown: Record<string, number> = {};
 
-    const price = subscription.price;
+  const today = new Date();
+  const endDate = new Date();
+  endDate.setDate(today.getDate() + 7);
 
-    switch (subscription.billingCycle) {
-      case "MONTHLY":
-        totalMonthly += price;
-        totalYearly += price * 12;
-        break;
-      case "QUARTERLY":
-        totalMonthly += price / 3;
-        totalYearly += price * 4;
-        break;
-      case "BIANNUALLY":
-        totalMonthly += price / 6;
-        totalYearly += price * 2;
-        break;
-      case "ANNUALLY":
-        totalMonthly += price / 12;
-        totalYearly += price;
-        break;
+  const upcomingPayments = [];
+
+  for (const subscription of subscriptions) {
+    if (!subscription.isCancelled) {
+      const price = convertCurrency(
+        subscription.price,
+        subscription.currency,
+        session.user.defaultCurrency || Currency.USD
+      );
+
+      switch (subscription.billingCycle) {
+        case "MONTHLY":
+          totalMonthly += price;
+          totalYearly += price * 12;
+          break;
+        case "QUARTERLY":
+          totalMonthly += price / 3;
+          totalYearly += price * 4;
+          break;
+        case "BIANNUALLY":
+          totalMonthly += price / 6;
+          totalYearly += price * 2;
+          break;
+        case "ANNUALLY":
+          totalMonthly += price / 12;
+          totalYearly += price;
+          break;
+      }
+
+      if (categoriesBreakdown[subscription.category]) {
+        categoriesBreakdown[subscription.category] += price;
+      } else {
+        categoriesBreakdown[subscription.category] = price;
+      }
+
+      const nextPaymentDate = calculateNextPaymentDate(
+        subscription.startDate,
+        subscription.billingCycle
+      );
+
+      if (nextPaymentDate >= today && nextPaymentDate <= endDate) {
+        upcomingPayments.push({
+          ...subscription,
+          nextPaymentDate,
+        });
+      }
     }
-  });
+  }
+
+  upcomingPayments.sort(
+    (a, b) => a.nextPaymentDate.getTime() - b.nextPaymentDate.getTime()
+  );
 
   return {
     totalMonthly,

@@ -36,14 +36,12 @@ export const filterDataByTimeRange = <T extends { month: string }>(
       const [month, year] = item.month.split(" ");
       const itemDate = new Date(`${month} 1, ${year}`);
 
-      // If we have both from and to dates, check if the item is within that range
       if (customDateRange.from && customDateRange.to) {
         return (
           itemDate >= customDateRange.from && itemDate <= customDateRange.to
         );
       }
 
-      // If we only have a from date, check if the item is after that date
       return customDateRange.from ? itemDate >= customDateRange.from : true;
     });
   }

@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import {
   addSubscriptionSchema,
   AddSubscriptionValues,
+  currencySymbols,
 } from "../schemas/subscription";
 import { addSubscriptionAction } from "../server/actions/subscription";
 
@@ -42,6 +43,7 @@ interface AddSubscriptionFormProps {
 const defaultValues: AddSubscriptionValues = {
   name: "",
   price: 0,
+  currency: "USD",
   category: "",
   billingCycle: BillingCycle.MONTHLY,
   startDate: new Date(),
@@ -102,27 +104,60 @@ export const AddSubscriptionForm = ({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-1">
-                <DollarSign className="h-3.5 w-3.5" />
-                Price
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="9.99"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-1">
+                  <DollarSign className="h-3.5 w-3.5" />
+                  Price
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="9.99"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="currency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-1">
+                  <DollarSign className="h-3.5 w-3.5" />
+                  Currency
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a currency" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(currencySymbols).map(([code, symbol]) => (
+                      <SelectItem key={code} value={code}>
+                        {symbol} {code}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}

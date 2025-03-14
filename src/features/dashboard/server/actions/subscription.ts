@@ -14,12 +14,14 @@ import { z } from "zod";
 export const addSubscriptionAction = privateAction
   .schema(addSubscriptionSchema)
   .action(async ({ ctx, parsedInput }) => {
-    const { name, price, category, billingCycle, startDate } = parsedInput;
+    const { name, price, currency, category, billingCycle, startDate } =
+      parsedInput;
 
     const subscription = await db.createSubscription(
       ctx.session.user.id,
       name,
       price,
+      currency,
       category,
       billingCycle,
       new Date(startDate)
@@ -33,13 +35,22 @@ export const addSubscriptionAction = privateAction
 export const updateSubscriptionAction = privateAction
   .schema(editSubscriptionSchema)
   .action(async ({ parsedInput }) => {
-    const { id, name, price, category, billingCycle, startDate, isCancelled } =
-      parsedInput;
+    const {
+      id,
+      name,
+      price,
+      currency,
+      category,
+      billingCycle,
+      startDate,
+      isCancelled,
+    } = parsedInput;
     if (!id) throw new ActionError(errors.SUBSCRIPTION.NO_SUBSCRIPTION.message);
 
     const subscription = await db.updateSubscription(id, {
       name,
       price,
+      currency,
       category,
       billingCycle,
       startDate: new Date(startDate),

@@ -11,18 +11,19 @@ datasource db {
 }
 
 model User {
-  id            String           @id @default(cuid())
-  name          String
-  email         String           @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  provider      Provider         @default(CREDENTIALS)
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  subscriptions Subscription[]
-  verifications VerificationToken[]
-  resetTokens   ResetToken[]
+  id              String              @id @default(cuid())
+  name            String
+  email           String              @unique
+  password        String?
+  emailVerified   DateTime?
+  image           String?
+  provider        Provider            @default(CREDENTIALS)
+  defaultCurrency Currency            @default(USD)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  subscriptions   Subscription[]
+  verifications   VerificationToken[]
+  resetTokens     ResetToken[]
 }
 
 model Subscription {
@@ -30,6 +31,7 @@ model Subscription {
   userId       String
   name         String
   price        Float
+  currency     Currency     @default(USD)
   category     String
   billingCycle BillingCycle
   startDate    DateTime     @default(now())
@@ -73,4 +75,17 @@ enum BillingCycle {
   QUARTERLY
   BIANNUALLY
   ANNUALLY
+}
+
+enum Currency {
+  USD
+  EUR
+  GBP
+  JPY
+  CAD
+  AUD
+  CHF
+  CNY
+  INR
+  PLN
 }
