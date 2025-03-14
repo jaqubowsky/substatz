@@ -9,21 +9,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { DateRange, TimeRange } from "../../lib/analytics";
+import { DateRange } from "react-day-picker";
+import { TimeRange } from "../../lib/analytics";
 
-export interface TimeRangeSelectorProps {
+interface TimeRangeSelectorProps {
   timeRange: TimeRange;
   setTimeRange: (value: TimeRange) => void;
-  customDateRange?: DateRange;
-  setCustomDateRange?: (range: DateRange) => void;
+  customDateRange: DateRange;
+  setCustomDateRange: (range: DateRange) => void;
 }
 
-export const TimeRangeSelector = ({
+export function TimeRangeSelector({
   timeRange,
   setTimeRange,
   customDateRange,
   setCustomDateRange,
-}: TimeRangeSelectorProps) => {
+}: TimeRangeSelectorProps) {
   const [isCustom, setIsCustom] = useState(timeRange === "custom");
 
   const handleTimeRangeChange = (value: string) => {
@@ -69,4 +70,4 @@ export const TimeRangeSelector = ({
       )}
     </div>
   );
-};
+}

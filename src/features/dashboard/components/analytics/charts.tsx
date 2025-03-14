@@ -1,12 +1,10 @@
 "use client";
 
 import { Currency } from "@prisma/client";
-import { LineChart, PieChart as PieChartIcon, TrendingUp } from "lucide-react";
+import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
   Cell,
   Legend,
@@ -164,12 +162,12 @@ export const ProjectedSpendingChart = ({
 }: ProjectedSpendingChartProps) => (
   <div className="bg-card rounded-lg shadow-sm p-6">
     <div className="flex items-center mb-4">
-      <LineChart className="h-5 w-5 text-primary mr-2" />
-      <h3 className="text-lg font-semibold">Projected Future Spending</h3>
+      <TrendingUp className="h-5 w-5 text-primary mr-2" />
+      <h3 className="text-lg font-semibold">Projected Spending</h3>
     </div>
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
+        <AreaChart
           data={data}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
@@ -187,8 +185,14 @@ export const ProjectedSpendingChart = ({
               />
             }
           />
-          <Bar dataKey="amount" fill="#FF7A00" />
-        </BarChart>
+          <Area
+            type="monotone"
+            dataKey="amount"
+            stroke="#4F46E5"
+            fill="#4F46E5"
+            fillOpacity={0.2}
+          />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   </div>

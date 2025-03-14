@@ -2,9 +2,12 @@ import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { getServerAuth } from "@/server";
 import { Currency } from "@prisma/client";
 import { Suspense } from "react";
-import { LoadingAnalytics, SubscriptionSummaryCards } from ".";
+import {
+  AnalyticsContent,
+  LoadingAnalytics,
+  SubscriptionSummaryCards,
+} from ".";
 import { getSubscriptions, getSubscriptionSummary } from "../../server/queries";
-import { AnalyticsClientSection } from "./analytics-client-section";
 
 const AnalyticsTabContent = async () => {
   const session = await getServerAuth();
@@ -19,7 +22,7 @@ const AnalyticsTabContent = async () => {
   ).length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <SubscriptionSummaryCards
         activeSubscriptions={activeSubscriptions}
         totalMonthly={totalMonthly}
@@ -27,11 +30,13 @@ const AnalyticsTabContent = async () => {
         defaultCurrency={defaultCurrency}
       />
 
-      <AnalyticsClientSection
-        subscriptions={subscriptions}
-        categoriesBreakdown={summary.categoriesBreakdown || {}}
-        defaultCurrency={defaultCurrency}
-      />
+      <div className="bg-card rounded-lg shadow-sm overflow-hidden p-6">
+        <AnalyticsContent
+          subscriptions={subscriptions}
+          categoriesBreakdown={summary.categoriesBreakdown || {}}
+          defaultCurrency={defaultCurrency}
+        />
+      </div>
     </div>
   );
 };

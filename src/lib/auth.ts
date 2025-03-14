@@ -118,8 +118,6 @@ const authCallbacks = {
     trigger?: string;
     session?: Session;
   }) {
-    console.log("JWT callback triggered:", { trigger, session });
-
     if (trigger === "update" && session?.user) {
       return { ...token, ...session.user };
     }

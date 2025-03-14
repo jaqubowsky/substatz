@@ -1,14 +1,16 @@
+import {
+  CYCLE_TO_MONTHS,
+  calculateBillingCycles,
+  calculateMonthsDifference,
+} from "@/lib/billing-utils";
 import { Currency, Subscription } from "@prisma/client";
-import { BillingCycle } from "../schemas/subscription";
-import { calculateNextPaymentDate } from "./calculate-next-payment-date";
-import { formatCurrency } from "./format-currency";
+import { DateRange } from "react-day-picker";
+import { convertCurrency, formatCurrency } from "./format-currency";
+
+export type TimeRange = "3months" | "6months" | "12months" | "all" | "custom";
 
 export const getMonthName = (date: Date): string => {
   return new Intl.DateTimeFormat("en-US", { month: "short" }).format(date);
-};
-
-export const getMonthYear = (date: Date): string => {
-  return `${getMonthName(date)} ${date.getFullYear()}`;
 };
 
 export const formatCurrencyValue = (
@@ -16,12 +18,11 @@ export const formatCurrencyValue = (
   defaultCurrency: Currency
 ): [string, string] => [formatCurrency(value, defaultCurrency), "Amount"];
 
-export type TimeRange = "3months" | "6months" | "12months" | "all" | "custom";
-
-export interface DateRange {
-  from?: Date;
-  to?: Date;
-}
+export const getMonthYear = (date: Date): string => {
+  const month = getMonthName(date);
+  const year = date.getFullYear();
+  return `${month} ${year}`;
+};
 
 export const filterDataByTimeRange = <T extends { month: string }>(
   data: T[],
@@ -61,159 +62,108 @@ export const filterDataByTimeRange = <T extends { month: string }>(
   });
 };
 
-export const generateMonthlySpendingData = (
+export const calculateSpendingByCategory = (
   subscriptions: Subscription[],
-  customDateRange?: DateRange
-) => {
-  const monthlyData: Record<string, number> = {};
-  const now = new Date();
-
-  // If we have a custom date range, generate data for those months
-  if (customDateRange?.from && customDateRange?.to) {
-    const startDate = new Date(customDateRange.from);
-    const endDate = new Date(customDateRange.to);
-
-    // Set startDate to the first day of its month
-    startDate.setDate(1);
-
-    // Set endDate to the last day of its month
-    endDate.setMonth(endDate.getMonth() + 1);
-    endDate.setDate(0);
-
-    // Generate monthly data for the custom range
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      const monthYear = getMonthYear(currentDate);
-      monthlyData[monthYear] = 0;
-      currentDate.setMonth(currentDate.getMonth() + 1);
-    }
-  } else {
-    // Default to last 12 months
-    for (let i = 0; i < 12; i++) {
-      const date = new Date();
-      date.setMonth(now.getMonth() - i);
-      const monthYear = getMonthYear(date);
-      monthlyData[monthYear] = 0;
-    }
-  }
+  defaultCurrency: Currency
+): Record<string, number> => {
+  const categories: Record<string, number> = {};
 
   subscriptions.forEach((subscription) => {
     if (subscription.isCancelled) return;
 
-    const startDate = new Date(subscription.startDate);
-    const price = subscription.price;
+    const { category, price, currency } = subscription;
+    const convertedPrice = convertCurrency(price, currency, defaultCurrency);
 
-    const paymentDates: Date[] = [];
-    const currentDate = new Date(startDate);
-
-    // End date is either the custom end date or now
-    const endDate = customDateRange?.to || now;
-
-    while (currentDate <= endDate) {
-      paymentDates.push(new Date(currentDate));
-
-      switch (subscription.billingCycle) {
-        case "MONTHLY":
-          currentDate.setMonth(currentDate.getMonth() + 1);
-          break;
-        case "QUARTERLY":
-          currentDate.setMonth(currentDate.getMonth() + 3);
-          break;
-        case "BIANNUALLY":
-          currentDate.setMonth(currentDate.getMonth() + 6);
-          break;
-        case "ANNUALLY":
-          currentDate.setMonth(currentDate.getMonth() + 12);
-          break;
-      }
+    if (categories[category]) {
+      categories[category] += convertedPrice;
+    } else {
+      categories[category] = convertedPrice;
     }
-
-    paymentDates.forEach((date) => {
-      const monthYear = getMonthYear(date);
-      if (monthYear in monthlyData) {
-        monthlyData[monthYear] += price;
-      }
-    });
   });
 
-  return Object.entries(monthlyData)
-    .map(([month, amount]) => ({
-      month,
-      amount,
-    }))
-    .sort((a, b) => {
-      const [aMonth, aYear] = a.month.split(" ");
-      const [bMonth, bYear] = b.month.split(" ");
-      return (
-        new Date(`${aMonth} 1, ${aYear}`).getTime() -
-        new Date(`${bMonth} 1, ${bYear}`).getTime()
-      );
-    });
+  return categories;
 };
 
-export const groupByCategory = (
-  categoriesBreakdown: Record<string, number>
-) => {
-  return Object.entries(categoriesBreakdown).map(([category, amount]) => ({
-    name: category,
-    value: amount,
-  }));
-};
-
-export const calculateProjectedAnnualSpending = (
+export const calculateMonthlySpending = (
   subscriptions: Subscription[],
-  customDateRange?: DateRange
-) => {
+  defaultCurrency: Currency,
+  customDateRange?: DateRange,
+  timeRange: TimeRange = "12months"
+): { month: string; amount: number }[] => {
   const now = new Date();
   const monthlyData: Record<string, number> = {};
 
-  // If we have a custom date range with a from date, use that as the starting point
-  const startDate = customDateRange?.from || now;
+  const activeSubscriptions = subscriptions.filter((sub) => !sub.isCancelled);
 
-  // Generate data for 12 months from the start date
-  for (let i = 0; i < 12; i++) {
-    const date = new Date(startDate);
-    date.setMonth(startDate.getMonth() + i);
-    const monthYear = getMonthYear(date);
-    monthlyData[monthYear] = 0;
+  if (activeSubscriptions.length === 0) {
+    return [];
   }
 
-  subscriptions.forEach((subscription) => {
-    if (subscription.isCancelled) return;
+  let earliestStartDate = new Date();
+  activeSubscriptions.forEach((sub) => {
+    const startDate = new Date(sub.startDate);
+    if (startDate < earliestStartDate) {
+      earliestStartDate = startDate;
+    }
+  });
 
-    // Calculate the next payment date based on start date and billing cycle
-    const nextPaymentDate = calculateNextPaymentDate(
-      new Date(subscription.startDate),
-      subscription.billingCycle as BillingCycle
-    );
+  if (timeRange === "all") {
+    const startYear = earliestStartDate.getFullYear();
+    const startMonth = earliestStartDate.getMonth();
+    const endYear = now.getFullYear();
+    const endMonth = now.getMonth();
 
-    const price = subscription.price;
+    for (let year = startYear; year <= endYear; year++) {
+      const monthStart = year === startYear ? startMonth : 0;
+      const monthEnd = year === endYear ? endMonth : 11;
 
-    const currentDate = new Date(nextPaymentDate);
-    const endDate = new Date(startDate);
-    endDate.setMonth(startDate.getMonth() + 12);
-
-    while (currentDate <= endDate) {
-      const monthYear = getMonthYear(currentDate);
-      if (monthYear in monthlyData) {
-        monthlyData[monthYear] += price;
-      }
-
-      switch (subscription.billingCycle) {
-        case "MONTHLY":
-          currentDate.setMonth(currentDate.getMonth() + 1);
-          break;
-        case "QUARTERLY":
-          currentDate.setMonth(currentDate.getMonth() + 3);
-          break;
-        case "BIANNUALLY":
-          currentDate.setMonth(currentDate.getMonth() + 6);
-          break;
-        case "ANNUALLY":
-          currentDate.setMonth(currentDate.getMonth() + 12);
-          break;
+      for (let month = monthStart; month <= monthEnd; month++) {
+        const date = new Date(year, month, 1);
+        const monthYear = getMonthYear(date);
+        monthlyData[monthYear] = 0;
       }
     }
+  } else {
+    const startDate = customDateRange?.from || now;
+
+    const monthsToShow =
+      timeRange === "3months" ? 3 : timeRange === "6months" ? 6 : 12;
+
+    for (let i = monthsToShow - 1; i >= 0; i--) {
+      const date = new Date(startDate);
+      date.setMonth(startDate.getMonth() - i);
+      const monthYear = getMonthYear(date);
+      monthlyData[monthYear] = 0;
+    }
+  }
+
+  activeSubscriptions.forEach((subscription) => {
+    const {
+      startDate: subscriptionStartDate,
+      billingCycle,
+      price,
+      currency,
+    } = subscription;
+
+    const convertedPrice = convertCurrency(price, currency, defaultCurrency);
+    const periodInMonths = CYCLE_TO_MONTHS[billingCycle];
+    const subStartDate = new Date(subscriptionStartDate);
+
+    Object.keys(monthlyData).forEach((monthYear) => {
+      const [month, year] = monthYear.split(" ");
+      const currentDate = new Date(`${month} 1, ${year}`);
+
+      if (currentDate < subStartDate) return;
+
+      const monthsSinceStart = calculateMonthsDifference(
+        subStartDate,
+        currentDate
+      );
+
+      if (monthsSinceStart % periodInMonths === 0) {
+        monthlyData[monthYear] += convertedPrice;
+      }
+    });
   });
 
   return Object.entries(monthlyData)
@@ -235,28 +185,99 @@ export const calculateTotalPaymentCycles = (subscriptions: Subscription[]) => {
   return subscriptions.reduce((sum, sub) => {
     if (sub.isCancelled) return sum;
 
-    const startDate = new Date(sub.startDate);
-    const now = new Date();
-    const monthsDiff =
-      (now.getFullYear() - startDate.getFullYear()) * 12 +
-      (now.getMonth() - startDate.getMonth());
-
-    let cycles = 0;
-    switch (sub.billingCycle) {
-      case "MONTHLY":
-        cycles = monthsDiff;
-        break;
-      case "QUARTERLY":
-        cycles = Math.floor(monthsDiff / 3);
-        break;
-      case "BIANNUALLY":
-        cycles = Math.floor(monthsDiff / 6);
-        break;
-      case "ANNUALLY":
-        cycles = Math.floor(monthsDiff / 12);
-        break;
-    }
+    const cycles = calculateBillingCycles(sub.startDate, sub.billingCycle);
 
     return sum + cycles;
   }, 0);
+};
+
+export const calculateTotalStatistics = (
+  subscriptions: Subscription[],
+  defaultCurrency: Currency
+): {
+  totalSpentFromStart: number;
+  totalRenewals: number;
+  averageSubscriptionLifetime: number;
+  mostExpensiveCategory: { name: string; amount: number } | null;
+  longestActiveSubscription: { name: string; days: number } | null;
+} => {
+  let totalSpentFromStart = 0;
+  let totalRenewals = 0;
+  let totalDays = 0;
+  const categoryTotals: Record<string, number> = {};
+  let longestActiveSubscription: { name: string; days: number } | null = null;
+
+  const today = new Date();
+  const activeSubscriptions = subscriptions.filter((sub) => !sub.isCancelled);
+
+  if (activeSubscriptions.length === 0) {
+    return {
+      totalSpentFromStart: 0,
+      totalRenewals: 0,
+      averageSubscriptionLifetime: 0,
+      mostExpensiveCategory: null,
+      longestActiveSubscription: null,
+    };
+  }
+
+  activeSubscriptions.forEach((subscription) => {
+    const startDate = new Date(subscription.startDate);
+    const daysActive = Math.max(
+      1,
+      Math.floor(
+        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+      )
+    );
+
+    if (
+      !longestActiveSubscription ||
+      daysActive > longestActiveSubscription.days
+    ) {
+      longestActiveSubscription = {
+        name: subscription.name,
+        days: daysActive,
+      };
+    }
+
+    totalDays += daysActive;
+
+    const renewalCount = calculateBillingCycles(
+      startDate,
+      subscription.billingCycle
+    );
+
+    totalRenewals += renewalCount;
+
+    const convertedPrice = convertCurrency(
+      subscription.price,
+      subscription.currency,
+      defaultCurrency
+    );
+
+    const totalSpent = renewalCount * convertedPrice;
+    totalSpentFromStart += totalSpent;
+
+    if (categoryTotals[subscription.category]) {
+      categoryTotals[subscription.category] += convertedPrice;
+    } else {
+      categoryTotals[subscription.category] = convertedPrice;
+    }
+  });
+
+  let mostExpensiveCategory: { name: string; amount: number } | null = null;
+  Object.entries(categoryTotals).forEach(([category, amount]) => {
+    if (!mostExpensiveCategory || amount > mostExpensiveCategory.amount) {
+      mostExpensiveCategory = { name: category, amount };
+    }
+  });
+
+  const averageSubscriptionLifetime = totalDays / activeSubscriptions.length;
+
+  return {
+    totalSpentFromStart,
+    totalRenewals,
+    averageSubscriptionLifetime,
+    mostExpensiveCategory,
+    longestActiveSubscription,
+  };
 };

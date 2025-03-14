@@ -1,3 +1,4 @@
+import { calculateAnnualCost, calculateMonthlyCost } from "@/lib/billing-utils";
 import { getServerAuth } from "@/server";
 import { Currency } from "@prisma/client";
 import { calculateNextPaymentDate } from "../../lib/calculate-next-payment-date";
@@ -44,24 +45,8 @@ export const getSubscriptionSummary = async () => {
         session.user.defaultCurrency || Currency.USD
       );
 
-      switch (subscription.billingCycle) {
-        case "MONTHLY":
-          totalMonthly += price;
-          totalYearly += price * 12;
-          break;
-        case "QUARTERLY":
-          totalMonthly += price / 3;
-          totalYearly += price * 4;
-          break;
-        case "BIANNUALLY":
-          totalMonthly += price / 6;
-          totalYearly += price * 2;
-          break;
-        case "ANNUALLY":
-          totalMonthly += price / 12;
-          totalYearly += price;
-          break;
-      }
+      totalMonthly += calculateMonthlyCost(price, subscription.billingCycle);
+      totalYearly += calculateAnnualCost(price, subscription.billingCycle);
 
       if (categoriesBreakdown[subscription.category]) {
         categoriesBreakdown[subscription.category] += price;
