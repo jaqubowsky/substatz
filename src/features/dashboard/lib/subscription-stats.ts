@@ -3,6 +3,7 @@ import { calculateBillingCycles, formatDuration } from "@/lib/billing-utils";
 import { BillingCycle, Subscription } from "@prisma/client";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { calculateNextPaymentDate } from "./calculate-next-payment-date";
+import { generateSavingsOpportunities } from "./savings-opportunities";
 
 export interface SubscriptionStats {
   totalSpent: number;
@@ -48,32 +49,7 @@ export function calculateSubscriptionStats(
     subscription.billingCycle as BillingCycle
   );
 
-  const savingsOpportunities: SavingsOpportunity[] = [];
-
-  if (subscription.billingCycle === "MONTHLY") {
-    savingsOpportunities.push({
-      type: "annual_discount",
-      title: "Switch to annual billing",
-      description:
-        "Save up to 20% by switching to annual billing for this subscription.",
-      potentialSavings: price * 12 * 0.2,
-    });
-  }
-
-  savingsOpportunities.push({
-    type: "alternative_service",
-    title: "Consider alternatives",
-    description: `There might be cheaper alternatives to ${subscription.name} with similar features.`,
-    potentialSavings: null,
-  });
-
-  savingsOpportunities.push({
-    type: "usage_analysis",
-    title: "Analyze your usage",
-    description:
-      "Check if you're fully utilizing this service or if a cheaper plan would suffice.",
-    potentialSavings: null,
-  });
+  const savingsOpportunities = generateSavingsOpportunities(subscription);
 
   return {
     totalSpent,

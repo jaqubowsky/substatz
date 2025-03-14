@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/features/dashboard/lib/format-currency";
+import { OpportunityType } from "@/features/dashboard/lib/savings-opportunities";
 import { Currency } from "@prisma/client";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export interface SavingsOpportunity {
-  type: "annual_discount" | "alternative_service" | "usage_analysis";
+  type: OpportunityType;
   title: string;
   description: string;
   potentialSavings: number | null;
@@ -13,13 +13,11 @@ export interface SavingsOpportunity {
 interface SavingsOpportunityCardProps {
   opportunity: SavingsOpportunity;
   currency: Currency;
-  onClick?: () => void;
 }
 
 export function SavingsOpportunityCard({
   opportunity,
   currency,
-  onClick,
 }: SavingsOpportunityCardProps) {
   return (
     <div className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
@@ -38,14 +36,6 @@ export function SavingsOpportunityCard({
           </p>
         )}
       </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 shrink-0"
-        onClick={onClick}
-      >
-        <ArrowUpRight className="h-4 w-4" />
-      </Button>
     </div>
   );
 }

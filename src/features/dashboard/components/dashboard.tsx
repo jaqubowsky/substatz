@@ -42,7 +42,7 @@ export const Dashboard = () => {
         </TabsList>
 
         <TabsContent value="subscriptions">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-2">
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

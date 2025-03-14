@@ -133,7 +133,7 @@ export const CTASection = () => {
             </div>
 
             <div
-              className="mt-4 space-y-3 overflow-y-auto pr-2 custom-scrollbar"
+              className="mt-4 space-y-3 overflow-y-auto pr-2"
               style={{ maxHeight: "320px" }}
             >
               {[

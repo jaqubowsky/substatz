@@ -27,7 +27,7 @@ export function FinancialSummary({
           <p className="text-xl font-bold">
             {formatCurrency(subscription.price, subscription.currency)}
             <span className="text-sm font-normal text-muted-foreground ml-1">
-              per {subscription.billingCycle.toLowerCase()}
+              {subscription.billingCycle.toLowerCase()}
             </span>
           </p>
         </div>
