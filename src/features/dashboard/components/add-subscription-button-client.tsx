@@ -1,6 +1,5 @@
 "use client";
 
-import { Paywall } from "@/components/paywall";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,11 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { DollarSign, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AddSubscriptionForm } from "./add-subscription-form";
-
+import { PurchaseButton } from "@/components/purchase-button";
 export const AddSubscriptionButtonClient = ({
   isPaid,
   hasReachedLimit,
@@ -33,17 +32,13 @@ export const AddSubscriptionButtonClient = ({
   return (
     <>
       {hasReachedLimit ? (
-        <Paywall showMessage={false}>
-          <Button
-            size="sm"
-            className="gap-1"
-            aria-label="Add subscription"
-            onClick={handleOpenDialog}
-          >
-            <Plus className="h-4 w-4" />
-            Add
-          </Button>
-        </Paywall>
+        <PurchaseButton
+          size="sm"
+          className="gap-1"
+          aria-label="Add subscription"
+        >
+          Unlock Now
+        </PurchaseButton>
       ) : (
         <Button
           onClick={handleOpenDialog}

@@ -118,7 +118,7 @@ export async function sendVerificationEmail(
   name: string,
   verificationToken: string
 ) {
-  const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.AUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
@@ -192,17 +192,17 @@ The SubscriptEase Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -283,9 +283,7 @@ The SubscriptEase Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.NEXTAUTH_URL}/login" style="${
-      styles.button
-    }">
+            <a href="${process.env.AUTH_URL}/login" style="${styles.button}">
               Log In & Get Started
             </a>
           </div>
@@ -315,17 +313,17 @@ The SubscriptEase Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -348,7 +346,7 @@ export async function sendPasswordResetEmail(
   name: string,
   resetToken: string
 ) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}`;
+  const resetUrl = `${process.env.AUTH_URL}/reset-password?token=${resetToken}`;
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
@@ -413,17 +411,17 @@ The SubscriptEase Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.NEXTAUTH_URL
+                process.env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>

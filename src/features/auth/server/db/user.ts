@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { Provider } from "@prisma/client";
 import crypto from "crypto";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -15,18 +14,17 @@ export async function createUser(
       name,
       email,
       password: hashedPassword,
-      provider: Provider.CREDENTIALS,
     },
   });
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + ONE_DAY);
+  const expires = new Date(Date.now() + ONE_DAY);
 
   await prisma.verificationToken.create({
     data: {
+      identifier: user.id,
       token,
-      expiresAt,
-      userId: user.id,
+      expires,
     },
   });
 
@@ -34,28 +32,6 @@ export async function createUser(
     ...user,
     verificationToken: token,
   };
-}
-
-export async function createUserFromOAuth({
-  email,
-  name,
-  image,
-  emailVerified,
-}: {
-  email: string;
-  name: string;
-  image?: string;
-  emailVerified: Date;
-}) {
-  return prisma.user.create({
-    data: {
-      email,
-      name,
-      image,
-      emailVerified,
-      provider: Provider.GOOGLE,
-    },
-  });
 }
 
 export async function getUserByEmail(email: string) {
@@ -68,26 +44,28 @@ export async function verifyUserEmail(token: string) {
   const verificationToken = await prisma.verificationToken.findFirst({
     where: {
       token,
-      expiresAt: {
+      expires: {
         gt: new Date(),
       },
-    },
-    include: {
-      user: true,
     },
   });
 
   if (!verificationToken) return null;
 
   const updatedUser = await prisma.user.update({
-    where: { id: verificationToken.userId },
+    where: { id: verificationToken.identifier },
     data: {
       emailVerified: new Date(),
     },
   });
 
   await prisma.verificationToken.delete({
-    where: { id: verificationToken.id },
+    where: {
+      identifier_token: {
+        identifier: verificationToken.identifier,
+        token: verificationToken.token,
+      },
+    },
   });
 
   return updatedUser;
@@ -98,17 +76,17 @@ export async function generateNewVerificationToken(email: string) {
   if (!user) return null;
 
   await prisma.verificationToken.deleteMany({
-    where: { userId: user.id },
+    where: { identifier: user.id },
   });
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + ONE_DAY);
+  const expires = new Date(Date.now() + ONE_DAY);
 
   await prisma.verificationToken.create({
     data: {
+      identifier: user.id,
       token,
-      expiresAt,
-      userId: user.id,
+      expires,
     },
   });
 
@@ -122,18 +100,18 @@ export async function createPasswordResetToken(email: string) {
   const user = await getUserByEmail(email);
   if (!user) return null;
 
-  await prisma.resetToken.deleteMany({
-    where: { userId: user.id },
+  await prisma.passwordResetToken.deleteMany({
+    where: { identifier: user.id },
   });
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + ONE_HOUR);
+  const expires = new Date(Date.now() + ONE_HOUR);
 
-  await prisma.resetToken.create({
+  await prisma.passwordResetToken.create({
     data: {
+      identifier: user.id,
       token,
-      expiresAt,
-      userId: user.id,
+      expires,
     },
   });
 
@@ -144,10 +122,10 @@ export async function createPasswordResetToken(email: string) {
 }
 
 export async function resetUserPassword(token: string, hashedPassword: string) {
-  const resetToken = await prisma.resetToken.findFirst({
+  const resetToken = await prisma.passwordResetToken.findFirst({
     where: {
       token,
-      expiresAt: {
+      expires: {
         gt: new Date(),
       },
     },
@@ -159,14 +137,19 @@ export async function resetUserPassword(token: string, hashedPassword: string) {
   if (!resetToken) return null;
 
   const updatedUser = await prisma.user.update({
-    where: { id: resetToken.userId },
+    where: { id: resetToken.identifier },
     data: {
       password: hashedPassword,
     },
   });
 
-  await prisma.resetToken.delete({
-    where: { id: resetToken.id },
+  await prisma.passwordResetToken.delete({
+    where: {
+      identifier_token: {
+        identifier: resetToken.identifier,
+        token: resetToken.token,
+      },
+    },
   });
 
   return updatedUser;

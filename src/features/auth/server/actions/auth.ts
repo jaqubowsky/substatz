@@ -3,7 +3,6 @@
 import { signIn } from "@/auth";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, publicAction } from "@/lib/safe-action";
-import { Provider } from "@prisma/client";
 import { z } from "zod";
 import { hashPassword, verifyPassword } from "../../lib/auth";
 import {
@@ -106,7 +105,9 @@ export const verifyEmailAction = publicAction
       throw new ActionError(errors.AUTH.VERIFICATION_TOKEN_EXPIRED.message);
     }
 
-    await sendWelcomeEmail(user.email, user.name);
+    if (user.email && user.name) {
+      await sendWelcomeEmail(user.email, user.name);
+    }
 
     return {
       success: true,
@@ -135,11 +136,13 @@ export const resendVerificationAction = publicAction
     }
 
     try {
-      await sendVerificationEmail(
-        result.email,
-        result.name,
-        result.verificationToken
-      );
+      if (result.email && result.name) {
+        await sendVerificationEmail(
+          result.email,
+          result.name,
+          result.verificationToken
+        );
+      }
     } catch {
       throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
     }
@@ -164,25 +167,19 @@ export const forgotPasswordAction = publicAction
       };
     }
 
-    if (user.provider !== Provider.CREDENTIALS) {
-      return {
-        success: true,
-        message:
-          "If your email is registered, you will receive a password reset link.",
-      };
-    }
-
     const result = await createPasswordResetToken(email);
     if (!result || !result.resetToken) {
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
     try {
-      await sendPasswordResetEmail(
-        result.email,
-        result.name,
-        result.resetToken
-      );
+      if (result.email && result.name) {
+        await sendPasswordResetEmail(
+          result.email,
+          result.name,
+          result.resetToken
+        );
+      }
     } catch {
       throw new ActionError(errors.AUTH.PASSWORD_RESET_EMAIL_ERROR.message);
     }

@@ -68,11 +68,7 @@ export const Dashboard = async () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Paywall
-            blurContent={true}
-            showMessage={true}
-            messagePosition="center"
-          >
+          <Paywall>
             <Card>
               <CardContent className="pt-6">
                 <AnalyticsTab />

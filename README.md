@@ -50,7 +50,7 @@ A subscription management application to help users track and manage their subsc
      ```bash
      openssl rand -base64 32
      ```
-   - Set `NEXTAUTH_URL` to your application URL (e.g., `http://localhost:3000` for development)
+   - Set `AUTH_URL` to your application URL (e.g., `http://localhost:3000` for development)
 
 4. Run database migrations:
 
@@ -74,7 +74,7 @@ A subscription management application to help users track and manage their subsc
 
    - `DATABASE_URL`: Your production PostgreSQL connection string
    - `NEXTAUTH_SECRET`: A secure random string (use `openssl rand -base64 32`)
-   - `NEXTAUTH_URL`: Your production URL (e.g., `https://your-domain.com`)
+   - `AUTH_URL`: Your production URL (e.g., `https://your-domain.com`)
    - `NODE_ENV`: Set to `production`
 
 2. Run the deployment script:
@@ -98,7 +98,7 @@ A subscription management application to help users track and manage their subsc
 
    - `DATABASE_URL`: Your production PostgreSQL connection string
    - `NEXTAUTH_SECRET`: A secure random string
-   - `NEXTAUTH_URL`: Your Vercel deployment URL
+   - `AUTH_URL`: Your Vercel deployment URL
 
 4. Deploy your application.
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { createCheckoutSessionAction } from "@/server/actions/subscription-plan";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export function PricingCTA() {
+export function PurchaseButton({ children, className, ...props }: ButtonProps) {
   const router = useRouter();
 
   const defaultError = "Failed to start checkout process. Please try again.";
@@ -25,10 +26,11 @@ export function PricingCTA() {
   return (
     <Button
       onClick={() => action.execute()}
-      className="w-full"
+      className={cn(className)}
       disabled={action.isExecuting}
+      {...props}
     >
-      {action.isExecuting ? "Processing..." : "Upgrade Now"}
+      {action.isExecuting ? "Processing..." : children}
     </Button>
   );
 }

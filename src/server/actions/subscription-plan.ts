@@ -1,3 +1,5 @@
+"use server";
+
 import { prisma } from "@/lib/prisma";
 import { privateAction } from "@/lib/safe-action";
 import { stripe, STRIPE_PRICE_ID } from "@/lib/stripe";
@@ -43,8 +45,8 @@ export const createCheckoutSessionAction = privateAction.action(
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXTAUTH_URL}/dashboard?payment=success`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/pricing?payment=cancelled`,
+      success_url: `${process.env.AUTH_URL}/dashboard?payment=success`,
+      cancel_url: `${process.env.AUTH_URL}/pricing?payment=cancelled`,
       metadata: {
         userId,
       },
