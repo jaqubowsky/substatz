@@ -1,4 +1,4 @@
-import { getServerAuth } from "@/server";
+import { auth } from "@/auth";
 import { createSafeActionClient } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { errors } from "./errorMessages";
@@ -17,7 +17,7 @@ export const action = createSafeActionClient({
 });
 
 export const privateAction = action.use(async ({ next }) => {
-  const session = await getServerAuth();
+  const session = await auth();
   if (!session?.user?.id) {
     throw new ActionError(errors.AUTH.UNAUTHORIZED.message);
   }

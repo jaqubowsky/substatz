@@ -1,16 +1,14 @@
+import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
-import { getServerAuth } from "@/server";
 import { Currency } from "@prisma/client";
 import { Suspense } from "react";
-import {
-  AnalyticsContent,
-  LoadingAnalytics,
-  SubscriptionSummaryCards,
-} from ".";
 import { getSubscriptions, getSubscriptionSummary } from "../../server/queries";
+import { AnalyticsContent } from "./analytics-content-client";
+import { LoadingAnalytics } from "./loading-analytics";
+import { SubscriptionSummaryCards } from "./summary-cards";
 
 const AnalyticsTabContent = async () => {
-  const session = await getServerAuth();
+  const session = await auth();
   const defaultCurrency = session?.user?.defaultCurrency || Currency.USD;
 
   const subscriptions = await getSubscriptions();

@@ -12,7 +12,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useClientAuth } from "@/hooks/use-client-auth";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -23,14 +22,12 @@ export function DeleteAccountButton() {
   const [isOpen, setIsOpen] = useState(false);
 
   const router = useRouter();
-  const { logout } = useClientAuth();
 
   const action = useAction(deleteAccountAction, {
     onSuccess: () => {
       toast.success("Account deleted successfully! Redirecting to homepage...");
 
       setTimeout(() => {
-        logout();
         router.push("/");
       }, 2000);
     },

@@ -1,4 +1,4 @@
-export * from "./add-subscription-button";
+export * from "./add-subscription-button-client";
 export * from "./add-subscription-form";
 export * from "./analytics";
 export * from "./dashboard";

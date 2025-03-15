@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { LogoutButton } from "@/components/logout-button.client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -9,12 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getServerAuth } from "@/server";
 import { Settings, User } from "lucide-react";
 import Link from "next/link";
 
 export async function UserNav() {
-  const session = await getServerAuth();
+  const session = await auth();
   const user = session?.user;
   const isAuthenticated = !!session;
 

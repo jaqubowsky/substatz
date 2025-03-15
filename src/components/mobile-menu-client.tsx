@@ -12,7 +12,7 @@ export function MobileMenuClient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  const { isAuthenticated, logout } = useClientAuth();
+  const { isAuthenticated } = useClientAuth();
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
 
@@ -33,11 +33,6 @@ export function MobileMenuClient() {
       document.body.style.overflow = "auto";
     };
   }, [mobileMenuOpen, isClient]);
-
-  const handleLogout = () => {
-    setMobileMenuOpen(false);
-    logout();
-  };
 
   return (
     <>
@@ -116,12 +111,20 @@ export function MobileMenuClient() {
                       )}
 
                       {!isLandingPage && (
-                        <MenuLink
-                          href="/"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Home
-                        </MenuLink>
+                        <>
+                          <MenuLink
+                            href="/"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Home
+                          </MenuLink>
+                          <MenuLink
+                            href="/pricing"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Pricing
+                          </MenuLink>
+                        </>
                       )}
 
                       {isAuthenticated && (
@@ -139,10 +142,7 @@ export function MobileMenuClient() {
                             Settings
                           </MenuLink>
                           <div className="menu-item">
-                            <button
-                              onClick={handleLogout}
-                              className="block w-full text-left py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg"
-                            >
+                            <button className="block w-full text-left py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg">
                               Log out
                             </button>
                           </div>

@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { signIn } from "next-auth/react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -63,18 +62,7 @@ export function LoginForm() {
     zodResolver(loginSchema),
     {
       actionProps: {
-        onSuccess: async ({ input }) => {
-          const result = await signIn("credentials", {
-            email: input.email,
-            password: input.password,
-            redirect: false,
-          });
-
-          if (result?.error) {
-            toast.error("Something went wrong. Please try again later.");
-            return;
-          }
-
+        onSuccess: async () => {
           router.push("/dashboard");
           router.refresh();
         },

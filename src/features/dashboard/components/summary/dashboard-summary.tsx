@@ -1,6 +1,6 @@
+import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Separator } from "@/components/ui/separator";
-import { getServerAuth } from "@/server";
 import { Currency } from "@prisma/client";
 import { PieChart } from "lucide-react";
 import { Suspense } from "react";
@@ -12,7 +12,7 @@ import { UpcomingPaymentsList } from "./upcoming-payments-list";
 import { YearlySpendingCard } from "./yearly-spending-card";
 
 const DashboardSummaryContent = async () => {
-  const session = await getServerAuth();
+  const session = await auth();
   const data = await getSubscriptionSummary();
 
   const totalMonthly = data?.totalMonthly || 0;

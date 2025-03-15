@@ -1,10 +1,20 @@
-import { signIn } from "next-auth/react";
+"use client";
 
 import { Button } from "@/components/ui/button";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { googleLoginAction } from "../server/actions/auth";
 
 export const GoogleSignInButton = () => {
-  const handleGoogleSignIn = async () => {
-    await signIn("google", { callbackUrl: "/dashboard" });
+  const router = useRouter();
+  const action = useAction(googleLoginAction);
+
+  const handleClick = async () => {
+    const result = await action.executeAsync();
+
+    if (result?.data?.success && result.data?.url) {
+      router.push(result.data.url);
+    }
   };
 
   return (
@@ -12,7 +22,7 @@ export const GoogleSignInButton = () => {
       variant="outline"
       type="button"
       className="w-full"
-      onClick={handleGoogleSignIn}
+      onClick={handleClick}
     >
       <svg
         className="mr-2 h-4 w-4"

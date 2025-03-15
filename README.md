@@ -133,3 +133,38 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Prisma](https://www.prisma.io/)
 - [TailwindCSS](https://tailwindcss.com/)
 - [ShadCN UI](https://ui.shadcn.com/)
+
+## Stripe Integration
+
+SubscriptEase uses Stripe for payment processing to enable premium features. Here's how to set it up:
+
+1. Create a [Stripe account](https://stripe.com) if you don't have one already.
+
+2. In the Stripe Dashboard:
+
+   - Create a one-time payment product with a price of $5 (or your preferred amount)
+   - Note the Price ID (starts with `price_`)
+   - Get your API keys from the Developers section
+
+3. Set up the following environment variables:
+
+   - `STRIPE_SECRET_KEY`: Your Stripe secret key (starts with `sk_`)
+   - `STRIPE_PRICE_ID`: The Price ID of your one-time payment product
+   - `STRIPE_WEBHOOK_SECRET`: Create this by setting up a webhook in the Stripe Dashboard
+
+4. To test the webhook locally:
+
+   - Install the [Stripe CLI](https://stripe.com/docs/stripe-cli)
+   - Run `stripe listen --forward-to localhost:3000/api/stripe/webhook`
+   - Copy the webhook signing secret to your `.env` file
+
+5. For production:
+   - Create a webhook endpoint in the Stripe Dashboard pointing to `https://your-domain.com/api/stripe/webhook`
+   - Add the webhook signing secret to your production environment variables
+
+The application includes:
+
+- A pricing page at `/pricing`
+- Checkout integration for one-time payments
+- Webhook handling for payment events
+- Paywalls for premium features (analytics and unlimited subscriptions)

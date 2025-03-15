@@ -1,5 +1,6 @@
 "use server";
 
+import { signIn } from "@/auth";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, publicAction } from "@/lib/safe-action";
 import { Provider } from "@prisma/client";
@@ -24,7 +25,6 @@ import {
   resetUserPassword,
   verifyUserEmail,
 } from "../db/user";
-
 export const registerAction = publicAction
   .schema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
@@ -63,8 +63,31 @@ export const loginAction = publicAction
       throw new ActionError(errors.AUTH.EMAIL_NOT_VERIFIED.message);
     }
 
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
+    }
+
     return { success: true };
   });
+
+export const googleLoginAction = publicAction.action(async () => {
+  const result = await signIn("google", {
+    redirect: false,
+    callbackUrl: "/dashboard",
+  });
+
+  if (result?.error) {
+    throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
+  }
+
+  return { success: true, url: result };
+});
 
 export const verifyEmailAction = publicAction
   .schema(z.object({ token: z.string() }))

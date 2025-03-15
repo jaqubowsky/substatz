@@ -1,2 +1,2 @@
 export * as db from "./db/currency-rates";
-export * from "./get-server-auth";
+export * as subscriptionPlanDb from "./db/subscription-plan";

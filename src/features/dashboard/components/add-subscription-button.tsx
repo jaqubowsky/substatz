@@ -1,44 +1,30 @@
-"use client";
-
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import { AddSubscriptionForm } from "./add-subscription-form";
+import { SubscriptionPlan } from "@prisma/client";
+import { Suspense } from "react";
+import { getSubscriptions } from "../server/queries";
+import { AddSubscriptionButtonClient } from "./add-subscription-button-client";
 
-export const AddSubscriptionButton = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+export const AddSubscriptionButtonContent = async () => {
+  const session = await auth();
+
+  const subscriptions = await getSubscriptions();
+
+  const isPaid = session?.user?.plan === SubscriptionPlan.PAID;
+  const hasReachedLimit = !isPaid && subscriptions && subscriptions.length >= 1;
 
   return (
-    <>
-      <Button
-        onClick={() => setIsDialogOpen(true)}
-        size="sm"
-        className="gap-1"
-        aria-label="Add subscription"
-      >
-        <Plus className="h-4 w-4" />
-        Add
-      </Button>
+    <AddSubscriptionButtonClient
+      isPaid={isPaid}
+      hasReachedLimit={hasReachedLimit}
+    />
+  );
+};
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Add New Subscription</DialogTitle>
-            <DialogDescription>
-              Fill in the details below to add a new subscription to your
-              dashboard.
-            </DialogDescription>
-          </DialogHeader>
-          <AddSubscriptionForm onSuccess={() => setIsDialogOpen(false)} />
-        </DialogContent>
-      </Dialog>
-    </>
+export const AddSubscriptionButton = async () => {
+  return (
+    <Suspense fallback={<Button>Add</Button>}>
+      <AddSubscriptionButtonContent />
+    </Suspense>
   );
 };

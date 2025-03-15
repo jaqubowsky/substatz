@@ -6,16 +6,13 @@ import { BarChart3, LineChart } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import {
-  AdvancedStatsCards,
-  CategoryBreakdownChart,
-  MonthlySpendingChart,
-  TimeRangeSelector,
-} from ".";
-import {
-  TimeRange,
   calculateMonthlySpending,
   filterDataByTimeRange,
+  TimeRange,
 } from "../../lib/analytics";
+import { AdvancedStatsCards } from "./advanced-stats-cards";
+import { CategoryBreakdownChart, MonthlySpendingChart } from "./charts";
+import { TimeRangeSelector } from "./time-range-selector";
 
 interface AnalyticsContentProps {
   subscriptions: Subscription[];

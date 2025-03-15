@@ -35,17 +35,15 @@ import { updateCurrencySchema } from "../schemas/currency";
 import { updateCurrencyAction } from "../server/actions/currency";
 
 export const CurrencySettingsForm = () => {
-  const { user, update } = useClientAuth();
+  const { user } = useClientAuth();
 
   const { form, handleSubmitWithAction } = useHookFormAction(
     updateCurrencyAction,
     zodResolver(updateCurrencySchema),
     {
       actionProps: {
-        onSuccess: (data) => {
+        onSuccess: () => {
           toast.success("Default currency updated successfully.");
-
-          update({ defaultCurrency: data.input.defaultCurrency });
         },
         onError: (error) => {
           toast.error(

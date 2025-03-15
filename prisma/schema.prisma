@@ -10,61 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id              String              @id @default(cuid())
-  name            String
-  email           String              @unique
-  password        String?
-  emailVerified   DateTime?
-  image           String?
-  provider        Provider            @default(CREDENTIALS)
-  defaultCurrency Currency            @default(USD)
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  subscriptions   Subscription[]
-  verifications   VerificationToken[]
-  resetTokens     ResetToken[]
-}
-
-model Subscription {
-  id           String       @id @default(cuid())
-  userId       String
-  name         String
-  price        Float
-  currency     Currency     @default(USD)
-  category     String
-  billingCycle BillingCycle
-  startDate    DateTime     @default(now())
-  isCancelled  Boolean      @default(false)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model VerificationToken {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  expiresAt DateTime
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-}
-
-model ResetToken {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  expiresAt DateTime
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-}
-
 enum Provider {
   CREDENTIALS
   GOOGLE
@@ -89,6 +34,101 @@ enum Currency {
   INR
   PLN
 }
+
+enum SubscriptionPlan {
+  FREE
+  PAID
+}
+
+model User {
+  id              String              @id @default(cuid())
+  name            String
+  email           String              @unique
+  password        String?
+  emailVerified   DateTime?           @map("email_verified")
+  image           String?
+  defaultCurrency Currency            @default(USD)
+  stripeCustomerId String?
+  plan            SubscriptionPlan    @default(FREE)
+  subscriptions   Subscription[]
+  resetTokens     ResetToken[]
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  accounts        Account[]
+  sessions        Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier        String   @id @default(cuid())
+  token     String   @unique
+  expires DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Subscription {
+  id           String       @id @default(cuid())
+  userId       String
+  name         String
+  price        Float
+  currency     Currency     @default(USD)
+  category     String
+  billingCycle BillingCycle
+  startDate    DateTime     @default(now())
+  isCancelled  Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
 
 model CurrencyRate {
   id        String   @id @default(cuid())

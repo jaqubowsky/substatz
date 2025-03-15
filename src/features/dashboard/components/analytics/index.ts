@@ -1,5 +1,5 @@
 export * from "./advanced-stats-cards";
-export * from "./analytics-content";
+export * from "./analytics-content-client";
 export * from "./analytics-tab";
 export * from "./charts";
 export * from "./loading-analytics";

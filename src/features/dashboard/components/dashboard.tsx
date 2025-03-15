@@ -1,3 +1,4 @@
+import { Paywall } from "@/components/paywall";
 import {
   Card,
   CardContent,
@@ -8,11 +9,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutDashboard } from "lucide-react";
 import { AddSubscriptionButton } from "./add-subscription-button";
-import { AnalyticsTab } from "./analytics/analytics-tab";
+import { AnalyticsTab } from "./analytics";
 import { SubscriptionList } from "./subscription-list";
 import { DashboardSummary } from "./summary/dashboard-summary";
 
-export const Dashboard = () => {
+export const Dashboard = async () => {
   return (
     <div className="container mx-auto px-4 h-full">
       <Card className="mb-6 border-none bg-transparent shadow-none">
@@ -35,7 +36,7 @@ export const Dashboard = () => {
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="subscriptions" className="mt-8">
+      <Tabs defaultValue="subscriptions">
         <TabsList className="mb-6">
           <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -67,11 +68,17 @@ export const Dashboard = () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card>
-            <CardContent className="pt-6">
-              <AnalyticsTab />
-            </CardContent>
-          </Card>
+          <Paywall
+            blurContent={true}
+            showMessage={true}
+            messagePosition="center"
+          >
+            <Card>
+              <CardContent className="pt-6">
+                <AnalyticsTab />
+              </CardContent>
+            </Card>
+          </Paywall>
         </TabsContent>
       </Tabs>
     </div>
