@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useClientAuth } from "@/hooks";
 import { ClipboardList, Menu, X } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -142,7 +143,10 @@ export function MobileMenuClient() {
                             Settings
                           </MenuLink>
                           <div className="menu-item">
-                            <button className="block w-full text-left py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg">
+                            <button
+                              className="block w-full text-left py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg"
+                              onClick={() => signOut({ redirectTo: "/login" })}
+                            >
                               Log out
                             </button>
                           </div>

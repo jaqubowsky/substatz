@@ -44,7 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             image: user.image,
             plan: user.plan,
             defaultCurrency: user.defaultCurrency,
-            provider: "credentials" as const,
+            provider: "credentials",
           };
         } catch (error) {
           console.error("Error in authorize:", error);
@@ -55,7 +55,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, account, user }) {
+    async jwt({ token, account, user, trigger, session }) {
+      if (trigger === "update" && session?.user) {
+        if (session.user.plan) {
+          token.plan = session.user.plan;
+        }
+
+        if (session.user.defaultCurrency) {
+          token.defaultCurrency = session.user.defaultCurrency;
+        }
+
+        if (session.user.id) {
+          const updatedUser = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: { plan: true, defaultCurrency: true },
+          });
+
+          if (updatedUser) {
+            token.plan = updatedUser.plan;
+            token.defaultCurrency = updatedUser.defaultCurrency;
+          }
+        }
+      }
+
       if (user) {
         token.id = user.id;
         token.image = user.image;

@@ -50,6 +50,9 @@ export async function POST(req: NextRequest) {
           SubscriptionPlan.PAID
         );
 
+        console.log(
+          `User ${paymentIntent.metadata.userId} upgraded to paid plan via payment intent`
+        );
         break;
       }
 

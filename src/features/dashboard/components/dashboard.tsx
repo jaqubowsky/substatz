@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutDashboard } from "lucide-react";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics";
+import { PaymentVerification } from "./payment-verification";
 import { SubscriptionList } from "./subscription-list";
 import { DashboardSummary } from "./summary/dashboard-summary";
 
@@ -35,6 +36,8 @@ export const Dashboard = async () => {
           </div>
         </CardHeader>
       </Card>
+
+      <PaymentVerification />
 
       <Tabs defaultValue="subscriptions">
         <TabsList className="mb-6">
