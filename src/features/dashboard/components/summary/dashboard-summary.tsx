@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Separator } from "@/components/ui/separator";
 import { getSubscriptionSummary } from "@/features/dashboard/server/queries";

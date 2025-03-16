@@ -1,12 +1,24 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = process.env.AUTH_URL || "https://subscript.it";
+
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/dashboard/", "/settings/"],
+      disallow: [
+        "/api/",
+        "/dashboard/",
+        "/settings/",
+        "/auth/",
+        "/_next/",
+        "/login/",
+        "/register/",
+        "/forgot-password/",
+        "/reset-password/",
+      ],
     },
-    sitemap: "https://subscriptease.com/sitemap.xml",
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

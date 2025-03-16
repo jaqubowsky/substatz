@@ -21,9 +21,9 @@ import {
 import {
   addSubscriptionSchema,
   AddSubscriptionValues,
-  currencySymbols,
 } from "@/features/dashboard/schemas";
 import { addSubscriptionAction } from "@/features/dashboard/server/actions";
+import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { BillingCycle } from "@prisma/client";

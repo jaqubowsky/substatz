@@ -19,6 +19,7 @@ import { errors } from "@/lib/errorMessages";
 import { ActionError, publicAction } from "@/lib/safe-action";
 
 import { userDb } from "@/server";
+import { getUserByEmail } from "@/server/db/user";
 
 export const registerAction = publicAction
   .schema(registerSchema)

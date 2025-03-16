@@ -1,6 +1,6 @@
 "use client";
 
-import { formatCurrency } from "@/features/dashboard/lib";
+import { formatCurrency, formatCurrencyValue } from "@/features/dashboard/lib";
 import { Currency } from "@prisma/client";
 import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import {

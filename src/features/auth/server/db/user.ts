@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getUserByEmail } from "@/server/db/user";
 import crypto from "crypto";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -33,7 +34,6 @@ export async function createUser(
     verificationToken: token,
   };
 }
-
 
 export async function generateNewVerificationToken(email: string) {
   const user = await getUserByEmail(email);

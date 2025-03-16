@@ -587,3 +587,111 @@ The SubscriptEase Team`,
 
   return transporter.sendMail(mailOptions);
 }
+
+export async function sendPaymentFailedEmail(email: string) {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Action Required: Payment Failed for SubscriptEase Premium",
+    text: `Hey there,
+
+We noticed there was an issue processing your payment for your SubscriptEase Premium subscription.
+
+Your premium subscription benefits are currently on hold until we can successfully process your payment. This could be due to an expired card, insufficient funds, or a change in your payment details.
+
+If you need any assistance or have questions about your subscription, just reply to this email - we're here to help!
+
+Cheers,
+The SubscriptEase Team`,
+    html: `
+      <div style="${styles.emailContainer}">
+        <div style="${styles.header}">
+          <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">Payment Failed</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Action required for your SubscriptEase subscription</p>
+        </div>
+
+        <div style="${styles.content}">
+          <h2 style="color: ${
+            colors.textDark
+          }; margin-top: 0;">Hey there 👋</h2>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            We noticed there was an issue processing your payment for your <strong>SubscriptEase Premium</strong> subscription.
+          </p>
+
+          <div style="${styles.highlightBox}">
+            <p style="margin: 0; font-size: 15px; color: ${colors.textDark};">
+              <strong>Important:</strong> Your premium subscription benefits are currently on hold until we can successfully process your payment.
+            </p>
+          </div>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            This could be due to:
+          </p>
+
+          <ul style="color: ${
+            colors.textDark
+          }; font-size: 16px; line-height: 1.6;">
+            <li>An expired credit card</li>
+            <li>Insufficient funds</li>
+            <li>A change in your payment details</li>
+            <li>Your bank declining the transaction</li>
+          </ul>
+
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${retryUrl}" style="${styles.button}">
+              Update Payment Method
+            </a>
+          </div>
+
+          <p style="font-size: 14px; color: ${
+            colors.textMedium
+          };">Or use this link:</p>
+          <p style="${styles.codeBox}">${retryUrl}</p>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            If you need any assistance or have questions about your subscription, just reply to this email - we're here to help!
+          </p>
+
+          <div style="${styles.footer}">
+            <p style="color: ${
+              colors.textMedium
+            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+
+            <div style="margin-top: 20px; text-align: center;">
+              <a href="${
+                process.env.AUTH_URL
+              }" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Website</a>
+              <a href="${
+                process.env.AUTH_URL
+              }/help" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Help Center</a>
+              <a href="${
+                process.env.AUTH_URL
+              }/contact" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Contact Us</a>
+            </div>
+
+            <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
+              colors.textLight
+            };">
+              © ${new Date().getFullYear()} SubscriptEase. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  return transporter.sendMail(mailOptions);
+}

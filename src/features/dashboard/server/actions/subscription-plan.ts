@@ -1,3 +1,5 @@
+"use server";
+
 import { prisma } from "@/lib/prisma";
 import { privateAction } from "@/lib/safe-action";
 import { stripe, STRIPE_PRICE_ID } from "@/lib/stripe";

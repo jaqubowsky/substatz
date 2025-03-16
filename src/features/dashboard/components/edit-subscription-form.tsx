@@ -20,11 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  currencySymbols,
   editSubscriptionSchema,
   EditSubscriptionValues,
 } from "@/features/dashboard/schemas";
 import { updateSubscriptionAction } from "@/features/dashboard/server/actions";
+import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Subscription } from "@prisma/client";

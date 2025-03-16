@@ -1,4 +1,4 @@
-import { SavingsOpportunity } from "@/features/dashboard/(subscription-details)/components/savings-opportunity-card";
+import { SavingsOpportunity } from "@/features/dashboard/components/subscription-details/savings-opportunity-card";
 import { Subscription } from "@prisma/client";
 
 export type OpportunityType =
