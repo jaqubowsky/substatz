@@ -47,7 +47,7 @@ export const createCheckoutSessionAction = privateAction.action(
       ],
       mode: "payment",
       success_url: `${process.env.AUTH_URL}/dashboard?payment=success`,
-      cancel_url: `${process.env.AUTH_URL}/pricing?payment=cancelled`,
+      cancel_url: `${process.env.AUTH_URL}/dashboard?payment=cancelled`,
       metadata: {
         userId,
       },

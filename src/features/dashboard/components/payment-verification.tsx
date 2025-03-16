@@ -32,10 +32,12 @@ export function PaymentVerification() {
     isVerifying: boolean;
     isVerified: boolean;
     error: string | null;
+    cancelled: boolean;
   }>({
     isVerifying: false,
     isVerified: false,
     error: null,
+    cancelled: false,
   });
 
   const verifyAction = useAction(verifyPaymentAction, {
@@ -44,6 +46,7 @@ export function PaymentVerification() {
         isVerifying: true,
         isVerified: false,
         error: null,
+        cancelled: false,
       });
     },
     onSuccess: async () => {
@@ -51,6 +54,7 @@ export function PaymentVerification() {
         isVerifying: false,
         isVerified: true,
         error: null,
+        cancelled: false,
       });
 
       await update({
@@ -75,6 +79,7 @@ export function PaymentVerification() {
         isVerifying: false,
         isVerified: false,
         error: error.error.serverError || "Failed to verify payment",
+        cancelled: false,
       });
       toast.error(error.error.serverError || "Failed to verify payment");
     },
@@ -86,13 +91,22 @@ export function PaymentVerification() {
       if (!verificationState.isVerifying && !verificationState.isVerified) {
         verifyAction.execute();
       }
-    } else {
+    } else if (paymentStatus === "cancelled" && !verificationState.cancelled) {
+      setVerificationState({
+        isVerifying: false,
+        isVerified: false,
+        error: null,
+        cancelled: true,
+      });
+      setOpen(true);
+    } else if (!paymentStatus) {
       setOpen(false);
     }
   }, [
     paymentStatus,
     verificationState.isVerifying,
     verificationState.isVerified,
+    verificationState.cancelled,
     verifyAction,
   ]);
 
@@ -136,6 +150,28 @@ export function PaymentVerification() {
               to the paid plan. You now have access to all premium features.
             </DialogDescription>
           </DialogHeader>
+        </>
+      );
+    }
+
+    if (verificationState.cancelled) {
+      return (
+        <>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-muted-foreground">
+              <XCircle className="h-5 w-5" />
+              Payment Cancelled
+            </DialogTitle>
+            <DialogDescription>
+              You&apos;ve cancelled the payment process. You can upgrade to the
+              paid plan anytime to access premium features.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="default" onClick={handleClose}>
+              Close
+            </Button>
+          </DialogFooter>
         </>
       );
     }

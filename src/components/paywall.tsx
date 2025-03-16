@@ -1,8 +1,7 @@
-"use client";
-
-import { useClientAuth } from "@/hooks";
+import { auth } from "@/auth";
 import { SubscriptionPlan } from "@prisma/client";
 import { LockIcon } from "lucide-react";
+import { Suspense } from "react";
 import { PurchaseButton } from "./purchase-button";
 
 interface PaywallProps {
@@ -13,14 +12,12 @@ interface PaywallProps {
   className?: string;
 }
 
-export function Paywall({ children }: PaywallProps) {
-  const { user, isLoading } = useClientAuth();
+async function PaywallContent({ children }: PaywallProps) {
+  const session = await auth();
+  const user = session?.user;
 
   const isPaid = user?.plan === SubscriptionPlan.PAID;
-
-  if (isLoading || isPaid) {
-    return <>{children}</>;
-  }
+  if (isPaid) return <>{children}</>;
 
   return (
     <div className="relative w-full h-full">
@@ -44,5 +41,13 @@ export function Paywall({ children }: PaywallProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+export async function Paywall({ children }: PaywallProps) {
+  return (
+    <Suspense fallback={children}>
+      <PaywallContent>{children}</PaywallContent>
+    </Suspense>
   );
 }
