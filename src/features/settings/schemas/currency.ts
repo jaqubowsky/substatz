@@ -1,5 +1,5 @@
+import { currencyEnum } from "@/schemas";
 import { z } from "zod";
-import { currencyEnum } from "../../dashboard/schemas/subscription";
 
 export const updateCurrencySchema = z.object({
   defaultCurrency: currencyEnum,

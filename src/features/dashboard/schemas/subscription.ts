@@ -8,21 +8,7 @@ export const billingCycleEnum = z.enum([
   "ANNUALLY",
 ]);
 
-export const currencyEnum = z.enum([
-  "USD",
-  "EUR",
-  "GBP",
-  "JPY",
-  "CAD",
-  "AUD",
-  "CHF",
-  "CNY",
-  "INR",
-  "PLN",
-]);
-
 export type BillingCycle = z.infer<typeof billingCycleEnum>;
-export type CurrencyType = z.infer<typeof currencyEnum>;
 
 export const editSubscriptionSchema = z.object({
   id: z.string().optional(),
@@ -62,16 +48,3 @@ export interface UpcomingPayment extends Subscription {
 export interface CategoryBreakdown {
   [category: string]: number;
 }
-
-export const currencySymbols: Record<CurrencyType, string> = {
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  JPY: "¥",
-  CAD: "C$",
-  AUD: "A$",
-  CHF: "CHF",
-  CNY: "¥",
-  INR: "₹",
-  PLN: "zł",
-};

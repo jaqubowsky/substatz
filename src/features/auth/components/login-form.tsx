@@ -16,13 +16,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { LoginFormValues, loginSchema } from "@/features/auth/schemas";
+import {
+  loginAction,
+  resendVerificationAction,
+} from "@/features/auth/server/actions/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { LoginFormValues, loginSchema } from "../schemas/auth";
-import { loginAction, resendVerificationAction } from "../server/actions/auth";
 import { GoogleSignInButton } from "./google-sign-in-button";
 import { VerificationMessages } from "./login-verification-messages";
 

@@ -10,14 +10,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { EmailFormValues, emailSchema } from "@/features/auth/schemas";
+import { forgotPasswordAction } from "@/features/auth/server/actions/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { EmailFormValues, emailSchema } from "../schemas/auth";
-import { forgotPasswordAction } from "../server/actions/auth";
-
 const defaultValues: EmailFormValues = {
   email: "",
 };

@@ -4,9 +4,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { calculateSubscriptionStats } from "@/features/dashboard/lib";
 import { Subscription } from "@prisma/client";
 import { Tag } from "lucide-react";
-import { calculateSubscriptionStats } from "../../lib/subscription-stats";
 import { FinancialSummary } from "./financial-summary";
 import { RenewalHistory } from "./renewal-history";
 import { SavingsOpportunities } from "./savings-opportunities";

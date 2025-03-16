@@ -1,4 +1,4 @@
-import { verifyEmailAction } from "@/features/auth/server/actions/auth";
+import { verifyEmailAction } from "@/server/actions/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

@@ -10,6 +10,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  ResetPasswordFormValues,
+  resetPasswordSchema,
+} from "@/features/auth/schemas";
+import { resetPasswordAction } from "@/features/auth/server/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Loader2 } from "lucide-react";
@@ -17,8 +22,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { ResetPasswordFormValues, resetPasswordSchema } from "../schemas/auth";
-import { resetPasswordAction } from "../server/actions/auth";
 
 export function ResetPasswordForm() {
   const router = useRouter();

@@ -1,4 +1,4 @@
-"use client";
+//#region "use client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,14 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { toast } from "sonner";
 import {
   ChangePasswordFormValues,
   changePasswordSchema,
-} from "../schemas/settings";
-import { changePasswordAction } from "../server/actions/settings";
+} from "@/features/settings/schemas/settings";
+import { changePasswordAction } from "@/features/settings/server/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { toast } from "sonner";
 
 const defaultValues: ChangePasswordFormValues = {
   currentPassword: "",

@@ -1,5 +1,7 @@
-import { ForgotPasswordForm } from "@/features/auth/components";
+import { AuthFormLoading } from "@/components/auth-form-loading";
+import { ForgotPasswordForm } from "@/features/auth";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Forgot Password",
@@ -7,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function ForgotPasswordPage() {
-  return <ForgotPasswordForm />;
+  return (
+    <Suspense fallback={<AuthFormLoading className="max-h-[300px]" />}>
+      <ForgotPasswordForm />
+    </Suspense>
+  );
 }

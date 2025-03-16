@@ -1,10 +1,9 @@
-import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Separator } from "@/components/ui/separator";
+import { getSubscriptionSummary } from "@/features/dashboard/server/queries";
 import { Currency } from "@prisma/client";
 import { PieChart } from "lucide-react";
 import { Suspense } from "react";
-import { getSubscriptionSummary } from "../../server/queries";
 import { LoadingSummary } from "./loading-summary";
 import { MonthlySpendingCard } from "./monthly-spending-card";
 import { TopCategoriesList } from "./top-categories-list";

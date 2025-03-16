@@ -18,6 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  calculateNextPaymentDate,
+  formatCurrency,
+  formatDate,
+} from "@/features/dashboard/lib";
+import { BillingCycle } from "@/features/dashboard/schemas";
+import { removeSubscriptionAction } from "@/features/dashboard/server/actions";
 import { Subscription } from "@prisma/client";
 import {
   AlertTriangle,
@@ -31,11 +38,6 @@ import {
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
-import { calculateNextPaymentDate } from "../lib/calculate-next-payment-date";
-import { formatCurrency } from "../lib/format-currency";
-import { formatDate } from "../lib/format-date";
-import { BillingCycle } from "../schemas/subscription";
-import { removeSubscriptionAction } from "../server/actions";
 import { EditSubscriptionForm } from "./edit-subscription-form";
 import { SubscriptionDetails } from "./subscription-details";
 

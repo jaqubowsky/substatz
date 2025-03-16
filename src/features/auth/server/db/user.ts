@@ -34,42 +34,6 @@ export async function createUser(
   };
 }
 
-export async function getUserByEmail(email: string) {
-  return prisma.user.findUnique({
-    where: { email },
-  });
-}
-
-export async function verifyUserEmail(token: string) {
-  const verificationToken = await prisma.verificationToken.findFirst({
-    where: {
-      token,
-      expires: {
-        gt: new Date(),
-      },
-    },
-  });
-
-  if (!verificationToken) return null;
-
-  const updatedUser = await prisma.user.update({
-    where: { id: verificationToken.identifier },
-    data: {
-      emailVerified: new Date(),
-    },
-  });
-
-  await prisma.verificationToken.delete({
-    where: {
-      identifier_token: {
-        identifier: verificationToken.identifier,
-        token: verificationToken.token,
-      },
-    },
-  });
-
-  return updatedUser;
-}
 
 export async function generateNewVerificationToken(email: string) {
   const user = await getUserByEmail(email);
@@ -128,9 +92,6 @@ export async function resetUserPassword(token: string, hashedPassword: string) {
       expires: {
         gt: new Date(),
       },
-    },
-    include: {
-      user: true,
     },
   });
 

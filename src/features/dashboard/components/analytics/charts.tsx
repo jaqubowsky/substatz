@@ -1,5 +1,6 @@
 "use client";
 
+import { formatCurrency } from "@/features/dashboard/lib";
 import { Currency } from "@prisma/client";
 import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import {
@@ -15,8 +16,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { formatCurrencyValue } from "../../lib/analytics";
-import { formatCurrency } from "../../lib/format-currency";
 import { CustomTooltip } from "./tooltip";
 const COLORS = [
   "#FF7A00",

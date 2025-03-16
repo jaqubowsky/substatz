@@ -1,8 +1,11 @@
 import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
+import {
+  getSubscriptions,
+  getSubscriptionSummary,
+} from "@/features/dashboard/server/queries";
 import { Currency } from "@prisma/client";
 import { Suspense } from "react";
-import { getSubscriptions, getSubscriptionSummary } from "../../server/queries";
 import { AnalyticsContent } from "./analytics-content-client";
 import { LoadingAnalytics } from "./loading-analytics";
 import { SubscriptionSummaryCards } from "./summary-cards";

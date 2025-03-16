@@ -1,6 +1,6 @@
+import { formatCurrency } from "@/features/dashboard/lib";
 import { Currency } from "@prisma/client";
 import { Tag } from "lucide-react";
-import { formatCurrency } from "../../lib/format-currency";
 
 interface TopCategoriesListProps {
   categoriesBreakdown: Record<string, number>;

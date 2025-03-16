@@ -6,9 +6,10 @@ import type { Adapter } from "next-auth/adapters";
 import { encode as defaultEncode } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import authConfig from "./auth.config";
-import { verifyPassword } from "./features/auth/lib/auth";
-import { getUserByEmail } from "./features/auth/server/db";
+import { verifyPassword } from "./lib/auth";
+import { sendWelcomeEmail } from "./lib/email";
 import prisma from "./lib/prisma";
+import { getUserByEmail } from "./server/db/user";
 
 const adapter = PrismaAdapter(prisma) as Adapter;
 
@@ -123,6 +124,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return sessionToken;
       }
       return defaultEncode(params);
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      if (user.email && user.name) {
+        await sendWelcomeEmail(user.email as string, user.name as string);
+      }
     },
   },
   pages: {

@@ -1,9 +1,9 @@
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Subscription } from "@prisma/client";
 import { Suspense } from "react";
-import { SubscriptionDetailsContent } from "./subscription-details/content";
-import { SubscriptionDetailsLoading } from "./subscription-details/loading";
 import { SubscriptionDetailsButton } from "./subscription-details/subscription-details-button";
+import { SubscriptionDetailsContent } from "./subscription-details/subscription-details-content";
+import { SubscriptionDetailsLoading } from "./subscription-details/subscription-details-loading";
 
 interface SubscriptionDetailsProps {
   subscription: Subscription;

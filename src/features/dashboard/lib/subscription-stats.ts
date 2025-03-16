@@ -1,4 +1,4 @@
-import { SavingsOpportunity } from "@/components/savings-opportunity-card";
+import { SavingsOpportunity } from "@/features/dashboard/(subscription-details)/components/savings-opportunity-card";
 import { calculateBillingCycles, formatDuration } from "@/lib/billing-utils";
 import { BillingCycle, Subscription } from "@prisma/client";
 import { differenceInDays, differenceInMonths } from "date-fns";

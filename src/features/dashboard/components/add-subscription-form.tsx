@@ -18,6 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  addSubscriptionSchema,
+  AddSubscriptionValues,
+  currencySymbols,
+} from "@/features/dashboard/schemas";
+import { addSubscriptionAction } from "@/features/dashboard/server/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { BillingCycle } from "@prisma/client";
@@ -29,12 +35,6 @@ import {
   Tag,
 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  addSubscriptionSchema,
-  AddSubscriptionValues,
-  currencySymbols,
-} from "../schemas/subscription";
-import { addSubscriptionAction } from "../server/actions/subscription";
 
 interface AddSubscriptionFormProps {
   onSuccess: () => void;

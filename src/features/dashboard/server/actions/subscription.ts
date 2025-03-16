@@ -1,12 +1,12 @@
 "use server";
 
-import { errors } from "@/lib/errorMessages";
-import { ActionError, privateAction } from "@/lib/safe-action";
 import {
   addSubscriptionSchema,
   editSubscriptionSchema,
-} from "../../schemas/subscription";
-import * as db from "../db/subscription";
+} from "@/features/dashboard/schemas/subscription";
+import * as db from "@/features/dashboard/server/db/subscription";
+import { errors } from "@/lib/errorMessages";
+import { ActionError, privateAction } from "@/lib/safe-action";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";

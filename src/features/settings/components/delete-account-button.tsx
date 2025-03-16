@@ -12,11 +12,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { deleteAccountAction } from "@/features/settings/server/actions";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteAccountAction } from "../server/actions/settings";
 
 export function DeleteAccountButton() {
   const [isOpen, setIsOpen] = useState(false);

@@ -9,9 +9,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { formatCurrency } from "@/features/dashboard/lib";
 import { Currency } from "@prisma/client";
 import { DollarSign, HelpCircle } from "lucide-react";
-import { formatCurrency } from "../../lib/format-currency";
 
 interface YearlySpendingCardProps {
   totalYearly: number;

@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDate, SubscriptionStats } from "@/features/dashboard/lib";
 import { Subscription } from "@prisma/client";
 import { Clock } from "lucide-react";
-import { formatDate } from "../../lib/format-date";
-import { SubscriptionStats } from "../../lib/subscription-stats";
 
 interface TimelineCardProps {
   subscription: Subscription;

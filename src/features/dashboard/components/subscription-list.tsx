@@ -5,10 +5,10 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
+import { getSubscriptions } from "@/features/dashboard/server/queries";
 import { Subscription } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
-import { getSubscriptions } from "../server/queries";
 import { LoadingSubscriptionList } from "./loading-subscription-list";
 import { SubscriptionCard } from "./subscription-card";
 

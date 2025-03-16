@@ -1,15 +1,15 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Currency, Subscription } from "@prisma/client";
-import { BarChart3, LineChart } from "lucide-react";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
 import {
   calculateMonthlySpending,
   filterDataByTimeRange,
   TimeRange,
-} from "../../lib/analytics";
+} from "@/features/dashboard/lib";
+import { Currency, Subscription } from "@prisma/client";
+import { BarChart3, LineChart } from "lucide-react";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
 import { AdvancedStatsCards } from "./advanced-stats-cards";
 import { CategoryBreakdownChart, MonthlySpendingChart } from "./charts";
 import { TimeRangeSelector } from "./time-range-selector";

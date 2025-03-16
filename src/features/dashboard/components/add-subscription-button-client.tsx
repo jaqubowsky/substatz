@@ -1,5 +1,6 @@
 "use client";
 
+import { PurchaseButton } from "@/components/purchase-button";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,11 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DollarSign, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AddSubscriptionForm } from "./add-subscription-form";
-import { PurchaseButton } from "@/components/purchase-button";
+
 export const AddSubscriptionButtonClient = ({
   isPaid,
   hasReachedLimit,

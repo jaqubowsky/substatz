@@ -1,4 +1,3 @@
-import { SavingsOpportunityCard } from "@/components/savings-opportunity-card";
 import {
   Card,
   CardContent,
@@ -6,9 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SubscriptionStats } from "@/features/dashboard/lib";
 import { Subscription } from "@prisma/client";
 import { Lightbulb } from "lucide-react";
-import { SubscriptionStats } from "../../lib/subscription-stats";
+import { SavingsOpportunityCard } from "./savings-opportunity-card";
 
 interface SavingsOpportunitiesProps {
   subscription: Subscription;

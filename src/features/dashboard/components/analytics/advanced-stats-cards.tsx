@@ -5,6 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  calculateTotalStatistics,
+  formatCurrency,
+} from "@/features/dashboard/lib";
 import { Currency, Subscription } from "@prisma/client";
 import {
   CalendarDays,
@@ -13,8 +17,6 @@ import {
   LineChart,
   TrendingUp,
 } from "lucide-react";
-import { calculateTotalStatistics } from "../../lib/analytics";
-import { formatCurrency } from "../../lib/format-currency";
 
 interface AdvancedStatsCardsProps {
   subscriptions: Subscription[];

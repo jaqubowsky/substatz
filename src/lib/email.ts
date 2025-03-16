@@ -438,3 +438,152 @@ The SubscriptEase Team`,
 
   return transporter.sendMail(mailOptions);
 }
+
+export async function sendSubscriptionThankYouEmail(
+  email: string,
+  name: string
+) {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Thank you for upgrading to SubscriptEase Premium!",
+    text: `Hey ${name || "there"},
+
+Thank you for upgrading to SubscriptEase Premium! Your payment has been successfully processed, and your account has been upgraded.
+
+With your premium subscription, you now have access to:
+- Unlimited subscription tracking
+- Advanced analytics and insights
+- Priority customer support
+- Early access to new features
+
+Your dashboard has been updated with all premium features. Log in now to explore everything that's available to you.
+
+If you have any questions about your subscription or need help with any features, just reply to this email - we're here to help!
+
+Thanks for supporting SubscriptEase. We're committed to making subscription management easier for you.
+
+Cheers,
+The SubscriptEase Team`,
+    html: `
+      <div style="${styles.emailContainer}">
+        <div style="${styles.header}">
+          <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">Welcome to Premium! 🎉</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your SubscriptEase account has been upgraded</p>
+        </div>
+
+        <div style="${styles.content}">
+          <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
+      name || "there"
+    } 👋</h2>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Thank you for upgrading to SubscriptEase Premium! Your payment has been successfully processed, and your account has been upgraded.
+          </p>
+
+          <div style="${styles.featureBox}">
+            <p style="margin: 0 0 15px 0; font-size: 16px; color: ${
+              colors.textDark
+            };">
+              With your premium subscription, you now have access to:
+            </p>
+
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+              <span style="${styles.checkmark}">✓</span>
+              <span style="color: ${
+                colors.textDark
+              };">Unlimited subscription tracking</span>
+            </div>
+
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+              <span style="${styles.checkmark}">✓</span>
+              <span style="color: ${
+                colors.textDark
+              };">Advanced analytics and insights</span>
+            </div>
+
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+              <span style="${styles.checkmark}">✓</span>
+              <span style="color: ${
+                colors.textDark
+              };">Priority customer support</span>
+            </div>
+
+            <div style="display: flex; align-items: center;">
+              <span style="${styles.checkmark}">✓</span>
+              <span style="color: ${
+                colors.textDark
+              };">Early access to new features</span>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${process.env.AUTH_URL}/dashboard" style="${
+      styles.button
+    }">
+              Explore Premium Features
+            </a>
+          </div>
+
+          <div style="${styles.highlightBox}">
+            <p style="margin: 0; font-size: 15px; color: ${colors.textDark};">
+              <strong>Pro tip:</strong> Try out the new analytics section to get insights on your subscription spending patterns and discover potential savings!
+            </p>
+          </div>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Your dashboard has been updated with all premium features. Log in now to explore everything that's available to you.
+          </p>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            If you have any questions about your subscription or need help with any features, just reply to this email - we're here to help!
+          </p>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Thanks for supporting SubscriptEase. We're committed to making subscription management easier for you.
+          </p>
+
+          <div style="${styles.footer}">
+            <p style="color: ${
+              colors.textMedium
+            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+
+            <div style="margin-top: 20px; text-align: center;">
+              <a href="${
+                process.env.AUTH_URL
+              }" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Website</a>
+              <a href="${
+                process.env.AUTH_URL
+              }/help" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Help Center</a>
+              <a href="${
+                process.env.AUTH_URL
+              }/contact" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Contact Us</a>
+            </div>
+
+            <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
+              colors.textLight
+            };">
+              © ${new Date().getFullYear()} SubscriptEase. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  return transporter.sendMail(mailOptions);
+}

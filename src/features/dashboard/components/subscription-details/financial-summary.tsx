@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency, SubscriptionStats } from "@/features/dashboard/lib";
 import { Subscription } from "@prisma/client";
 import { DollarSign } from "lucide-react";
-import { formatCurrency } from "../../lib/format-currency";
-import { SubscriptionStats } from "../../lib/subscription-stats";
 
 interface FinancialSummaryProps {
   subscription: Subscription;

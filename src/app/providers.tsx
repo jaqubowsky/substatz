@@ -1,17 +1,14 @@
-import { auth } from "@/auth";
-import { RefetchSession } from "@/components/refetch-session";
+"use client";
+
 import { Toaster } from "@/components/ui/sonner";
 import { SessionProvider } from "next-auth/react";
 import { ReactNode } from "react";
 
-export async function Providers({ children }: { children: ReactNode }) {
-  const session = await auth();
-
+export function Providers({ children }: { children: ReactNode }) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       {children}
       <Toaster position="top-center" />
-      <RefetchSession />
     </SessionProvider>
   );
 }

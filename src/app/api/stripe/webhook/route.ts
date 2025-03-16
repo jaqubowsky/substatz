@@ -1,3 +1,4 @@
+import { sendSubscriptionThankYouEmail } from "@/lib/email";
 import { stripe } from "@/lib/stripe";
 import { updateUserPlan } from "@/server/db/subscription-plan";
 import { SubscriptionPlan } from "@prisma/client";
@@ -32,30 +33,44 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        console.log("Checkout session completed:", session.id);
-        break;
-      }
-
       case "payment_intent.succeeded": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        if (!paymentIntent.metadata?.userId) {
-          console.error("Payment intent has no user ID metadata");
+
+        const updatedUser = await updateUserPlan(
+          paymentIntent.customer as string,
+          SubscriptionPlan.PAID
+        );
+
+        try {
+          await sendSubscriptionThankYouEmail(
+            updatedUser.email as string,
+            updatedUser.name as string
+          );
+        } catch (error) {
+          console.error("Error sending subscription thank you email:", error);
+        }
+
+        console.log(
+          `User ${updatedUser.email} upgraded to paid plan via subscription`
+        );
+        break;
+      }
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
+        if (!subscription.metadata?.userId) {
+          console.error("Subscription has no user ID metadata");
           break;
         }
 
         await updateUserPlan(
-          paymentIntent.metadata.userId,
-          SubscriptionPlan.PAID
+          subscription.customer as string,
+          SubscriptionPlan.FREE
         );
 
         console.log(
-          `User ${paymentIntent.metadata.userId} upgraded to paid plan via payment intent`
+          `User ${subscription.metadata.userId} downgraded to free plan via subscription`
         );
-        break;
       }
-
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }

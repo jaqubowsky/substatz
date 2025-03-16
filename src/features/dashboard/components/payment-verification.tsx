@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { verifyPaymentAction } from "@/features/dashboard/server/actions";
 import { SubscriptionPlan } from "@prisma/client";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -17,144 +18,129 @@ import { useAction } from "next-safe-action/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { verifyPaymentAction } from "../server/actions/payment-verification";
 
 export function PaymentVerification() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const paymentStatus = searchParams.get("payment");
-
-  const [open, setOpen] = useState(false);
-
   const { update } = useSession();
 
-  const [verificationState, setVerificationState] = useState<{
-    isVerifying: boolean;
-    isVerified: boolean;
-    error: string | null;
-    cancelled: boolean;
-  }>({
+  const [state, setState] = useState({
+    open: false,
     isVerifying: false,
     isVerified: false,
-    error: null,
+    error: null as string | null,
     cancelled: false,
   });
 
+  const cleanupUrlParams = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("payment");
+    router.replace(url.pathname + url.search, { scroll: false });
+  };
+
   const verifyAction = useAction(verifyPaymentAction, {
     onExecute: () => {
-      setVerificationState({
+      setState((prev) => ({
+        ...prev,
         isVerifying: true,
         isVerified: false,
         error: null,
         cancelled: false,
-      });
+      }));
     },
     onSuccess: async () => {
-      setVerificationState({
+      setState((prev) => ({
+        ...prev,
         isVerifying: false,
         isVerified: true,
         error: null,
-        cancelled: false,
-      });
+      }));
 
       await update({
         user: {
           plan: SubscriptionPlan.PAID,
         },
       });
+
       router.refresh();
 
       setTimeout(() => {
-        setOpen(false);
-
-        setTimeout(() => {
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete("payment");
-          router.replace(newUrl.pathname);
-        }, 300);
+        setState((prev) => ({ ...prev, open: false }));
+        cleanupUrlParams();
       }, 3000);
     },
     onError: (error) => {
-      setVerificationState({
+      const errorMessage =
+        error.error.serverError || "Failed to verify payment";
+      setState((prev) => ({
+        ...prev,
         isVerifying: false,
         isVerified: false,
-        error: error.error.serverError || "Failed to verify payment",
-        cancelled: false,
-      });
-      toast.error(error.error.serverError || "Failed to verify payment");
+        error: errorMessage,
+      }));
+      toast.error(errorMessage);
     },
   });
 
+  const handleClose = () => {
+    if (state.isVerifying) return;
+
+    setState((prev) => ({ ...prev, open: false }));
+    cleanupUrlParams();
+  };
+
   useEffect(() => {
     if (paymentStatus === "success") {
-      setOpen(true);
-      if (!verificationState.isVerifying && !verificationState.isVerified) {
+      setState((prev) => ({ ...prev, open: true }));
+
+      if (!state.isVerifying && !state.isVerified) {
         verifyAction.execute();
       }
-    } else if (paymentStatus === "cancelled" && !verificationState.cancelled) {
-      setVerificationState({
+    } else if (paymentStatus === "cancelled") {
+      setState((prev) => ({
+        ...prev,
+        open: true,
+        cancelled: true,
         isVerifying: false,
         isVerified: false,
         error: null,
-        cancelled: true,
-      });
-      setOpen(true);
-    } else if (!paymentStatus) {
-      setOpen(false);
+      }));
     }
-  }, [
-    paymentStatus,
-    verificationState.isVerifying,
-    verificationState.isVerified,
-    verificationState.cancelled,
-    verifyAction,
-  ]);
-
-  const handleClose = () => {
-    if (!verificationState.isVerifying) {
-      setOpen(false);
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("payment");
-      router.replace(newUrl.pathname);
-    }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paymentStatus]);
 
   const getDialogContent = () => {
-    if (verificationState.isVerifying) {
+    if (state.isVerifying) {
       return (
-        <>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
-              Verifying your payment
-            </DialogTitle>
-            <DialogDescription>
-              Please wait while we verify your payment with Stripe...
-            </DialogDescription>
-          </DialogHeader>
-        </>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            Verifying your payment
+          </DialogTitle>
+          <DialogDescription>
+            Please wait while we verify your payment with Stripe...
+          </DialogDescription>
+        </DialogHeader>
       );
     }
 
-    if (verificationState.isVerified) {
+    if (state.isVerified) {
       return (
-        <>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-success">
-              <CheckCircle className="h-5 w-5" />
-              Payment Successful!
-            </DialogTitle>
-            <DialogDescription>
-              Your payment has been verified and your account has been upgraded
-              to the paid plan. You now have access to all premium features.
-            </DialogDescription>
-          </DialogHeader>
-        </>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-success">
+            <CheckCircle className="h-5 w-5" />
+            Payment Successful!
+          </DialogTitle>
+          <DialogDescription>
+            Your payment has been verified and your account has been upgraded to
+            the paid plan. You now have access to all premium features.
+          </DialogDescription>
+        </DialogHeader>
       );
     }
 
-    if (verificationState.cancelled) {
+    if (state.cancelled) {
       return (
         <>
           <DialogHeader>
@@ -176,7 +162,7 @@ export function PaymentVerification() {
       );
     }
 
-    if (verificationState.error) {
+    if (state.error) {
       return (
         <>
           <DialogHeader>
@@ -184,7 +170,7 @@ export function PaymentVerification() {
               <XCircle className="h-5 w-5" />
               Payment Verification Failed
             </DialogTitle>
-            <DialogDescription>{verificationState.error}</DialogDescription>
+            <DialogDescription>{state.error}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button
@@ -215,7 +201,13 @@ export function PaymentVerification() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog
+      open={state.open}
+      onOpenChange={(open) => {
+        if (!open) handleClose();
+        else setState((prev) => ({ ...prev, open: true }));
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         {getDialogContent()}
       </DialogContent>

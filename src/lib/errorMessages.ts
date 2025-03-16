@@ -58,6 +58,10 @@ export const errors = {
     },
   },
   USER: {
+    NO_STRIPE_CUSTOMER_ID: {
+      message:
+        "No Stripe customer ID found. Please add a subscription to continue.",
+    },
     NOT_FOUND: {
       message: "User not found. Please check your credentials.",
     },

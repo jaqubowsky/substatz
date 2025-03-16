@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { googleLoginAction } from "@/features/auth/server/actions/auth";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
-import { googleLoginAction } from "../server/actions/auth";
 
 export const GoogleSignInButton = () => {
   const router = useRouter();

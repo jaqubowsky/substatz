@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SubscriptionStats } from "@/features/dashboard/lib";
 import { Subscription } from "@prisma/client";
 import { History, Repeat } from "lucide-react";
-import { SubscriptionStats } from "../../lib/subscription-stats";
 
 interface RenewalHistoryProps {
   subscription: Subscription;

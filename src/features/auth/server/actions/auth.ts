@@ -1,33 +1,29 @@
 "use server";
 
 import { signIn } from "@/auth";
-import { errors } from "@/lib/errorMessages";
-import { ActionError, publicAction } from "@/lib/safe-action";
-import { z } from "zod";
-import { hashPassword, verifyPassword } from "../../lib/auth";
-import {
-  sendPasswordResetEmail,
-  sendVerificationEmail,
-  sendWelcomeEmail,
-} from "../../lib/email";
 import {
   emailSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
-} from "../../schemas/auth";
+} from "@/features/auth/schemas";
 import {
   createPasswordResetToken,
   createUser,
   generateNewVerificationToken,
-  getUserByEmail,
   resetUserPassword,
-  verifyUserEmail,
-} from "../db/user";
+} from "@/features/auth/server/db/user";
+import { hashPassword, verifyPassword } from "@/lib/auth";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/email";
+import { errors } from "@/lib/errorMessages";
+import { ActionError, publicAction } from "@/lib/safe-action";
+
+import { userDb } from "@/server";
+
 export const registerAction = publicAction
   .schema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
-    const existingUser = await getUserByEmail(email);
+    const existingUser = await userDb.getUserByEmail(email);
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
 
     const hashedPassword = await hashPassword(password);
@@ -87,33 +83,6 @@ export const googleLoginAction = publicAction.action(async () => {
 
   return { success: true, url: result };
 });
-
-export const verifyEmailAction = publicAction
-  .schema(z.object({ token: z.string() }))
-  .action(async ({ parsedInput }) => {
-    const { token } = parsedInput;
-
-    if (!token) {
-      return {
-        success: false,
-        error: errors.AUTH.VERIFICATION_TOKEN_INVALID.message,
-      };
-    }
-
-    const user = await verifyUserEmail(token);
-    if (!user) {
-      throw new ActionError(errors.AUTH.VERIFICATION_TOKEN_EXPIRED.message);
-    }
-
-    if (user.email && user.name) {
-      await sendWelcomeEmail(user.email, user.name);
-    }
-
-    return {
-      success: true,
-      message: "Email verified successfully!",
-    };
-  });
 
 export const resendVerificationAction = publicAction
   .schema(emailSchema)

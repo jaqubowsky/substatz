@@ -1,4 +1,5 @@
-import { auth } from "@/auth";
+"use client";
+
 import { LogoutButton } from "@/components/logout-button.client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -10,15 +11,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useClientAuth } from "@/hooks";
 import { Settings, User } from "lucide-react";
 import Link from "next/link";
+import { Skeleton } from "./ui/skeleton";
 
-export async function UserNav() {
-  const session = await auth();
-  const user = session?.user;
-  const isAuthenticated = !!session;
+export function UserNav() {
+  const { user, isAuthenticated, isLoading } = useClientAuth();
 
-  if (!isAuthenticated) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-4 w-8 " />
+        <Skeleton className="h-4 w-8" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || isLoading) {
     return (
       <div className="flex items-center gap-4">
         <Button variant="ghost" asChild>

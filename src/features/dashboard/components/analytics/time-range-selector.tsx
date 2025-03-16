@@ -8,9 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TimeRange } from "@/features/dashboard/lib";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import { TimeRange } from "../../lib/analytics";
 
 interface TimeRangeSelectorProps {
   timeRange: TimeRange;

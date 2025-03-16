@@ -28,12 +28,16 @@ export const verifyPaymentAction = privateAction.action(async ({ ctx }) => {
       limit: 5,
     });
 
-    const successfulPayment = paymentIntents.data.find(
-      (intent) =>
-        intent.status === "succeeded" && intent.metadata?.userId === userId
-    );
+    const successfulPayments = paymentIntents.data
+      .filter(
+        (intent) =>
+          intent.status === "succeeded" && intent.metadata?.userId === userId
+      )
+      .sort((a, b) => b.created - a.created);
 
-    if (!successfulPayment) {
+    const latestSuccessfulPayment = successfulPayments[0];
+
+    if (!latestSuccessfulPayment) {
       throw new Error("No successful payment found");
     }
 

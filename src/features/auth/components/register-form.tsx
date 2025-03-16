@@ -19,9 +19,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { RegisterFormValues, registerSchema } from "../schemas/auth";
-import { registerAction } from "../server/actions/auth";
 import { GoogleSignInButton } from "./google-sign-in-button";
+import { RegisterFormValues, registerSchema } from "@/features/auth/schemas";
+import { registerAction } from "@/features/auth/server/actions/auth";
 
 const defaultValues: RegisterFormValues = {
   name: "",

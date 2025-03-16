@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,16 +22,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateCurrencySchema } from "@/features/settings/schemas/currency";
+import { updateCurrencyAction } from "@/features/settings/server/actions";
 import { useClientAuth } from "@/hooks/use-client-auth";
+import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Currency } from "@prisma/client";
 import { DollarSign, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { currencySymbols } from "../../dashboard/schemas/subscription";
-import { updateCurrencySchema } from "../schemas/currency";
-import { updateCurrencyAction } from "../server/actions/currency";
 
 export const CurrencySettingsForm = () => {
   const { user } = useClientAuth();
