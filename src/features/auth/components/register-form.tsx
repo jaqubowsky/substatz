@@ -15,13 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { Separator } from "@/components/ui/separator";
+import { RegisterFormValues, registerSchema } from "@/features/auth/schemas";
+import { registerAction } from "@/features/auth/server/actions/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { GoogleSignInButton } from "./google-sign-in-button";
-import { RegisterFormValues, registerSchema } from "@/features/auth/schemas";
-import { registerAction } from "@/features/auth/server/actions/auth";
 
 const defaultValues: RegisterFormValues = {
   name: "",
@@ -62,7 +62,7 @@ export function RegisterForm() {
         <h1 className="text-3xl font-bold text-card-foreground">
           Create an account
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-accent-foreground">
           Enter your information to create an account
         </p>
       </div>
@@ -157,7 +157,7 @@ export function RegisterForm() {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="bg-background px-2 text-accent-foreground">
             Or continue with
           </span>
         </div>
@@ -165,7 +165,7 @@ export function RegisterForm() {
 
       <GoogleSignInButton />
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-sm text-accent-foreground">
         Already have an account?{" "}
         <Link
           href="/login"

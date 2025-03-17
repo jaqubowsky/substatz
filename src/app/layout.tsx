@@ -5,7 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "SubscriptEase - Manage Your Subscriptions",
+  title: "SubStatz - Manage Your Subscriptions",
   description: "Track and manage all your subscriptions in one place",
 };
 

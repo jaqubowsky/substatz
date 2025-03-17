@@ -37,8 +37,8 @@ export const FAQItem = memo(({ question, answer }: FAQItemProps) => {
         </span>
       </button>
       {isOpen && (
-        <div id={id} className="bg-orange-50 px-6 py-5" aria-hidden={!isOpen}>
-          <p className="text-base leading-7 text-gray-600">{answer}</p>
+        <div id={id} className="bg-primary/10 px-6 py-5" aria-hidden={!isOpen}>
+          <p className="text-base leading-7 text-accent-foreground">{answer}</p>
         </div>
       )}
     </div>

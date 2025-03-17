@@ -33,7 +33,7 @@ async function PaywallContent({ children }: PaywallProps) {
             </div>
           </div>
           <h3 className="text-xl font-bold mb-2">Premium Feature</h3>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-accent-foreground mb-4">
             Unlock unlimited subscriptions and full analytics with our premium
             plan. It&apos;s just $5 for lifetime access!
           </p>

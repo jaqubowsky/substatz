@@ -79,7 +79,7 @@ export async function Billing() {
       <CardContent className="pt-5 pb-5">
         <div className="flex items-baseline gap-1.5 mb-2">
           <span className="text-3xl font-semibold">{currentPlan.price}</span>
-          <span className="text-muted-foreground text-sm">
+          <span className="text-accent-foreground text-sm">
             {currentPlan.billing}
           </span>
         </div>
@@ -92,7 +92,7 @@ export async function Billing() {
             <div key={index} className="flex items-start gap-2.5">
               <CheckCircle2
                 className={`h-4 w-4 shrink-0 mt-0.5 ${
-                  isPro ? "text-primary" : "text-muted-foreground"
+                  isPro ? "text-primary" : "text-accent-foreground"
                 }`}
               />
               <span className="text-sm">{feature}</span>

@@ -19,19 +19,19 @@ export function TimelineCard({ subscription, stats }: TimelineCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <p className="text-sm text-muted-foreground">Active For</p>
+          <p className="text-sm text-accent-foreground">Active For</p>
           <p className="text-xl font-bold">{stats.activeFor.formatted}</p>
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Start Date</p>
+          <p className="text-sm text-accent-foreground">Start Date</p>
           <p className="text-xl font-bold">
             {formatDate(subscription.startDate.toISOString())}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Next Payment</p>
+          <p className="text-sm text-accent-foreground">Next Payment</p>
           <p className="text-xl font-bold">
             {formatDate(stats.nextPaymentDate.toISOString())}
           </p>

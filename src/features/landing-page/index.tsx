@@ -12,11 +12,11 @@ export const LandingPage = () => {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "SubscriptEase",
-    url: "https://subscriptease.com",
+    name: "SubStatz",
+    url: "https://substatz.me",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://subscriptease.com/search?q={search_term_string}",
+      target: "https://substatz.me/search?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   };
@@ -24,13 +24,13 @@ export const LandingPage = () => {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "SubscriptEase",
-    url: "https://subscriptease.com",
-    logo: "https://subscriptease.com/logo.png",
+    name: "SubStatz",
+    url: "https://substatz.me",
+    logo: "https://substatz.me/logo.png",
     sameAs: [
-      "https://twitter.com/subscriptease",
-      "https://facebook.com/subscriptease",
-      "https://linkedin.com/company/subscriptease",
+      "https://twitter.com/SubStatz",
+      "https://facebook.com/SubStatz",
+      "https://linkedin.com/company/SubStatz",
     ],
   };
 

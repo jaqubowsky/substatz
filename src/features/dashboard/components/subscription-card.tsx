@@ -132,7 +132,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
               </DropdownMenu>
             </div>
           </div>
-          <div className="flex items-center text-muted-foreground text-sm">
+          <div className="flex items-center text-accent-foreground text-sm">
             <Tag className="h-3.5 w-3.5 mr-1" />
             {subscription.category}
           </div>
@@ -140,7 +140,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
         <CardContent>
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-sm text-muted-foreground flex items-center">
+              <p className="text-sm text-accent-foreground flex items-center">
                 <Calendar className="h-3.5 w-3.5 mr-1" />
                 Next payment
               </p>
@@ -150,7 +150,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
               <p className="text-2xl font-bold text-foreground">
                 {formatCurrency(subscription.price, subscription.currency)}
               </p>
-              <p className="text-sm text-muted-foreground flex items-center justify-end">
+              <p className="text-sm text-accent-foreground flex items-center justify-end">
                 <CreditCard className="h-3.5 w-3.5 mr-1" />
                 {subscription.billingCycle.charAt(0) +
                   subscription.billingCycle.slice(1).toLowerCase()}

@@ -5,52 +5,56 @@ import Link from "next/link";
 
 export function LandingHeader() {
   return (
-    <header className="absolute inset-x-0 z-40 w-full border-b border-border bg-background backdrop-blur supports-[backdrop-filter]:bg-background/95">
-      <div className="container px-4 sm:px-8 mx-auto">
-        <nav
-          className="flex items-center justify-between h-16"
-          aria-label="Global"
-        >
-          <div className="flex items-center flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
-              <ClipboardList className="w-8 h-8 text-primary" />
-              <span className="text-xl font-bold text-gray-900">
-                SubscriptEase
-              </span>
-            </Link>
-          </div>
+    <>
+      <div className="h-16"></div>
 
-          <div className="hidden md:flex md:items-center md:justify-center md:flex-1">
-            <div className="flex space-x-8">
-              <Link
-                href="#features"
-                className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition-colors"
-              >
-                Features
-              </Link>
-              <Link
-                href="#pricing"
-                className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition-colors"
-              >
-                Pricing
-              </Link>
-              <Link
-                href="#faq"
-                className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition-colors"
-              >
-                FAQ
+      <header className="fixed top-0 inset-x-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur shadow-sm supports-[backdrop-filter]:bg-background/80">
+        <div className="container px-4 sm:px-8 mx-auto">
+          <nav className="relative flex items-center h-16" aria-label="Global">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center space-x-2">
+                <ClipboardList className="w-8 h-8 text-primary" />
+                <span className="text-xl font-bold text-gray-900">
+                  SubStatz
+                </span>
               </Link>
             </div>
-          </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden md:block">
-              <UserNav />
+            {/* Navigation links - Absolutely centered */}
+            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
+              <div className="flex space-x-10">
+                <Link
+                  href="#features"
+                  className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition-colors"
+                >
+                  Features
+                </Link>
+                <Link
+                  href="#pricing"
+                  className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition-colors"
+                >
+                  Pricing
+                </Link>
+                <Link
+                  href="#faq"
+                  className="text-sm font-semibold leading-6 text-gray-900 hover:text-primary transition-colors"
+                >
+                  FAQ
+                </Link>
+              </div>
             </div>
-            <MobileMenuClient />
-          </div>
-        </nav>
-      </div>
-    </header>
+
+            <div className="ml-auto flex items-center">
+              <div className="hidden md:block">
+                <UserNav />
+              </div>
+              <div className="md:hidden">
+                <MobileMenuClient />
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+    </>
   );
 }

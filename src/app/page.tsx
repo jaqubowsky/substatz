@@ -2,9 +2,9 @@ import { LandingPage } from "@/features/landing-page";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SubscriptEase - Manage Your Subscriptions Easily",
+  title: "SubStatz - Manage Your Subscriptions Easily",
   description:
-    "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment with SubscriptEase.",
+    "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment with SubStatz.",
   keywords: [
     "subscription management",
     "subscription tracker",
@@ -12,20 +12,20 @@ export const metadata: Metadata = {
     "subscription organizer",
   ],
   alternates: {
-    canonical: "https://subscriptease.com",
+    canonical: "https://substatz.me",
   },
   openGraph: {
-    title: "SubscriptEase - Manage Your Subscriptions Easily",
+    title: "SubStatz - Manage Your Subscriptions Easily",
     description:
       "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment.",
-    url: "https://subscriptease.com",
-    siteName: "SubscriptEase",
+    url: "https://substatz.me",
+    siteName: "SubStatz",
     images: [
       {
-        url: "https://subscriptease.com/og-image.jpg",
+        url: "https://substatz.me/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "SubscriptEase - Subscription Management Made Easy",
+        alt: "SubStatz - Subscription Management Made Easy",
       },
     ],
     locale: "en_US",
@@ -33,10 +33,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SubscriptEase - Manage Your Subscriptions Easily",
+    title: "SubStatz - Manage Your Subscriptions Easily",
     description:
       "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment.",
-    images: ["https://subscriptease.com/twitter-image.jpg"],
+    images: ["https://substatz.me/twitter-image.jpg"],
   },
 };
 

@@ -4,12 +4,10 @@ import Link from "next/link";
 export const PricingSection = () => {
   const features = [
     "Unlimited subscription tracking",
-    "Payment reminders & notifications",
     "Spending insights & analytics",
     "Categorize subscriptions",
     "Secure data storage",
     "Mobile-friendly interface",
-    "Email notifications",
     "Lifetime updates",
   ];
 
@@ -23,9 +21,9 @@ export const PricingSection = () => {
           <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Simple, transparent pricing
           </p>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-accent-foreground">
             No subscriptions for a subscription tracker! Pay once and use
-            SubscriptEase forever.
+            SubStatz forever.
           </p>
         </div>
 
@@ -34,9 +32,9 @@ export const PricingSection = () => {
             <h3 className="text-2xl font-bold tracking-tight text-gray-900">
               Lifetime Access
             </h3>
-            <p className="mt-6 text-base leading-7 text-gray-600">
-              Get full access to SubscriptEase with a one-time payment. No
-              recurring fees, no hidden costs.
+            <p className="mt-6 text-base leading-7 text-accent-foreground">
+              Get full access to SubStatz with a one-time payment. No recurring
+              fees, no hidden costs.
             </p>
             <div className="mt-10 flex items-center gap-x-4">
               <h4 className="flex-none text-sm font-semibold leading-6 text-primary">
@@ -44,7 +42,7 @@ export const PricingSection = () => {
               </h4>
               <div className="h-px flex-auto bg-gray-100"></div>
             </div>
-            <ul className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-gray-600 sm:grid-cols-2 sm:gap-6">
+            <ul className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-accent-foreground sm:grid-cols-2 sm:gap-6">
               {features.map((feature, index) => (
                 <li key={index} className="flex gap-x-3">
                   <svg
@@ -67,27 +65,27 @@ export const PricingSection = () => {
           <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
             <div className="h-full rounded-2xl bg-white py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
               <div className="mx-auto max-w-xs px-8">
-                <p className="text-base font-semibold text-gray-600">
+                <p className="text-base font-semibold text-accent-foreground">
                   Pay once, use forever
                 </p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
                   <span className="text-5xl font-bold tracking-tight text-gray-900">
-                    $10
+                    $5
                   </span>
-                  <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">
+                  <span className="text-sm font-semibold leading-6 tracking-wide text-accent-foreground">
                     USD
                   </span>
                 </p>
                 <div className="mt-2">
-                  <p className="text-xs text-gray-500 line-through">$29.99</p>
+                  <p className="text-xs text-gray-500 line-through">$10</p>
                   <p className="text-sm text-primary font-medium">
-                    67% off - Limited time offer
+                    50% off - Limited time offer
                   </p>
                 </div>
                 <Button className="mt-10 w-full" size="lg" asChild>
                   <Link href="/register">Get Access Now</Link>
                 </Button>
-                <p className="mt-6 text-xs leading-5 text-gray-600">
+                <p className="mt-6 text-xs leading-5 text-accent-foreground">
                   Invoices and receipts available for easy company reimbursement
                 </p>
               </div>

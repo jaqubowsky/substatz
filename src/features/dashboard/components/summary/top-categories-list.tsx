@@ -17,7 +17,7 @@ export function TopCategoriesList({
 
   return (
     <div>
-      <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center">
+      <h3 className="text-sm font-medium text-accent-foreground mb-3 flex items-center">
         <Tag className="h-4 w-4 mr-1" />
         Top Categories
       </h3>

@@ -144,7 +144,7 @@ export function PaymentVerification() {
       return (
         <>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-muted-foreground">
+            <DialogTitle className="flex items-center gap-2 text-accent-foreground">
               <XCircle className="h-5 w-5" />
               Payment Cancelled
             </DialogTitle>

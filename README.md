@@ -1,4 +1,4 @@
-# SubscriptEase
+# SubStatz
 
 A subscription management application to help users track and manage their subscriptions in one place.
 
@@ -136,7 +136,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Stripe Integration
 
-SubscriptEase uses Stripe for payment processing to enable premium features. Here's how to set it up:
+SubStatz uses Stripe for payment processing to enable premium features. Here's how to set it up:
 
 1. Create a [Stripe account](https://stripe.com) if you don't have one already.
 

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "SubscriptEase - Authentication",
+  title: "SubStatz - Authentication",
   description: "Sign in or register to manage your subscriptions",
 };
 

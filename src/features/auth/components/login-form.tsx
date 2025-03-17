@@ -98,7 +98,7 @@ export function LoginForm() {
 
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold text-card-foreground">Sign in</h1>
-        <p className="text-muted-foreground">
+        <p className="text-accent-foreground">
           Enter your credentials to sign in
         </p>
       </div>
@@ -174,7 +174,7 @@ export function LoginForm() {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="bg-background px-2 text-accent-foreground">
             Or continue with
           </span>
         </div>
@@ -182,7 +182,7 @@ export function LoginForm() {
 
       <GoogleSignInButton />
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-sm text-accent-foreground">
         Don&apos;t have an account?{" "}
         <Link
           href="/register"

@@ -26,14 +26,14 @@ export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-accent-foreground mb-4">
             We&apos;re sorry, but we encountered an unexpected error.
           </p>
           {process.env.NODE_ENV !== "production" && (
             <div className="bg-muted p-3 rounded-md text-sm overflow-auto max-h-[200px]">
               <p className="font-mono">{error.message}</p>
               {error.stack && (
-                <pre className="mt-2 text-xs text-muted-foreground">
+                <pre className="mt-2 text-xs text-accent-foreground">
                   {error.stack}
                 </pre>
               )}

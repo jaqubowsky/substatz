@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "SubscriptEase - Dashboard",
+  title: "SubStatz - Dashboard",
   description: "Track and manage all your subscriptions in one place",
 };
 

@@ -17,7 +17,7 @@ const SubscriptionListContent = async () => {
 
   if (subscriptions.length === 0) {
     return (
-      <Card className="bg-accent border-dashed">
+      <Card className="bg-accent/10 border-dashed">
         <CardContent className="pt-6 pb-8 text-center">
           <div className="flex flex-col items-center justify-center">
             <div className="bg-primary/10 p-3 rounded-full mb-4">
