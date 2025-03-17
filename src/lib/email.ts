@@ -642,17 +642,6 @@ The SubscriptEase Team`,
             <li>Your bank declining the transaction</li>
           </ul>
 
-          <div style="text-align: center; margin: 35px 0;">
-            <a href="${retryUrl}" style="${styles.button}">
-              Update Payment Method
-            </a>
-          </div>
-
-          <p style="font-size: 14px; color: ${
-            colors.textMedium
-          };">Or use this link:</p>
-          <p style="${styles.codeBox}">${retryUrl}</p>
-
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
           };">
