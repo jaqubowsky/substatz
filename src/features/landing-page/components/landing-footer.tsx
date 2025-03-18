@@ -1,4 +1,4 @@
-import { ClipboardList, Github, Linkedin, Twitter } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import Link from "next/link";
 
 export function LandingFooter() {
@@ -11,24 +11,6 @@ export function LandingFooter() {
     legal: [
       { name: "Privacy", href: "/privacy" },
       { name: "Terms", href: "/terms" },
-      { name: "Cookie Policy", href: "#" },
-    ],
-    social: [
-      {
-        name: "Twitter",
-        href: "#",
-        icon: <Twitter className="h-6 w-6 text-gray-500 hover:text-primary" />,
-      },
-      {
-        name: "GitHub",
-        href: "#",
-        icon: <Github className="h-6 w-6 text-gray-500 hover:text-primary" />,
-      },
-      {
-        name: "LinkedIn",
-        href: "#",
-        icon: <Linkedin className="h-6 w-6 text-gray-500 hover:text-primary" />,
-      },
     ],
   };
 
@@ -51,18 +33,6 @@ export function LandingFooter() {
             <p className="text-sm leading-6 text-accent-foreground">
               Making subscription management simple and stress-free.
             </p>
-            <div className="flex space-x-6">
-              {navigation.social.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-400 hover:text-primary"
-                >
-                  <span className="sr-only">{item.name}</span>
-                  {item.icon}
-                </Link>
-              ))}
-            </div>
           </div>
           <div className="mt-16 flex flex-col gap-8 xl:mt-0">
             <div className="md:grid md:grid-cols-3 md:gap-8">

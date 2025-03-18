@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { publicEnv } from "@/lib/env";
 import { AlertTriangle } from "lucide-react";
 
 interface ErrorBoundaryProps {
@@ -29,7 +30,7 @@ export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           <p className="text-accent-foreground mb-4">
             We&apos;re sorry, but we encountered an unexpected error.
           </p>
-          {process.env.NODE_ENV !== "production" && (
+          {publicEnv.NEXT_PUBLIC_NODE_ENV !== "production" && (
             <div className="bg-muted p-3 rounded-md text-sm overflow-auto max-h-[200px]">
               <p className="font-mono">{error.message}</p>
               {error.stack && (

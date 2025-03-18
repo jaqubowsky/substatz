@@ -10,25 +10,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AddSubscriptionForm } from "./add-subscription-form";
 
 export const AddSubscriptionButtonClient = ({
-  isPaid,
   hasReachedLimit,
 }: {
-  isPaid: boolean;
   hasReachedLimit: boolean;
 }) => {
-  const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleOpenDialog = () => {
-    if (hasReachedLimit && !isPaid) return router.push("/pricing");
-
-    setIsDialogOpen(true);
-  };
 
   return (
     <>
@@ -42,7 +32,7 @@ export const AddSubscriptionButtonClient = ({
         </PurchaseButton>
       ) : (
         <Button
-          onClick={handleOpenDialog}
+          onClick={() => setIsDialogOpen(true)}
           size="sm"
           className="gap-1"
           aria-label="Add subscription"

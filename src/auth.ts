@@ -8,6 +8,7 @@ import Credentials from "next-auth/providers/credentials";
 import authConfig from "./auth.config";
 import { verifyPassword } from "./lib/auth";
 import { sendWelcomeEmail } from "./lib/email";
+import { env } from "./lib/env";
 import prisma from "./lib/prisma";
 import { getUserByEmail } from "./server/db/user";
 
@@ -16,7 +17,7 @@ const adapter = PrismaAdapter(prisma) as Adapter;
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter,
   session: { strategy: "jwt" },
-  secret: process.env.AUTH_SECRET,
+  secret: env.AUTH_SECRET,
   trustHost: true,
   providers: [
     ...authConfig.providers,

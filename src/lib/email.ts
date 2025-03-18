@@ -1,4 +1,5 @@
 import { transporter } from "@/server/mailer";
+import { env } from "./env";
 
 const colors = {
   primary: "#dd8244",
@@ -118,10 +119,10 @@ export async function sendVerificationEmail(
   name: string,
   verificationToken: string
 ) {
-  const verificationUrl = `${process.env.AUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${env.AUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
     subject: "Just one click to get started with SubStatz",
     text: `Hey ${name || "there"},
@@ -192,17 +193,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -222,7 +223,7 @@ The SubStatz Team`,
 
 export async function sendWelcomeEmail(email: string, name: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
     subject: "You're in! Welcome to SubStatz",
     text: `Hey ${name}!
@@ -283,7 +284,7 @@ The SubStatz Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.AUTH_URL}/login" style="${styles.button}">
+            <a href="${env.AUTH_URL}/login" style="${styles.button}">
               Log In & Get Started
             </a>
           </div>
@@ -313,17 +314,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -346,10 +347,10 @@ export async function sendPasswordResetEmail(
   name: string,
   resetToken: string
 ) {
-  const resetUrl = `${process.env.AUTH_URL}/reset-password?token=${resetToken}`;
+  const resetUrl = `${env.AUTH_URL}/reset-password?token=${resetToken}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
     subject: "Reset your SubStatz password",
     text: `Hey ${name || "there"},
@@ -411,17 +412,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -444,7 +445,7 @@ export async function sendSubscriptionThankYouEmail(
   name: string
 ) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
     subject: "Thank you for upgrading to SubStatz Premium!",
     text: `Hey ${name || "there"},
@@ -520,7 +521,7 @@ The SubStatz Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.AUTH_URL}/dashboard" style="${
+            <a href="${env.AUTH_URL}/dashboard" style="${
       styles.button
     }">
               Explore Premium Features
@@ -558,17 +559,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -590,7 +591,7 @@ The SubStatz Team`,
 
 export async function sendPaymentFailedEmail(email: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
     subject: "Action Required: Payment Failed for SubStatz Premium",
     text: `Hey there,
@@ -655,17 +656,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>

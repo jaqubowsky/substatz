@@ -1,18 +1,89 @@
 import "@/app/globals.css";
 import { Providers } from "@/app/providers";
+import { env } from "@/lib/env";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "SubStatz - Manage Your Subscriptions",
-  description: "Track and manage all your subscriptions in one place",
+  title: {
+    default: "SubStatz - Subscription Management Made Easy",
+    template: "%s | SubStatz",
+  },
+  description:
+    "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment with SubStatz.",
+  generator: "Next.js",
+  applicationName: "SubStatz",
+  referrer: "origin-when-cross-origin",
+  keywords: [
+    "subscription management",
+    "subscription tracker",
+    "manage subscriptions",
+    "subscription organizer",
+    "track subscriptions",
+    "subscription analytics",
+    "save money on subscriptions",
+  ],
+  authors: [{ name: "SubStatz Team" }],
+  category: "Finance",
+  creator: "SubStatz Team",
+  publisher: "SubStatz",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL(env.AUTH_URL || "https://substatz.me"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/en-US",
+    },
+  },
+  openGraph: {
+    title: "SubStatz - Subscription Management Made Easy",
+    description:
+      "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment.",
+    url: env.AUTH_URL,
+    siteName: "SubStatz",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "SubStatz - Subscription Management Made Easy",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SubStatz - Subscription Management Made Easy",
+    description:
+      "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment.",
+    creator: "@SubStatz",
+    images: [{ url: "/api/og", width: 1200, height: 630 }],
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
   themeColor: "#ffffff",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({

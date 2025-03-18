@@ -38,6 +38,13 @@ export const errors = {
     RESET_TOKEN_INVALID: {
       message: "Reset token invalid or expired. Please request a new one.",
     },
+    CSRF_ERROR: {
+      message:
+        "Security verification failed. Please refresh the page and try again.",
+    },
+    SESSION_EXPIRED: {
+      message: "Your session has expired. Please log in again to continue.",
+    },
   },
   SUBSCRIPTION: {
     INVALID_SUBSCRIPTION_DATA: {
@@ -82,6 +89,16 @@ export const errors = {
     },
     VALIDATION_ERROR: {
       message: "Invalid data provided. Please check your input.",
+    },
+    RATE_LIMIT: {
+      message: "Too many requests. Please try again later.",
+    },
+    MAINTENANCE: {
+      message:
+        "The system is currently under maintenance. Please try again later.",
+    },
+    FORBIDDEN: {
+      message: "You don't have permission to perform this action.",
     },
   },
 };

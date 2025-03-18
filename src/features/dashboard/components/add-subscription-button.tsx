@@ -13,12 +13,7 @@ export const AddSubscriptionButtonContent = async () => {
   const isPaid = session?.user?.plan === SubscriptionPlan.PAID;
   const hasReachedLimit = !isPaid && subscriptions && subscriptions.length >= 1;
 
-  return (
-    <AddSubscriptionButtonClient
-      isPaid={isPaid}
-      hasReachedLimit={hasReachedLimit}
-    />
-  );
+  return <AddSubscriptionButtonClient hasReachedLimit={hasReachedLimit} />;
 };
 
 export const AddSubscriptionButton = async () => {

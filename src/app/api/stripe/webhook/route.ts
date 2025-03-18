@@ -2,6 +2,7 @@ import {
   sendPaymentFailedEmail,
   sendSubscriptionThankYouEmail,
 } from "@/lib/email";
+import { env } from "@/lib/env";
 import { stripe } from "@/lib/stripe";
 import { updateUserPlan } from "@/server/db/subscription-plan";
 import { SubscriptionPlan } from "@prisma/client";
@@ -14,8 +15,7 @@ export async function POST(req: NextRequest) {
   const headersList = await headers();
   const signature = headersList.get("stripe-signature") as string;
 
-  if (!process.env.STRIPE_WEBHOOK_SECRET) {
-    console.error("Stripe webhook secret is not set in environment variables");
+  if (!env.STRIPE_WEBHOOK_SECRET) {
     return NextResponse.json(
       { error: "Server configuration error" },
       { status: 500 }
@@ -28,10 +28,9 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
-    console.error("Error verifying webhook signature:", error);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -41,7 +40,6 @@ export async function POST(req: NextRequest) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
         if (!paymentIntent.customer) {
-          console.error("Payment intent has no customer ID");
           return NextResponse.json(
             { error: "Invalid payment intent data" },
             { status: 400 }
@@ -64,9 +62,6 @@ export async function POST(req: NextRequest) {
           console.error("Error sending subscription thank you email:", error);
         }
 
-        console.log(
-          `User ${updatedUser.email} upgraded to paid plan via payment intent ${paymentIntent.id}`
-        );
         break;
       }
       case "customer.subscription.created":
@@ -77,10 +72,6 @@ export async function POST(req: NextRequest) {
           await updateUserPlan(
             subscription.customer as string,
             SubscriptionPlan.PAID
-          );
-
-          console.log(
-            `User with customer ID ${subscription.customer} upgraded to paid plan via subscription ${subscription.id}`
           );
         }
         break;
@@ -93,17 +84,10 @@ export async function POST(req: NextRequest) {
           SubscriptionPlan.FREE
         );
 
-        console.log(
-          `User with customer ID ${subscription.customer} downgraded to free plan via subscription ${subscription.id}`
-        );
         break;
       }
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
-
-        console.log(
-          `Payment failed for invoice ${invoice.id}, customer ${invoice.customer}`
-        );
 
         try {
           await sendPaymentFailedEmail(invoice.customer_email as string);
@@ -119,7 +103,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ received: true, event: event.type });
   } catch (error) {
-    console.error(`Error handling webhook event ${event.type}:`, error);
     return NextResponse.json(
       {
         error: "Error handling webhook event",

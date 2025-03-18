@@ -112,20 +112,12 @@ export function MobileMenuClient() {
                       )}
 
                       {!isLandingPage && (
-                        <>
-                          <MenuLink
-                            href="/"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            Home
-                          </MenuLink>
-                          <MenuLink
-                            href="/pricing"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            Pricing
-                          </MenuLink>
-                        </>
+                        <MenuLink
+                          href="/"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Home
+                        </MenuLink>
                       )}
 
                       {isAuthenticated && (

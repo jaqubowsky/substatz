@@ -1,4 +1,5 @@
 import { Currency } from "@prisma/client";
+import { env } from "./env";
 
 interface ExchangeRateResponse {
   result: string;
@@ -11,7 +12,7 @@ export async function fetchLatestExchangeRates(
 ): Promise<{ currency: Currency; rate: number }[]> {
   try {
     const response = await fetch(
-      `${process.env.EXCHANGE_RATES_API_URL}/${apiKey}/latest/USD`
+      `${env.EXCHANGE_RATES_API_URL}/${apiKey}/latest/USD`
     );
 
     if (!response.ok) {

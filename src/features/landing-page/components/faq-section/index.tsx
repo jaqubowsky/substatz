@@ -7,7 +7,7 @@ export const FAQSection = () => {
     {
       question: "Is SubStatz really a one-time payment?",
       answer:
-        "Yes! We believe a subscription tracker shouldn&apos;t be another subscription. Pay once and get lifetime access to all features and future updates.",
+        "Yes! We believe a subscription tracker shouldn't be another subscription. Pay once and get lifetime access to all features and future updates.",
     },
     {
       question: "Can I track both monthly and annual subscriptions?",

@@ -1,8 +1,6 @@
 import { auth } from "@/auth";
-import { AuthFormLoading } from "@/components/auth-form-loading";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "SubStatz - Authentication",
@@ -24,9 +22,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-secondary">
-      <Suspense fallback={<AuthFormLoading className="max-h-[300px]" />}>
-        <AuthCheck />
-      </Suspense>
+      <AuthCheck />
       <main className="rounded-lg border border-border bg-card p-6 shadow-sm w-full max-w-md">
         {children}
       </main>

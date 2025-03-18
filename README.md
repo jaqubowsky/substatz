@@ -32,8 +32,8 @@ A subscription management application to help users track and manage their subsc
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/subscript.it.git
-   cd subscript.it
+   git clone https://github.com/yourusername/substatz.me.git
+   cd substatz.me
    ```
 
 2. Install dependencies:
@@ -164,7 +164,6 @@ SubStatz uses Stripe for payment processing to enable premium features. Here's h
 
 The application includes:
 
-- A pricing page at `/pricing`
 - Checkout integration for one-time payments
 - Webhook handling for payment events
 - Paywalls for premium features (analytics and unlimited subscriptions)
