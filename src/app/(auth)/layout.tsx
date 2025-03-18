@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { setSentryUserFromSession } from "@/lib/auth-sentry";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -15,11 +16,13 @@ async function AuthCheck() {
   return null;
 }
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await setSentryUserFromSession();
+
   return (
     <div className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-secondary">
       <AuthCheck />

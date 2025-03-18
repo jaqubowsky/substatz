@@ -8,8 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { publicEnv } from "@/lib/env";
+import { env } from "@/lib/env";
+import * as Sentry from "@sentry/nextjs";
 import { AlertTriangle } from "lucide-react";
+import { useEffect } from "react";
 
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };
@@ -17,6 +19,18 @@ interface ErrorBoundaryProps {
 }
 
 export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
+  
+  useEffect(() => {
+    Sentry.captureException(error, {
+      tags: {
+        origin: "global_error_boundary",
+      },
+      extra: {
+        digest: error.digest,
+      },
+    });
+  }, [error]);
+
   return (
     <div className="flex items-center justify-center min-h-[400px] p-4">
       <Card className="w-full max-w-md">
@@ -30,7 +44,7 @@ export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           <p className="text-accent-foreground mb-4">
             We&apos;re sorry, but we encountered an unexpected error.
           </p>
-          {publicEnv.NEXT_PUBLIC_NODE_ENV !== "production" && (
+          {env.NEXT_PUBLIC_NODE_ENV !== "production" && (
             <div className="bg-muted p-3 rounded-md text-sm overflow-auto max-h-[200px]">
               <p className="font-mono">{error.message}</p>
               {error.stack && (

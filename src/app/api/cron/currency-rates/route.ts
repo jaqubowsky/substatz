@@ -1,6 +1,7 @@
 import { fetchLatestExchangeRates } from "@/lib/currency-rates";
 import { env } from "@/lib/env";
 import { upsertCurrencyRates } from "@/server/db/currency-rates";
+import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -58,6 +59,13 @@ export async function POST(request: NextRequest) {
       count: rates.length,
     });
   } catch (error) {
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "cron_currency_rates",
+      },
+    });
+
     return NextResponse.json(
       {
         error: "Failed to update currency rates",

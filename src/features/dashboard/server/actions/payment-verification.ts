@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { privateAction } from "@/lib/safe-action";
 import { stripe } from "@/lib/stripe";
 import { SubscriptionPlan } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 
 export const verifyPaymentAction = privateAction.action(async ({ ctx }) => {
   const { session } = ctx;
@@ -43,7 +44,13 @@ export const verifyPaymentAction = privateAction.action(async ({ ctx }) => {
 
     return { success: true, message: "Payment verified successfully" };
   } catch (error) {
-    console.error("Payment verification error:", error);
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "payment_verification",
+      },
+    });
+
     throw new Error(
       error instanceof Error ? error.message : "Failed to verify payment"
     );

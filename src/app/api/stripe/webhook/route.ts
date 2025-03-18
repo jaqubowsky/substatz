@@ -6,6 +6,7 @@ import { env } from "@/lib/env";
 import { stripe } from "@/lib/stripe";
 import { updateUserPlan } from "@/server/db/subscription-plan";
 import { SubscriptionPlan } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -14,13 +15,6 @@ export async function POST(req: NextRequest) {
   const body = await req.text();
   const headersList = await headers();
   const signature = headersList.get("stripe-signature") as string;
-
-  if (!env.STRIPE_WEBHOOK_SECRET) {
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
 
   let event: Stripe.Event;
 
@@ -31,6 +25,13 @@ export async function POST(req: NextRequest) {
       env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "stripe_webhook_invalid_signature",
+      },
+    });
+
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -52,14 +53,21 @@ export async function POST(req: NextRequest) {
         );
 
         try {
-          if (updatedUser.email && updatedUser.name) {
-            await sendSubscriptionThankYouEmail(
-              updatedUser.email,
-              updatedUser.name
-            );
+          const emailResult = await sendSubscriptionThankYouEmail(
+            updatedUser.email,
+            updatedUser.name
+          );
+
+          if (!emailResult?.success) {
+            throw new Error("Failed to send subscription thank you email");
           }
         } catch (error) {
-          console.error("Error sending subscription thank you email:", error);
+          Sentry.captureException(error, {
+            level: "error",
+            tags: {
+              origin: "stripe_webhook_payment_succeeded",
+            },
+          });
         }
 
         break;
@@ -92,17 +100,29 @@ export async function POST(req: NextRequest) {
         try {
           await sendPaymentFailedEmail(invoice.customer_email as string);
         } catch (error) {
-          console.error("Error sending payment failed email:", error);
+          Sentry.captureException(error, {
+            level: "error",
+            tags: {
+              origin: "stripe_webhook_invoice_payment_failed",
+            },
+          });
         }
 
         break;
       }
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        Sentry.captureMessage(`Unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true, event: event.type });
   } catch (error) {
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "stripe_webhook_unhandled_event",
+      },
+    });
+
     return NextResponse.json(
       {
         error: "Error handling webhook event",

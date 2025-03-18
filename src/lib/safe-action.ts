@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import * as Sentry from "@sentry/nextjs";
 import { createSafeActionClient } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { errors } from "./errorMessages";
@@ -11,7 +12,13 @@ export const action = createSafeActionClient({
   handleServerError: (e) => {
     if (e instanceof ActionError) return e.message;
 
-    console.error("Server action error:", e);
+    Sentry.captureException(e, {
+      level: "error",
+      tags: {
+        origin: "server_action",
+      },
+    });
+
     return errors.GENERAL.SERVER_ERROR.message;
   },
 });

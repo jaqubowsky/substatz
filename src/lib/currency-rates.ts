@@ -1,4 +1,5 @@
 import { Currency } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 import { env } from "./env";
 
 interface ExchangeRateResponse {
@@ -51,7 +52,13 @@ export async function fetchLatestExchangeRates(
 
     return rates;
   } catch (error) {
-    console.error("Error fetching exchange rates:", error);
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "fetch_latest_exchange_rates",
+      },
+    });
+
     throw error;
   }
 }

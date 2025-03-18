@@ -1,4 +1,5 @@
 import { verifyEmailAction } from "@/server/actions/user";
+import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -26,7 +27,12 @@ export async function GET(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Error verifying email:", error);
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "verify_email",
+      },
+    });
 
     return NextResponse.redirect(
       new URL("/login?error=SERVER_ERROR", request.url)

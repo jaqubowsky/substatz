@@ -28,15 +28,11 @@ export const registerAction = publicAction
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
 
     const hashedPassword = await hashPassword(password);
+
     const result = await createUser(name, email, hashedPassword);
+    if (!result.verificationToken) return;
 
-    try {
-      if (!result.verificationToken) return;
-
-      await sendVerificationEmail(email, name, result.verificationToken);
-    } catch {
-      throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
-    }
+    await sendVerificationEmail(email, name, result.verificationToken);
 
     return {
       success: true,
@@ -105,15 +101,13 @@ export const resendVerificationAction = publicAction
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
-    try {
-      if (result.email && result.name) {
-        await sendVerificationEmail(
-          result.email,
-          result.name,
-          result.verificationToken
-        );
-      }
-    } catch {
+    const emailResult = await sendVerificationEmail(
+      result.email,
+      result.name,
+      result.verificationToken
+    );
+
+    if (!emailResult?.success) {
       throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
     }
 
@@ -142,15 +136,13 @@ export const forgotPasswordAction = publicAction
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
-    try {
-      if (result.email && result.name) {
-        await sendPasswordResetEmail(
-          result.email,
-          result.name,
-          result.resetToken
-        );
-      }
-    } catch {
+    const emailResult = await sendPasswordResetEmail(
+      result.email,
+      result.name,
+      result.resetToken
+    );
+
+    if (!emailResult?.success) {
       throw new ActionError(errors.AUTH.PASSWORD_RESET_EMAIL_ERROR.message);
     }
 

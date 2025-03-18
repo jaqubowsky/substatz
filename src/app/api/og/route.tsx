@@ -1,4 +1,5 @@
 import { LogoSection } from "@/lib/shared-image-components";
+import * as Sentry from "@sentry/nextjs";
 import { ImageResponse } from "@vercel/og";
 
 export const runtime = "edge";
@@ -210,7 +211,13 @@ export async function GET() {
       }
     );
   } catch (e) {
-    console.error(e);
+    Sentry.captureException(e, {
+      level: "error",
+      tags: {
+        origin: "og_image",
+      },
+    });
+
     return new Response("Failed to generate image", { status: 500 });
   }
 }

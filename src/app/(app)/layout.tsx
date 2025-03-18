@@ -2,6 +2,8 @@ import "@/app/globals.css";
 import { auth } from "@/auth";
 import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
+import { setSentryUserContext } from "@/lib/auth-sentry";
+import { User } from "@prisma/client";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -17,6 +19,8 @@ export default async function AppLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  await setSentryUserContext(session.user as Partial<User>);
 
   return (
     <div className="min-h-screen flex flex-col">

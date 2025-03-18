@@ -1,5 +1,14 @@
 import { transporter } from "@/server/mailer";
+import * as Sentry from "@sentry/nextjs";
 import { env } from "./env";
+
+type MailOptions = {
+  from: string;
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+};
 
 const colors = {
   primary: "#dd8244",
@@ -114,6 +123,21 @@ const styles = {
   `,
 };
 
+const sendMail = (mailOptions: MailOptions) => {
+  try {
+    transporter.sendMail(mailOptions);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    Sentry.captureException(error, {
+      level: "error",
+      tags: { origin: "email_send" },
+    });
+  }
+};
+
 export async function sendVerificationEmail(
   email: string,
   name: string,
@@ -218,7 +242,7 @@ The SubStatz Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendWelcomeEmail(email: string, name: string) {
@@ -339,7 +363,7 @@ The SubStatz Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendPasswordResetEmail(
@@ -437,7 +461,7 @@ The SubStatz Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendSubscriptionThankYouEmail(
@@ -521,9 +545,7 @@ The SubStatz Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${env.AUTH_URL}/dashboard" style="${
-      styles.button
-    }">
+            <a href="${env.AUTH_URL}/dashboard" style="${styles.button}">
               Explore Premium Features
             </a>
           </div>
@@ -586,7 +608,7 @@ The SubStatz Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendPaymentFailedEmail(email: string) {
@@ -683,5 +705,5 @@ The SubStatz Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
