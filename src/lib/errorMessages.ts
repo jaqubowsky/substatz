@@ -22,6 +22,9 @@ export const errors = {
     USER_NOT_FOUND: {
       message: "User not found. Please check your credentials.",
     },
+    RATE_LIMIT: {
+      message: "Too many requests. Please try again later.",
+    },
     VERIFICATION_TOKEN_EXPIRED: {
       message:
         "Verification token expired or account already verified. Please try again",

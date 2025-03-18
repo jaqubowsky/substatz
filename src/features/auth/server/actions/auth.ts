@@ -16,12 +16,17 @@ import {
 import { hashPassword, verifyPassword } from "@/lib/auth";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/email";
 import { errors } from "@/lib/errorMessages";
-import { ActionError, publicAction } from "@/lib/safe-action";
+import { authRateLimiter } from "@/lib/rate-limit";
+import {
+  ActionError,
+  publicAction,
+  publicActionWithLimiter,
+} from "@/lib/safe-action";
 
 import { userDb } from "@/server";
 import { getUserByEmail } from "@/server/db/user";
 
-export const registerAction = publicAction
+export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
   .schema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
     const existingUser = await userDb.getUserByEmail(email);
@@ -40,7 +45,7 @@ export const registerAction = publicAction
     };
   });
 
-export const loginAction = publicAction
+export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
   .schema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
     const user = await getUserByEmail(email);
@@ -81,7 +86,10 @@ export const googleLoginAction = publicAction.action(async () => {
   return { success: true, url: result };
 });
 
-export const resendVerificationAction = publicAction
+export const resendVerificationAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
   .schema(emailSchema)
   .action(async ({ parsedInput }) => {
     const { email } = parsedInput;
@@ -117,7 +125,10 @@ export const resendVerificationAction = publicAction
     };
   });
 
-export const forgotPasswordAction = publicAction
+export const forgotPasswordAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
   .schema(emailSchema)
   .action(async ({ parsedInput }) => {
     const { email } = parsedInput;
@@ -153,7 +164,10 @@ export const forgotPasswordAction = publicAction
     };
   });
 
-export const resetPasswordAction = publicAction
+export const resetPasswordAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
   .schema(resetPasswordSchema)
   .action(async ({ parsedInput }) => {
     const { token, password } = parsedInput;

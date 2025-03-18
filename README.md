@@ -11,6 +11,7 @@ A subscription management application to help users track and manage their subsc
 - Categorize subscriptions
 - View upcoming payments
 - Analyze subscription spending by category
+- Rate limiting for API routes
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ A subscription management application to help users track and manage their subsc
 - **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: NextAuth.js
 - **Form Handling**: React Hook Form with Zod validation
+- **Rate Limiting**: Upstash Redis
 
 ## Getting Started
 
@@ -167,3 +169,54 @@ The application includes:
 - Checkout integration for one-time payments
 - Webhook handling for payment events
 - Paywalls for premium features (analytics and unlimited subscriptions)
+
+## Rate Limiting
+
+The application uses Upstash Redis for rate limiting API requests to protect against abuse and ensure fair usage.
+
+### Implementation
+
+- **Middleware-based**: Default rate limiting is applied to all API routes via Next.js middleware
+- **Customizable limits**: Different limits for various types of endpoints (authentication, public API, etc.)
+- **Response headers**: Standard rate limit headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
+
+### Configuration
+
+1. Sign up for an [Upstash](https://upstash.com/) account and create a Redis database
+2. Add your Upstash credentials to the `.env` file:
+   ```
+   UPSTASH_REDIS_REST_URL=your-upstash-redis-url
+   UPSTASH_REDIS_REST_TOKEN=your-upstash-redis-token
+   ```
+
+### Using Rate Limiting in API Routes
+
+For direct usage in API routes:
+
+```typescript
+import { rateLimit } from "@/lib/rate-limit";
+
+export async function GET(request) {
+  const { success } = await rateLimit("identifier");
+
+  if (!success) {
+    return Response.json({ error: "Rate limit exceeded" }, { status: 429 });
+  }
+
+  // Process request...
+}
+```
+
+For easier integration, use the provided utility:
+
+```typescript
+import { withRateLimit, RateLimitType } from "@/lib/utils/with-rate-limit";
+
+async function handler(request) {
+  // Handle request...
+}
+
+export const GET = withRateLimit(handler, {
+  type: RateLimitType.PUBLIC_API,
+});
+```
