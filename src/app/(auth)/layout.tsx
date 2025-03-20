@@ -1,5 +1,4 @@
-import { auth } from "@/auth";
-import { setSentryUserFromSession } from "@/lib/auth-sentry";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -11,8 +10,9 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 async function AuthCheck() {
-  const session = await auth();
-  if (session?.user) redirect("/dashboard");
+  const session = await getServerAuth();
+  if (session) redirect("/dashboard");
+
   return null;
 }
 
@@ -21,8 +21,6 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await setSentryUserFromSession();
-
   return (
     <div className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-secondary">
       <AuthCheck />

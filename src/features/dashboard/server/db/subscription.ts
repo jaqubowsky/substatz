@@ -8,6 +8,12 @@ export async function getSubscriptionsByUserId(userId: string) {
   });
 }
 
+export async function getSubscriptionCountByUserId(userId: string) {
+  return prisma.subscription.count({
+    where: { userId },
+  });
+}
+
 export async function getSubscriptionById(id: string) {
   return prisma.subscription.findUnique({
     where: { id },

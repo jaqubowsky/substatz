@@ -1,4 +1,3 @@
-import { Paywall } from "@/components/paywall";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AddSubscriptionButton } from "./add-subscription-button";
@@ -44,13 +43,11 @@ export const Dashboard = async () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Paywall>
-            <Card>
-              <CardContent className="pt-6">
-                <AnalyticsTab />
-              </CardContent>
-            </Card>
-          </Paywall>
+          <Card>
+            <CardContent className="pt-6">
+              <AnalyticsTab />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

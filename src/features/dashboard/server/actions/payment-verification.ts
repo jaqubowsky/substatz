@@ -1,9 +1,11 @@
 "use server";
 
+import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
 import { stripe } from "@/lib/stripe";
 import { updateUserPlan } from "@/server/db/subscription-plan";
 import { SubscriptionPlan } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export const verifyPaymentAction = privateAction
@@ -21,7 +23,9 @@ export const verifyPaymentAction = privateAction
     }
 
     if (!parsedInput.sessionId) {
-      throw new ActionError("No checkout session ID provided");
+      throw new ActionError(
+        errors.SUBSCRIPTION.CHECKOUT_SESSION_NOT_FOUND.message
+      );
     }
 
     const checkoutSession = await stripe.checkout.sessions.retrieve(
@@ -29,12 +33,17 @@ export const verifyPaymentAction = privateAction
     );
 
     if (checkoutSession.metadata?.userId !== userId) {
-      throw new ActionError("Checkout session does not belong to this user");
+      throw new ActionError(
+        errors.SUBSCRIPTION.CHECKOUT_SESSION_NOT_BELONG_TO_USER.message
+      );
     }
 
     if (checkoutSession.payment_status !== "paid") {
       throw new ActionError(
-        `Payment status is ${checkoutSession.payment_status}`
+        errors.SUBSCRIPTION.PAYMENT_STATUS_IS.message.replace(
+          "{{status}}",
+          checkoutSession.payment_status
+        )
       );
     }
 
@@ -42,6 +51,9 @@ export const verifyPaymentAction = privateAction
       checkoutSession.customer as string,
       SubscriptionPlan.PAID
     );
+
+    revalidatePath("/dashboard");
+    revalidatePath("/settings");
 
     return { success: true, message: "Payment verified successfully" };
   });

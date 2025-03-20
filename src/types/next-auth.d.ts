@@ -1,20 +1,13 @@
-import { Currency, SubscriptionPlan } from "@prisma/client";
-import { DefaultSession } from "next-auth";
+import { DefaultSession, Provider } from "next-auth";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       email: string;
       id: string;
-      plan: SubscriptionPlan;
-      defaultCurrency: Currency;
-      provider: "google" | "credentials";
+      name: string;
+      image: string | null;
+      provider: Provider;
     } & DefaultSession["user"];
-  }
-
-  interface User {
-    plan: SubscriptionPlan;
-    defaultCurrency: Currency;
-    provider: "google" | "credentials";
   }
 }

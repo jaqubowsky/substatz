@@ -7,6 +7,7 @@ import { updateUserCurrency } from "@/features/settings/server/db/user";
 import { hashPassword, verifyPassword } from "@/lib/auth";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
+import { Provider } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export const updateCurrencyAction = privateAction
@@ -30,6 +31,10 @@ export const changePasswordAction = privateAction
 
     const user = await db.getUserById(ctx.session.user.id);
     if (!user) throw new ActionError(errors.USER.NOT_FOUND.message);
+
+    if (ctx.session.user.provider === Provider.GOOGLE) {
+      throw new ActionError(errors.USER.GOOGLE_PROVIDER.message);
+    }
 
     if (!user.password) throw new ActionError(errors.USER.NO_PASSWORD.message);
 

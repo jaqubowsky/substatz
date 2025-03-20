@@ -11,13 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { verifyPaymentAction } from "@/features/dashboard/server/actions";
-import { SubscriptionPlan } from "@prisma/client";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export function PaymentVerification() {
   const searchParams = useSearchParams();
@@ -25,8 +22,6 @@ export function PaymentVerification() {
 
   const sessionId = searchParams.get("session_id");
   const status = searchParams.get("status");
-
-  const { update } = useSession();
 
   const [state, setState] = useState({
     open: false,
@@ -61,29 +56,21 @@ export function PaymentVerification() {
         error: null,
       }));
 
-      await update({
-        user: {
-          plan: SubscriptionPlan.PAID,
-        },
-      });
-
-      router.refresh();
-
       setTimeout(() => {
         setState((prev) => ({ ...prev, open: false }));
         cleanupUrlParams();
-      }, 3000);
+      }, 1500);
     },
     onError: (error) => {
       const errorMessage =
         error.error.serverError || "Failed to verify payment";
+
       setState((prev) => ({
         ...prev,
         isVerifying: false,
         isVerified: false,
         error: errorMessage,
       }));
-      toast.error(errorMessage);
     },
   });
 

@@ -66,8 +66,22 @@ export const errors = {
     PERMISSION_ERROR: {
       message: "Permission error. Please check your permissions.",
     },
+    CHECKOUT_SESSION_NOT_FOUND: {
+      message: "Checkout session not found. Please provide a valid session ID.",
+    },
+    CHECKOUT_SESSION_NOT_BELONG_TO_USER: {
+      message: "Checkout session does not belong to this user.",
+    },
+    PAYMENT_STATUS_IS: {
+      message:
+        "Payment status is {{status}}. Please try again or contact support.",
+    },
   },
   USER: {
+    GOOGLE_PROVIDER: {
+      message:
+        "Google provider not supported. Please use a different provider.",
+    },
     NO_STRIPE_CUSTOMER_ID: {
       message:
         "No Stripe customer ID found. Please add a subscription to continue.",

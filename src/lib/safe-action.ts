@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import * as Sentry from "@sentry/nextjs";
 import { createSafeActionClient } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
@@ -25,38 +25,24 @@ export const action = createSafeActionClient({
 });
 
 export const privateAction = action.use(async ({ next }) => {
-  const session = await auth();
-  const ip = await getIp();
+  const session = await getServerAuth();
+  if (!session) throw new ActionError(errors.AUTH.UNAUTHORIZED.message);
 
-  if (!ip) {
-    throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
-  }
+  const ip = await getIp();
+  if (!ip) throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
 
   const { success } = await publicApiRateLimiter.limit(ip);
-
-  if (!success) {
-    throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
-  }
-
-  if (!session?.user?.id) {
-    throw new ActionError(errors.AUTH.UNAUTHORIZED.message);
-  }
+  if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
 
   return next({ ctx: { session } });
 });
 
 export const publicAction = action.use(async ({ next }) => {
   const ip = await getIp();
-
-  if (!ip) {
-    throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
-  }
+  if (!ip) throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
 
   const { success } = await publicApiRateLimiter.limit(ip);
-
-  if (!success) {
-    throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
-  }
+  if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
 
   return next();
 });
@@ -67,17 +53,12 @@ export const publicActionWithLimiter = (
 ) =>
   action.use(async ({ next }) => {
     const ip = await getIp();
-
-    if (!ip) {
-      throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
-    }
+    if (!ip) throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
 
     const identifier = customIdentifier ? `${customIdentifier}:${ip}` : ip;
-    const { success } = await limiter.limit(identifier);
 
-    if (!success) {
-      throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
-    }
+    const { success } = await limiter.limit(identifier);
+    if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
 
     return next();
   });

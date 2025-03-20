@@ -26,32 +26,25 @@ import {
 } from "@/components/ui/select";
 import { updateCurrencySchema } from "@/features/settings/schemas/currency";
 import { updateCurrencyAction } from "@/features/settings/server/actions";
-import { useClientAuth } from "@/hooks/use-client-auth";
 import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Currency } from "@prisma/client";
 import { DollarSign, Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-export const CurrencySettingsForm = () => {
-  const { user } = useClientAuth();
-  const { update } = useSession();
-
+export const CurrencySettingsForm = ({
+  defaultCurrency,
+}: {
+  defaultCurrency: Currency;
+}) => {
   const { form, handleSubmitWithAction } = useHookFormAction(
     updateCurrencyAction,
     zodResolver(updateCurrencySchema),
     {
       actionProps: {
-        onSuccess: ({ input }) => {
+        onSuccess: () => {
           toast.success("Default currency updated successfully.");
-
-          update({
-            user: {
-              defaultCurrency: input.defaultCurrency,
-            },
-          });
         },
         onError: (error) => {
           toast.error(
@@ -61,7 +54,7 @@ export const CurrencySettingsForm = () => {
       },
       formProps: {
         defaultValues: {
-          defaultCurrency: user?.defaultCurrency || Currency.USD,
+          defaultCurrency: defaultCurrency || Currency.USD,
         },
       },
     }

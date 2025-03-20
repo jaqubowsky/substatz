@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { PurchaseButton } from "@/components/purchase-button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,16 +8,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { SubscriptionPlan } from "@prisma/client";
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { RefundButton } from "./refund-button";
 
 export async function Billing() {
-  const session = await auth();
-  if (!session?.user) return null;
+  const session = await getServerAuth();
+  if (!session) return null;
 
-  const plan = session.user.plan || SubscriptionPlan.FREE;
-  const isPro = plan === SubscriptionPlan.PAID;
+  const isPro = session.user.plan === SubscriptionPlan.PAID;
 
   const planDetails = {
     free: {

@@ -1,4 +1,4 @@
-import { LogoSection } from "@/lib/shared-image-components";
+import { LogoSection } from "@/components/shared-image-components";
 import * as Sentry from "@sentry/nextjs";
 import { ImageResponse } from "@vercel/og";
 

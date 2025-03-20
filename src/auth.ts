@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Currency, SubscriptionPlan } from "@prisma/client";
+import { Provider } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { randomUUID } from "crypto";
 import NextAuth from "next-auth";
@@ -51,9 +51,7 @@ export const {
             name: user.name,
             email: user.email,
             image: user.image,
-            plan: user.plan,
-            defaultCurrency: user.defaultCurrency,
-            provider: "credentials",
+            provider: Provider.CREDENTIALS,
           };
         } catch (error) {
           Sentry.captureException(error, {
@@ -70,40 +68,16 @@ export const {
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, account, user, trigger, session }) {
-      if (trigger === "update" && session?.user) {
-        if (session.user.plan) {
-          token.plan = session.user.plan;
-        }
-
-        if (session.user.defaultCurrency) {
-          token.defaultCurrency = session.user.defaultCurrency;
-        }
-
-        if (session.user.id) {
-          const updatedUser = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            select: { plan: true, defaultCurrency: true },
-          });
-
-          if (updatedUser) {
-            token.plan = updatedUser.plan;
-            token.defaultCurrency = updatedUser.defaultCurrency;
-          }
-        }
-      }
-
+    async jwt({ token, account, user }) {
       if (user) {
         token.id = user.id;
         token.image = user.image;
-        token.plan = user.plan;
-        token.defaultCurrency = user.defaultCurrency;
-        token.provider = account?.provider || "credentials";
+        token.provider =
+          account?.provider?.toUpperCase() || Provider.CREDENTIALS;
 
         setSentryUserContext({
           id: user.id as string,
           email: user.email as string,
-          name: user.name as string,
         });
       }
 
@@ -114,9 +88,7 @@ export const {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.image = token.image as string;
-        session.user.plan = token.plan as SubscriptionPlan;
-        session.user.defaultCurrency = token.defaultCurrency as Currency;
-        session.user.provider = token.provider as "google" | "credentials";
+        session.user.provider = token.provider as Provider;
       }
 
       return session;
