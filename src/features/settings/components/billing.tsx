@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { SubscriptionPlan } from "@prisma/client";
 import { CheckCircle2, Sparkles } from "lucide-react";
-import { ManageBillingButton } from "./manage-billing-button";
+import { RefundButton } from "./refund-button";
 
 export async function Billing() {
   const session = await auth();
@@ -76,7 +76,7 @@ export async function Billing() {
           </div>
         </CardHeader>
       </div>
-      <CardContent className="pt-5 pb-5">
+      <CardContent>
         <div className="flex items-baseline gap-1.5 mb-2">
           <span className="text-3xl font-semibold">{currentPlan.price}</span>
           <span className="text-accent-foreground text-sm">
@@ -102,7 +102,7 @@ export async function Billing() {
       </CardContent>
       <CardFooter className="flex justify-end border-t py-3 bg-muted/5">
         {isPro ? (
-          <ManageBillingButton />
+          <RefundButton />
         ) : (
           <PurchaseButton>Upgrade to Pro</PurchaseButton>
         )}

@@ -2,14 +2,19 @@ import * as Sentry from "@sentry/nextjs";
 import NextAuth from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import authConfig from "./auth.config";
-import { authRateLimiter, getIp, rateLimit } from "./lib/rate-limit";
+import { getIp, publicApiRateLimiter } from "./lib/rate-limit";
 
 export const { auth } = NextAuth(authConfig);
 
-export default auth(async function middleware(req: NextRequest) {
+export default auth(async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  if (path.startsWith("/api/auth/session")) {
+    return NextResponse.next();
+  }
+
   const ip = await getIp();
   const identifier = `auth:${ip}`;
-  const { success, headers } = await rateLimit(identifier, authRateLimiter);
+  const { success, headers } = await publicApiRateLimiter.limit(identifier);
 
   if (!success) {
     Sentry.captureMessage("Too many requests", {

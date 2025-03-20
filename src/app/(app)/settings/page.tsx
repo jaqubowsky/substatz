@@ -1,8 +1,9 @@
+import { auth } from "@/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
 const SettingsComponent = dynamic(
   () => import("@/features/settings").then((mod) => mod.Settings),
   { ssr: true }
@@ -29,7 +30,13 @@ function SettingsSkeleton() {
   );
 }
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <Suspense fallback={<SettingsSkeleton />}>
       <SettingsComponent />

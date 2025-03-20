@@ -22,7 +22,10 @@ import { toast } from "sonner";
 export function PaymentVerification() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const paymentStatus = searchParams.get("payment");
+
+  const sessionId = searchParams.get("session_id");
+  const status = searchParams.get("status");
+
   const { update } = useSession();
 
   const [state, setState] = useState({
@@ -35,7 +38,8 @@ export function PaymentVerification() {
 
   const cleanupUrlParams = () => {
     const url = new URL(window.location.href);
-    url.searchParams.delete("payment");
+    url.searchParams.delete("session_id");
+    url.searchParams.delete("status");
     router.replace(url.pathname + url.search, { scroll: false });
   };
 
@@ -91,24 +95,24 @@ export function PaymentVerification() {
   };
 
   useEffect(() => {
-    if (paymentStatus === "success") {
+    if (sessionId) {
       setState((prev) => ({ ...prev, open: true }));
 
-      if (!state.isVerifying && !state.isVerified) {
-        verifyAction.execute();
+      if (status === "cancelled") {
+        setState((prev) => ({
+          ...prev,
+          open: true,
+          cancelled: true,
+          isVerifying: false,
+          isVerified: false,
+          error: null,
+        }));
+      } else if (!state.isVerifying && !state.isVerified) {
+        verifyAction.execute({ sessionId });
       }
-    } else if (paymentStatus === "cancelled") {
-      setState((prev) => ({
-        ...prev,
-        open: true,
-        cancelled: true,
-        isVerifying: false,
-        isVerified: false,
-        error: null,
-      }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentStatus]);
+  }, [sessionId, status]);
 
   const getDialogContent = () => {
     if (state.isVerifying) {
@@ -175,7 +179,7 @@ export function PaymentVerification() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => verifyAction.execute()}
+              onClick={() => verifyAction.execute({ sessionId: sessionId! })}
               disabled={verifyAction.isExecuting}
             >
               {verifyAction.isExecuting ? "Retrying..." : "Retry Verification"}

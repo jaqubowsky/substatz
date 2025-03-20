@@ -1,5 +1,6 @@
 import {
   sendPaymentFailedEmail,
+  sendRefundFeedbackEmail,
   sendSubscriptionThankYouEmail,
 } from "@/lib/email";
 import { env } from "@/lib/env";
@@ -72,18 +73,24 @@ export async function POST(req: NextRequest) {
 
         break;
       }
-      case "customer.subscription.created":
-      case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
 
-        if (subscription.status === "active") {
-          await updateUserPlan(
-            subscription.customer as string,
-            SubscriptionPlan.PAID
-          );
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge;
+
+        try {
+          await sendRefundFeedbackEmail(charge.receipt_email as string);
+        } catch (error) {
+          Sentry.captureException(error, {
+            level: "error",
+            tags: {
+              origin: "stripe_webhook_charge_refunded",
+            },
+          });
         }
-        break;
+
+        await updateUserPlan(charge.customer as string, SubscriptionPlan.FREE);
       }
+
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
 
@@ -94,16 +101,16 @@ export async function POST(req: NextRequest) {
 
         break;
       }
-      case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
+      case "payment_intent.payment_failed": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
         try {
-          await sendPaymentFailedEmail(invoice.customer_email as string);
+          await sendPaymentFailedEmail(paymentIntent.customer as string);
         } catch (error) {
           Sentry.captureException(error, {
             level: "error",
             tags: {
-              origin: "stripe_webhook_invoice_payment_failed",
+              origin: "stripe_webhook_payment_intent_payment_failed",
             },
           });
         }
@@ -111,7 +118,7 @@ export async function POST(req: NextRequest) {
         break;
       }
       default:
-        Sentry.captureMessage(`Unhandled event type: ${event.type}`);
+        break;
     }
 
     return NextResponse.json({ received: true, event: event.type });

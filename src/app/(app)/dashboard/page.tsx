@@ -1,6 +1,8 @@
+import { auth } from "@/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const DashboardComponent = dynamic(
@@ -27,7 +29,13 @@ function DashboardSkeleton() {
   );
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <Suspense fallback={<DashboardSkeleton />}>
       <DashboardComponent />

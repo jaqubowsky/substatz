@@ -1,6 +1,6 @@
 import { fetchLatestExchangeRates } from "@/lib/currency-rates";
 import { env } from "@/lib/env";
-import { authRateLimiter, getIp, rateLimit } from "@/lib/rate-limit";
+import { authRateLimiter, getIp } from "@/lib/rate-limit";
 import { upsertCurrencyRates } from "@/server/db/currency-rates";
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const ip = await getIp();
     const identifier = `cron:${ip}`;
 
-    const { success } = await rateLimit(identifier, authRateLimiter);
+    const { success } = await authRateLimiter.limit(identifier);
 
     if (!success) {
       throw new Error("Too many requests");

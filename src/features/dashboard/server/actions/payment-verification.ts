@@ -1,58 +1,47 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { privateAction } from "@/lib/safe-action";
+import { ActionError, privateAction } from "@/lib/safe-action";
 import { stripe } from "@/lib/stripe";
+import { updateUserPlan } from "@/server/db/subscription-plan";
 import { SubscriptionPlan } from "@prisma/client";
-import * as Sentry from "@sentry/nextjs";
+import { z } from "zod";
 
-export const verifyPaymentAction = privateAction.action(async ({ ctx }) => {
-  const { session } = ctx;
-  const userId = session.user.id;
+export const verifyPaymentAction = privateAction
+  .schema(
+    z.object({
+      sessionId: z.string().optional(),
+    })
+  )
+  .action(async ({ ctx, parsedInput }) => {
+    const { session } = ctx;
+    const userId = session.user.id;
 
-  if (session.user.plan === SubscriptionPlan.PAID) {
-    return { success: true, message: "Already on paid plan" };
-  }
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { stripeCustomerId: true },
-    });
-
-    if (!user?.stripeCustomerId) {
-      throw new Error("No Stripe customer ID found for this user");
+    if (session.user.plan === SubscriptionPlan.PAID) {
+      return { success: true, message: "Already on paid plan" };
     }
 
-    const paymentIntents = await stripe.paymentIntents.list({
-      customer: user.stripeCustomerId,
-      limit: 5,
-    });
-
-    const successfulPayments = paymentIntents.data
-      .filter(
-        (intent) =>
-          intent.status === "succeeded" && intent.metadata?.userId === userId
-      )
-      .sort((a, b) => b.created - a.created);
-
-    const latestSuccessfulPayment = successfulPayments[0];
-
-    if (!latestSuccessfulPayment) {
-      throw new Error("No successful payment found");
+    if (!parsedInput.sessionId) {
+      throw new ActionError("No checkout session ID provided");
     }
+
+    const checkoutSession = await stripe.checkout.sessions.retrieve(
+      parsedInput.sessionId
+    );
+
+    if (checkoutSession.metadata?.userId !== userId) {
+      throw new ActionError("Checkout session does not belong to this user");
+    }
+
+    if (checkoutSession.payment_status !== "paid") {
+      throw new ActionError(
+        `Payment status is ${checkoutSession.payment_status}`
+      );
+    }
+
+    await updateUserPlan(
+      checkoutSession.customer as string,
+      SubscriptionPlan.PAID
+    );
 
     return { success: true, message: "Payment verified successfully" };
-  } catch (error) {
-    Sentry.captureException(error, {
-      level: "error",
-      tags: {
-        origin: "payment_verification",
-      },
-    });
-
-    throw new Error(
-      error instanceof Error ? error.message : "Failed to verify payment"
-    );
-  }
-});
+  });

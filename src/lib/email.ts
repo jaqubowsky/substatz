@@ -707,3 +707,99 @@ The SubStatz Team`,
 
   return sendMail(mailOptions);
 }
+
+export async function sendRefundFeedbackEmail(email: string, name?: string) {
+  const mailOptions = {
+    from: env.EMAIL_FROM,
+    to: email,
+    subject: "We're sorry to see you go - Help us improve",
+    text: `Hey ${name || "there"},
+
+We noticed you've recently cancelled your SubStatz Premium subscription and requested a refund. While we're sad to see you go, we completely respect your decision.
+
+We're always working to make SubStatz better, and your feedback would be incredibly valuable to us. If you have a moment, could you let us know what led to your decision? Just reply to this email with your thoughts.
+
+Your insights will help us improve SubStatz for everyone.
+
+Thanks for giving us a try, and we hope our paths cross again in the future.
+
+Best regards,
+The SubStatz Team`,
+    html: `
+      <div style="${styles.emailContainer}">
+        <div style="${styles.header}">
+          <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">We'd Love Your Feedback</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Help us improve SubStatz</p>
+        </div>
+
+        <div style="${styles.content}">
+          <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
+      name || "there"
+    } 👋</h2>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            We noticed you've recently cancelled your SubStatz Premium subscription and requested a refund. While we're sad to see you go, we completely respect your decision.
+          </p>
+
+          <div style="${styles.featureBox}">
+            <p style="margin: 0; font-size: 16px; color: ${colors.textDark};">
+              We're always working to make SubStatz better, and your feedback would be incredibly valuable to us. If you have a moment, could you let us know what led to your decision?
+            </p>
+          </div>
+
+          <div style="${styles.highlightBox}">
+            <p style="margin: 0; font-size: 15px; color: ${colors.textDark};">
+              <strong>Simply reply to this email</strong> with your thoughts - we read every response and take all feedback seriously.
+            </p>
+          </div>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Your insights will help us improve SubStatz for everyone.
+          </p>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Thanks for giving us a try, and we hope our paths cross again in the future.
+          </p>
+
+          <div style="${styles.footer}">
+            <p style="color: ${
+              colors.textMedium
+            };">Best regards,<br><strong>The SubStatz Team</strong></p>
+
+            <div style="margin-top: 20px; text-align: center;">
+              <a href="${
+                env.AUTH_URL
+              }" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Website</a>
+              <a href="${
+                env.AUTH_URL
+              }/help" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Help Center</a>
+              <a href="${
+                env.AUTH_URL
+              }/contact" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Contact Us</a>
+            </div>
+
+            <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
+              colors.textLight
+            };">
+              © ${new Date().getFullYear()} SubStatz. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  return sendMail(mailOptions);
+}

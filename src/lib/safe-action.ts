@@ -1,10 +1,9 @@
 import { auth } from "@/auth";
 import * as Sentry from "@sentry/nextjs";
-import { Ratelimit } from "@upstash/ratelimit";
 import { createSafeActionClient } from "next-safe-action";
 import { zodAdapter } from "next-safe-action/adapters/zod";
 import { errors } from "./errorMessages";
-import { getIp, publicApiRateLimiter, rateLimit } from "./rate-limit";
+import { getIp, publicApiRateLimiter, RateLimiter } from "./rate-limit";
 
 export class ActionError extends Error {}
 
@@ -33,7 +32,7 @@ export const privateAction = action.use(async ({ next }) => {
     throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
   }
 
-  const { success } = await rateLimit(ip, publicApiRateLimiter);
+  const { success } = await publicApiRateLimiter.limit(ip);
 
   if (!success) {
     throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
@@ -53,7 +52,7 @@ export const publicAction = action.use(async ({ next }) => {
     throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
   }
 
-  const { success } = await rateLimit(ip, publicApiRateLimiter);
+  const { success } = await publicApiRateLimiter.limit(ip);
 
   if (!success) {
     throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
@@ -62,7 +61,10 @@ export const publicAction = action.use(async ({ next }) => {
   return next();
 });
 
-export const publicActionWithLimiter = (limiter: Ratelimit, customIdentifier?: string) =>
+export const publicActionWithLimiter = (
+  limiter: RateLimiter,
+  customIdentifier?: string
+) =>
   action.use(async ({ next }) => {
     const ip = await getIp();
 
@@ -70,8 +72,8 @@ export const publicActionWithLimiter = (limiter: Ratelimit, customIdentifier?: s
       throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
     }
 
-    const identifier = identifier ? `${identifier}:${ip}` : ip;
-    const { success } = await rateLimit(identifier, limiter);
+    const identifier = customIdentifier ? `${customIdentifier}:${ip}` : ip;
+    const { success } = await limiter.limit(identifier);
 
     if (!success) {
       throw new ActionError(errors.GENERAL.RATE_LIMIT.message);
