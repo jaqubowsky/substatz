@@ -72,6 +72,9 @@ ENV EXCHANGE_RATES_API_URL=""
 ENV UPSTASH_REDIS_REST_URL=""
 ENV UPSTASH_REDIS_REST_TOKEN=""
 
+# Set hostname to properly bind to all interfaces
+ENV HOSTNAME="0.0.0.0"
+
 EXPOSE 3000
 
 CMD ["node", "server.js"]
