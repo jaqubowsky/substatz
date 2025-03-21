@@ -70,7 +70,7 @@ export function ResetPasswordForm() {
         <h1 className="text-3xl font-bold text-card-foreground">
           Reset Password
         </h1>
-        <p className="text-muted-foreground">Enter your new password below</p>
+        <p className="text-accent-foreground">Enter your new password below</p>
       </div>
       <Form {...form}>
         <form onSubmit={handleSubmitWithAction} className="space-y-4">
@@ -127,7 +127,7 @@ export function ResetPasswordForm() {
         </form>
       </Form>
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-sm text-accent-foreground">
         Remember your password?{" "}
         <Link
           href="/login"

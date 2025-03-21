@@ -22,27 +22,27 @@ export function FinancialSummary({
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <p className="text-sm text-muted-foreground">Current Price</p>
+          <p className="text-sm text-accent-foreground">Current Price</p>
           <p className="text-xl font-bold">
             {formatCurrency(subscription.price, subscription.currency)}
-            <span className="text-sm font-normal text-muted-foreground ml-1">
+            <span className="text-sm font-normal text-accent-foreground ml-1">
               {subscription.billingCycle.toLowerCase()}
             </span>
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Total Spent</p>
+          <p className="text-sm text-accent-foreground">Total Spent</p>
           <p className="text-xl font-bold">
             {formatCurrency(stats.totalSpent, subscription.currency)}
           </p>
         </div>
 
         <div>
-          <p className="text-sm text-muted-foreground">Average Monthly Cost</p>
+          <p className="text-sm text-accent-foreground">Average Monthly Cost</p>
           <p className="text-xl font-bold">
             {formatCurrency(stats.averageCostPerMonth, subscription.currency)}
-            <span className="text-sm font-normal text-muted-foreground ml-1">
+            <span className="text-sm font-normal text-accent-foreground ml-1">
               /month
             </span>
           </p>

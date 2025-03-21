@@ -36,3 +36,21 @@ export async function getUserByEmail(email: string) {
     where: { email },
   });
 }
+
+export async function getUserById(id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+  });
+}
+
+export async function getUserForSession(id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      image: true,
+      plan: true,
+      defaultCurrency: true,
+    },
+  });
+}

@@ -16,27 +16,28 @@ import {
 import { hashPassword, verifyPassword } from "@/lib/auth";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/email";
 import { errors } from "@/lib/errorMessages";
-import { ActionError, publicAction } from "@/lib/safe-action";
+import { authRateLimiter } from "@/lib/rate-limit";
+import {
+  ActionError,
+  publicAction,
+  publicActionWithLimiter,
+} from "@/lib/safe-action";
 
 import { userDb } from "@/server";
 import { getUserByEmail } from "@/server/db/user";
 
-export const registerAction = publicAction
+export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
   .schema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
     const existingUser = await userDb.getUserByEmail(email);
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
 
     const hashedPassword = await hashPassword(password);
+
     const result = await createUser(name, email, hashedPassword);
+    if (!result.verificationToken) return;
 
-    try {
-      if (!result.verificationToken) return;
-
-      await sendVerificationEmail(email, name, result.verificationToken);
-    } catch {
-      throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
-    }
+    await sendVerificationEmail(email, name, result.verificationToken);
 
     return {
       success: true,
@@ -44,7 +45,7 @@ export const registerAction = publicAction
     };
   });
 
-export const loginAction = publicAction
+export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
   .schema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
     const user = await getUserByEmail(email);
@@ -85,7 +86,10 @@ export const googleLoginAction = publicAction.action(async () => {
   return { success: true, url: result };
 });
 
-export const resendVerificationAction = publicAction
+export const resendVerificationAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
   .schema(emailSchema)
   .action(async ({ parsedInput }) => {
     const { email } = parsedInput;
@@ -105,15 +109,13 @@ export const resendVerificationAction = publicAction
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
-    try {
-      if (result.email && result.name) {
-        await sendVerificationEmail(
-          result.email,
-          result.name,
-          result.verificationToken
-        );
-      }
-    } catch {
+    const emailResult = await sendVerificationEmail(
+      result.email,
+      result.name,
+      result.verificationToken
+    );
+
+    if (!emailResult?.success) {
       throw new ActionError(errors.AUTH.VERIFICATION_EMAIL_ERROR.message);
     }
 
@@ -123,7 +125,10 @@ export const resendVerificationAction = publicAction
     };
   });
 
-export const forgotPasswordAction = publicAction
+export const forgotPasswordAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
   .schema(emailSchema)
   .action(async ({ parsedInput }) => {
     const { email } = parsedInput;
@@ -142,15 +147,13 @@ export const forgotPasswordAction = publicAction
       throw new ActionError(errors.GENERAL.SERVER_ERROR.message);
     }
 
-    try {
-      if (result.email && result.name) {
-        await sendPasswordResetEmail(
-          result.email,
-          result.name,
-          result.resetToken
-        );
-      }
-    } catch {
+    const emailResult = await sendPasswordResetEmail(
+      result.email,
+      result.name,
+      result.resetToken
+    );
+
+    if (!emailResult?.success) {
       throw new ActionError(errors.AUTH.PASSWORD_RESET_EMAIL_ERROR.message);
     }
 
@@ -161,7 +164,10 @@ export const forgotPasswordAction = publicAction
     };
   });
 
-export const resetPasswordAction = publicAction
+export const resetPasswordAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
   .schema(resetPasswordSchema)
   .action(async ({ parsedInput }) => {
     const { token, password } = parsedInput;

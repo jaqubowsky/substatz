@@ -1,4 +1,4 @@
-# SubscriptEase
+# SubStatz
 
 A subscription management application to help users track and manage their subscriptions in one place.
 
@@ -11,6 +11,7 @@ A subscription management application to help users track and manage their subsc
 - Categorize subscriptions
 - View upcoming payments
 - Analyze subscription spending by category
+- Rate limiting for API routes
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ A subscription management application to help users track and manage their subsc
 - **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: NextAuth.js
 - **Form Handling**: React Hook Form with Zod validation
+- **Rate Limiting**: Client Memory
 
 ## Getting Started
 
@@ -32,8 +34,8 @@ A subscription management application to help users track and manage their subsc
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/subscript.it.git
-   cd subscript.it
+   git clone https://github.com/yourusername/substatz.me.git
+   cd substatz.me
    ```
 
 2. Install dependencies:
@@ -136,7 +138,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Stripe Integration
 
-SubscriptEase uses Stripe for payment processing to enable premium features. Here's how to set it up:
+SubStatz uses Stripe for payment processing to enable premium features. Here's how to set it up:
 
 1. Create a [Stripe account](https://stripe.com) if you don't have one already.
 
@@ -164,7 +166,10 @@ SubscriptEase uses Stripe for payment processing to enable premium features. Her
 
 The application includes:
 
-- A pricing page at `/pricing`
 - Checkout integration for one-time payments
 - Webhook handling for payment events
 - Paywalls for premium features (analytics and unlimited subscriptions)
+
+```
+
+```

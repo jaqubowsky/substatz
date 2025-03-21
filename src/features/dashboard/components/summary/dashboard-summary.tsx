@@ -1,7 +1,7 @@
-import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Separator } from "@/components/ui/separator";
 import { getSubscriptionSummary } from "@/features/dashboard/server/queries";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { Currency } from "@prisma/client";
 import { PieChart } from "lucide-react";
 import { Suspense } from "react";
@@ -12,14 +12,16 @@ import { UpcomingPaymentsList } from "./upcoming-payments-list";
 import { YearlySpendingCard } from "./yearly-spending-card";
 
 const DashboardSummaryContent = async () => {
-  const session = await auth();
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
+
   const data = await getSubscriptionSummary();
 
   const totalMonthly = data?.totalMonthly || 0;
   const totalYearly = data?.totalYearly || 0;
   const upcomingPayments = data?.upcomingPayments || [];
   const categoriesBreakdown = data?.categoriesBreakdown || {};
-  const defaultCurrency = session?.user?.defaultCurrency || Currency.USD;
+  const defaultCurrency = session.user.defaultCurrency || Currency.USD;
 
   return (
     <div>

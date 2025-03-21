@@ -42,8 +42,7 @@ export async function getLatestExchangeRates(): Promise<
     });
 
     return rates as Record<Currency, number>;
-  } catch (error) {
-    console.error("Error fetching currency rates:", error);
+  } catch {
     return fallbackExchangeRates;
   }
 }

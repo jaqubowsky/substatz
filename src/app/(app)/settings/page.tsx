@@ -1,12 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { Settings } from "@/features/settings";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
-const SettingsComponent = dynamic(
-  () => import("@/features/settings").then((mod) => mod.Settings),
-  { ssr: true }
-);
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -29,10 +26,13 @@ function SettingsSkeleton() {
   );
 }
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const session = await getServerAuth();
+  if (!session) redirect("/login");
+
   return (
     <Suspense fallback={<SettingsSkeleton />}>
-      <SettingsComponent />
+      <Settings />
     </Suspense>
   );
 }

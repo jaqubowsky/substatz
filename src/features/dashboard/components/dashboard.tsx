@@ -1,13 +1,5 @@
-import { Paywall } from "@/components/paywall";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard } from "lucide-react";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics";
 import { PaymentVerification } from "./payment-verification";
@@ -16,27 +8,7 @@ import { DashboardSummary } from "./summary/dashboard-summary";
 
 export const Dashboard = async () => {
   return (
-    <div className="container mx-auto px-4 h-full">
-      <Card className="mb-6 border-none bg-transparent shadow-none">
-        <CardHeader className="px-0">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-md">
-                <LayoutDashboard className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-3xl font-bold text-foreground">
-                  Dashboard
-                </CardTitle>
-                <CardDescription className="text-muted-foreground mt-1">
-                  Manage your subscriptions in one place
-                </CardDescription>
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
-
+    <div className="container mx-auto py-6 px-4 h-full">
       <PaymentVerification />
 
       <Tabs defaultValue="subscriptions">
@@ -71,13 +43,11 @@ export const Dashboard = async () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Paywall>
-            <Card>
-              <CardContent className="pt-6">
-                <AnalyticsTab />
-              </CardContent>
-            </Card>
-          </Paywall>
+          <Card>
+            <CardContent className="pt-6">
+              <AnalyticsTab />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

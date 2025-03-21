@@ -71,7 +71,7 @@ export function MobileMenuClient() {
                       <div className="flex items-center space-x-2">
                         <ClipboardList className="h-8 w-8 text-primary" />
                         <span className="text-xl font-bold text-gray-900">
-                          SubscriptEase
+                          SubStatz
                         </span>
                       </div>
                     </Link>
@@ -112,20 +112,12 @@ export function MobileMenuClient() {
                       )}
 
                       {!isLandingPage && (
-                        <>
-                          <MenuLink
-                            href="/"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            Home
-                          </MenuLink>
-                          <MenuLink
-                            href="/pricing"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            Pricing
-                          </MenuLink>
-                        </>
+                        <MenuLink
+                          href="/"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Home
+                        </MenuLink>
                       )}
 
                       {isAuthenticated && (

@@ -32,14 +32,3 @@ export async function updateUserCurrency(
     data: { defaultCurrency },
   });
 }
-
-export async function getUserDefaultCurrency(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      defaultCurrency: true,
-    },
-  });
-
-  return user?.defaultCurrency;
-}

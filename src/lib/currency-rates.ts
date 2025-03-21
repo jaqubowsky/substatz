@@ -1,4 +1,6 @@
 import { Currency } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
+import { env } from "./env";
 
 interface ExchangeRateResponse {
   result: string;
@@ -11,7 +13,7 @@ export async function fetchLatestExchangeRates(
 ): Promise<{ currency: Currency; rate: number }[]> {
   try {
     const response = await fetch(
-      `${process.env.EXCHANGE_RATES_API_URL}/${apiKey}/latest/USD`
+      `${env.EXCHANGE_RATES_API_URL}/${apiKey}/latest/USD`
     );
 
     if (!response.ok) {
@@ -50,7 +52,13 @@ export async function fetchLatestExchangeRates(
 
     return rates;
   } catch (error) {
-    console.error("Error fetching exchange rates:", error);
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "fetch_latest_exchange_rates",
+      },
+    });
+
     throw error;
   }
 }

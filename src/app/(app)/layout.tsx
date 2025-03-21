@@ -1,12 +1,13 @@
 import "@/app/globals.css";
-import { auth } from "@/auth";
 import { AppFooter } from "@/components/app-footer";
 import { AppHeader } from "@/components/app-header";
+import { getServerAuth } from "@/hooks/get-server-auth";
+import { setSentryUserContext } from "@/lib/auth-sentry";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "SubscriptEase - Dashboard",
+  title: "SubStatz - Dashboard",
   description: "Track and manage all your subscriptions in one place",
 };
 
@@ -15,8 +16,13 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
+  const session = await getServerAuth();
+  if (!session) redirect("/login");
+
+  await setSentryUserContext({
+    id: session.user.id,
+    email: session.user.email,
+  });
 
   return (
     <div className="min-h-screen flex flex-col">

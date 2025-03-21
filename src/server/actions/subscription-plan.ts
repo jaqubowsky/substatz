@@ -1,5 +1,6 @@
 "use server";
 
+import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { ActionError, privateAction } from "@/lib/safe-action";
 import { stripe, STRIPE_PRICE_ID } from "@/lib/stripe";
@@ -46,10 +47,17 @@ export const createCheckoutSessionAction = privateAction.action(
         },
       ],
       mode: "payment",
-      success_url: `${process.env.AUTH_URL}/dashboard?payment=success`,
-      cancel_url: `${process.env.AUTH_URL}/dashboard?payment=cancelled`,
+      success_url: `${env.AUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${env.AUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&status=cancelled`,
       metadata: {
         userId,
+      },
+      tax_id_collection: {
+        enabled: true,
+      },
+      customer_update: {
+        name: "auto",
+        address: "auto",
       },
       payment_intent_data: {
         metadata: {

@@ -34,7 +34,7 @@ export const CustomTooltip = ({
           {Array.isArray(formattedValue) ? formattedValue[0] : formattedValue}
         </p>
         {startDate && (
-          <p className="text-xs text-muted-foreground">Started: {startDate}</p>
+          <p className="text-xs text-accent-foreground">Started: {startDate}</p>
         )}
       </div>
     );

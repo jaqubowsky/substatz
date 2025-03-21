@@ -1,12 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dashboard } from "@/features/dashboard/components/dashboard";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
-const DashboardComponent = dynamic(
-  () => import("@/features/dashboard").then((mod) => mod.Dashboard),
-  { ssr: true }
-);
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -27,10 +24,13 @@ function DashboardSkeleton() {
   );
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await getServerAuth();
+  if (!session) redirect("/login");
+
   return (
     <Suspense fallback={<DashboardSkeleton />}>
-      <DashboardComponent />
+      <Dashboard />
     </Suspense>
   );
 }

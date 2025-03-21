@@ -15,7 +15,7 @@ export function UpcomingPaymentsList({
 }: UpcomingPaymentsListProps) {
   return (
     <div>
-      <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center">
+      <h3 className="text-sm font-medium text-accent-foreground mb-3 flex items-center">
         <Calendar className="h-4 w-4 mr-1" />
         Upcoming Payments
       </h3>
@@ -26,7 +26,7 @@ export function UpcomingPaymentsList({
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium text-foreground">{payment.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-accent-foreground">
                     {formatDate(payment.nextPaymentDate.toISOString())}
                   </p>
                 </div>

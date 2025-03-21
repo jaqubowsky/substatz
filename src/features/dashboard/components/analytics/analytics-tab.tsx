@@ -1,18 +1,37 @@
-import { auth } from "@/auth";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
+import { Paywall } from "@/components/paywall";
 import {
   getSubscriptions,
   getSubscriptionSummary,
 } from "@/features/dashboard/server/queries";
-import { Currency } from "@prisma/client";
+import { getServerAuth } from "@/hooks/get-server-auth";
+import { Currency, SubscriptionPlan } from "@prisma/client";
 import { Suspense } from "react";
 import { AnalyticsContent } from "./analytics-content-client";
 import { LoadingAnalytics } from "./loading-analytics";
 import { SubscriptionSummaryCards } from "./summary-cards";
 
 const AnalyticsTabContent = async () => {
-  const session = await auth();
-  const defaultCurrency = session?.user?.defaultCurrency || Currency.USD;
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
+
+  const userPlan = session.user.plan;
+  const defaultCurrency = session.user.defaultCurrency || Currency.USD;
+
+  if (userPlan !== SubscriptionPlan.PAID) {
+    const placeholderContent = (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card rounded-lg shadow-sm p-6 h-32" />
+          ))}
+        </div>
+        <div className="bg-card rounded-lg shadow-sm p-6 h-[400px]" />
+      </div>
+    );
+
+    return <Paywall>{placeholderContent}</Paywall>;
+  }
 
   const subscriptions = await getSubscriptions();
   const summary = await getSubscriptionSummary();

@@ -7,6 +7,7 @@ import {
 import * as db from "@/features/dashboard/server/db/subscription";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
+import { SubscriptionPlan } from "@prisma/client";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -16,6 +17,20 @@ export const addSubscriptionAction = privateAction
   .action(async ({ ctx, parsedInput }) => {
     const { name, price, currency, category, billingCycle, startDate } =
       parsedInput;
+
+    const isFree = ctx.session.user.plan !== SubscriptionPlan.PAID;
+
+    if (isFree) {
+      const userSubscriptions = await db.getSubscriptionCountByUserId(
+        ctx.session.user.id
+      );
+
+      if (userSubscriptions >= 1) {
+        throw new ActionError(
+          "Free users can only create one subscription. Upgrade to the paid plan for unlimited subscriptions."
+        );
+      }
+    }
 
     const subscription = await db.createSubscription(
       ctx.session.user.id,

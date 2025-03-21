@@ -24,7 +24,7 @@ export default function NotFound() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-accent-foreground mb-4">
               We couldn&apos;t find the page you were looking for. It might have
               been moved, deleted, or never existed.
             </p>

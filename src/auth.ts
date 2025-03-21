@@ -1,22 +1,30 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Currency, SubscriptionPlan } from "@prisma/client";
+import { Provider } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 import { randomUUID } from "crypto";
 import NextAuth from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import { encode as defaultEncode } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
+import { SignOutParams } from "next-auth/react";
 import authConfig from "./auth.config";
 import { verifyPassword } from "./lib/auth";
+import { clearSentryUser, setSentryUserContext } from "./lib/auth-sentry";
 import { sendWelcomeEmail } from "./lib/email";
+import { env } from "./lib/env";
 import prisma from "./lib/prisma";
 import { getUserByEmail } from "./server/db/user";
-
 const adapter = PrismaAdapter(prisma) as Adapter;
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const {
+  handlers,
+  auth,
+  signIn,
+  signOut: nextAuthSignOut,
+} = NextAuth({
   adapter,
   session: { strategy: "jwt" },
-  secret: process.env.AUTH_SECRET,
+  secret: env.AUTH_SECRET,
   trustHost: true,
   providers: [
     ...authConfig.providers,
@@ -43,12 +51,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: user.name,
             email: user.email,
             image: user.image,
-            plan: user.plan,
-            defaultCurrency: user.defaultCurrency,
-            provider: "credentials",
+            provider: Provider.CREDENTIALS,
           };
         } catch (error) {
-          console.error("Error in authorize:", error);
+          Sentry.captureException(error, {
+            level: "error",
+            tags: {
+              origin: "auth_authorize",
+            },
+          });
+
           return null;
         }
       },
@@ -56,35 +68,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, account, user, trigger, session }) {
-      if (trigger === "update" && session?.user) {
-        if (session.user.plan) {
-          token.plan = session.user.plan;
-        }
-
-        if (session.user.defaultCurrency) {
-          token.defaultCurrency = session.user.defaultCurrency;
-        }
-
-        if (session.user.id) {
-          const updatedUser = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            select: { plan: true, defaultCurrency: true },
-          });
-
-          if (updatedUser) {
-            token.plan = updatedUser.plan;
-            token.defaultCurrency = updatedUser.defaultCurrency;
-          }
-        }
-      }
-
+    async jwt({ token, account, user }) {
       if (user) {
         token.id = user.id;
         token.image = user.image;
-        token.plan = user.plan;
-        token.defaultCurrency = user.defaultCurrency;
-        token.provider = account?.provider || "credentials";
+        token.provider =
+          account?.provider?.toUpperCase() || Provider.CREDENTIALS;
+
+        setSentryUserContext({
+          id: user.id as string,
+          email: user.email as string,
+        });
       }
 
       return token;
@@ -94,9 +88,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.image = token.image as string;
-        session.user.plan = token.plan as SubscriptionPlan;
-        session.user.defaultCurrency = token.defaultCurrency as Currency;
-        session.user.provider = token.provider as "google" | "credentials";
+        session.user.provider = token.provider as Provider;
       }
 
       return session;
@@ -139,3 +131,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     newUser: "/dashboard",
   },
 });
+
+export const signOut = async (options?: SignOutParams) => {
+  clearSentryUser();
+  return nextAuthSignOut(options);
+};

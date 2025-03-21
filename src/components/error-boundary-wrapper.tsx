@@ -6,6 +6,7 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
+import * as Sentry from "@sentry/nextjs";
 import { AlertCircle } from "lucide-react";
 import { Component, ReactNode } from "react";
 import { RefreshButton } from "./refresh-button";
@@ -35,10 +36,15 @@ export class ErrorBoundaryWrapper extends Component<
   }
 
   componentDidCatch(error: Error): void {
-    console.error(
-      `Error in ${this.props.componentName || "component"}:`,
-      error
-    );
+    Sentry.captureException(error, {
+      tags: {
+        componentName: this.props.componentName || "unknown",
+        origin: "component_error",
+      },
+      extra: {
+        componentStack: error.stack,
+      },
+    });
   }
 
   render() {

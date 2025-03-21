@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
 import { convertCurrency } from "@/features/dashboard/lib/format-currency";
 import {
@@ -6,6 +5,7 @@ import {
   UpcomingPayment,
 } from "@/features/dashboard/schemas/subscription";
 import * as db from "@/features/dashboard/server/db/subscription";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { calculateAnnualCost, calculateMonthlyCost } from "@/lib/billing-utils";
 import { Currency } from "@prisma/client";
 
@@ -17,15 +17,15 @@ export interface SubscriptionSummary {
 }
 
 export const getSubscriptions = async () => {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("User not found");
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
 
   return await db.getSubscriptionsByUserId(session.user.id);
 };
 
 export const getSubscriptionSummary = async () => {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("User not found");
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
 
   const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
 

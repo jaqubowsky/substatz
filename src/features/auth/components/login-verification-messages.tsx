@@ -48,6 +48,9 @@ export const VerificationMessages = () => {
       case "VERIFICATION_TOKEN_INVALID":
         errorMessage = "Invalid verification link. Please request a new one.";
         break;
+      case "TOO_MANY_REQUESTS":
+        errorMessage = "Too many requests. Please try again later.";
+        break;
       case "SERVER_ERROR":
         errorMessage = "An error occurred. Please try again later.";
         break;

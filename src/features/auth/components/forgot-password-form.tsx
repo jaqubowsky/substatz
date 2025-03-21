@@ -47,7 +47,7 @@ export function ForgotPasswordForm() {
         <h1 className="text-3xl font-bold text-card-foreground">
           Forgot Password
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-accent-foreground">
           Enter your email to receive a password reset link
         </p>
       </div>
@@ -84,7 +84,7 @@ export function ForgotPasswordForm() {
         </form>
       </Form>
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-sm text-accent-foreground">
         Remember your password?{" "}
         <Link
           href="/login"

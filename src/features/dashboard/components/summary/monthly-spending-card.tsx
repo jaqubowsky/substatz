@@ -25,12 +25,12 @@ export function MonthlySpendingCard({
   return (
     <Card className="bg-primary/10 border-none">
       <CardHeader className="pb-2 pt-4">
-        <CardDescription className="flex items-center text-muted-foreground">
+        <CardDescription className="flex items-center text-accent-foreground">
           <CreditCard className="h-4 w-4 mr-1 text-primary" />
           Monthly Spending
           <HoverCard>
             <HoverCardTrigger asChild>
-              <HelpCircle className="h-3.5 w-3.5 ml-1 cursor-help text-muted-foreground/70" />
+              <HelpCircle className="h-3.5 w-3.5 ml-1 cursor-help text-accent-foreground/70" />
             </HoverCardTrigger>
             <HoverCardContent className="w-80" side="top">
               <div className="space-y-2">

@@ -13,23 +13,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { deleteAccountAction } from "@/features/settings/server/actions";
+import { signOut } from "next-auth/react";
 import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export function DeleteAccountButton() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const router = useRouter();
-
   const action = useAction(deleteAccountAction, {
     onSuccess: () => {
       toast.success("Account deleted successfully! Redirecting to homepage...");
 
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
+      signOut({ redirectTo: "/" });
     },
   });
 

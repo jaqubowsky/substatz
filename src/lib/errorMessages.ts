@@ -22,6 +22,9 @@ export const errors = {
     USER_NOT_FOUND: {
       message: "User not found. Please check your credentials.",
     },
+    RATE_LIMIT: {
+      message: "Too many requests. Please try again later.",
+    },
     VERIFICATION_TOKEN_EXPIRED: {
       message:
         "Verification token expired or account already verified. Please try again",
@@ -37,6 +40,13 @@ export const errors = {
     },
     RESET_TOKEN_INVALID: {
       message: "Reset token invalid or expired. Please request a new one.",
+    },
+    CSRF_ERROR: {
+      message:
+        "Security verification failed. Please refresh the page and try again.",
+    },
+    SESSION_EXPIRED: {
+      message: "Your session has expired. Please log in again to continue.",
     },
   },
   SUBSCRIPTION: {
@@ -56,8 +66,22 @@ export const errors = {
     PERMISSION_ERROR: {
       message: "Permission error. Please check your permissions.",
     },
+    CHECKOUT_SESSION_NOT_FOUND: {
+      message: "Checkout session not found. Please provide a valid session ID.",
+    },
+    CHECKOUT_SESSION_NOT_BELONG_TO_USER: {
+      message: "Checkout session does not belong to this user.",
+    },
+    PAYMENT_STATUS_IS: {
+      message:
+        "Payment status is {{status}}. Please try again or contact support.",
+    },
   },
   USER: {
+    GOOGLE_PROVIDER: {
+      message:
+        "Google provider not supported. Please use a different provider.",
+    },
     NO_STRIPE_CUSTOMER_ID: {
       message:
         "No Stripe customer ID found. Please add a subscription to continue.",
@@ -82,6 +106,16 @@ export const errors = {
     },
     VALIDATION_ERROR: {
       message: "Invalid data provided. Please check your input.",
+    },
+    RATE_LIMIT: {
+      message: "Too many requests. Please try again later.",
+    },
+    MAINTENANCE: {
+      message:
+        "The system is currently under maintenance. Please try again later.",
+    },
+    FORBIDDEN: {
+      message: "You don't have permission to perform this action.",
     },
   },
 };

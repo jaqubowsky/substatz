@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { SubscriptionPlan } from "@prisma/client";
 import { LockIcon } from "lucide-react";
 import { Suspense } from "react";
@@ -13,10 +13,10 @@ interface PaywallProps {
 }
 
 async function PaywallContent({ children }: PaywallProps) {
-  const session = await auth();
-  const user = session?.user;
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
 
-  const isPaid = user?.plan === SubscriptionPlan.PAID;
+  const isPaid = session.user.plan === SubscriptionPlan.PAID;
   if (isPaid) return <>{children}</>;
 
   return (
@@ -33,7 +33,7 @@ async function PaywallContent({ children }: PaywallProps) {
             </div>
           </div>
           <h3 className="text-xl font-bold mb-2">Premium Feature</h3>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-accent-foreground mb-4">
             Unlock unlimited subscriptions and full analytics with our premium
             plan. It&apos;s just $5 for lifetime access!
           </p>

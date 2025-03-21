@@ -1,15 +1,12 @@
 import Stripe from "stripe";
+import { env } from "./env";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("STRIPE_SECRET_KEY is not defined");
-}
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-02-24.acacia",
   typescript: true,
 });
 
-export const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID || "";
+export const STRIPE_PRICE_ID = env.STRIPE_PRICE_ID;
 
 export const formatAmountForDisplay = (
   amount: number,

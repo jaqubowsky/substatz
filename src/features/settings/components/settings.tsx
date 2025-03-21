@@ -1,41 +1,19 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings as SettingsIcon } from "lucide-react";
+import { getServerAuth } from "@/hooks/get-server-auth";
+import { Provider } from "@prisma/client";
 import { Billing } from "./billing";
 import { ChangePasswordForm } from "./change-password-form";
 import { CurrencySettingsForm } from "./currency-settings-form";
 import { DeleteAccount } from "./delete-account";
 
-export const Settings = () => {
-  return (
-    <div className="container mx-auto px-4 h-full">
-      <Card className="mb-6 border-none bg-transparent shadow-none">
-        <CardHeader className="px-0">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-md">
-                <SettingsIcon className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-3xl font-bold text-foreground">
-                  Settings
-                </CardTitle>
-                <CardDescription className="text-muted-foreground mt-1">
-                  Manage your account settings and preferences
-                </CardDescription>
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+export const Settings = async () => {
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
 
-      <Tabs defaultValue="account" className="mt-8">
+  return (
+    <div className="container mx-auto px-4 py-6 h-full">
+      <Tabs defaultValue="account">
         <TabsList className="mb-6">
           <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
@@ -43,11 +21,15 @@ export const Settings = () => {
 
         <TabsContent value="account">
           <Card>
+            {session.user.provider === Provider.CREDENTIALS && (
+              <CardContent className="pt-6">
+                <ChangePasswordForm />
+              </CardContent>
+            )}
             <CardContent className="pt-6">
-              <ChangePasswordForm />
-            </CardContent>
-            <CardContent className="pt-6">
-              <CurrencySettingsForm />
+              <CurrencySettingsForm
+                defaultCurrency={session.user.defaultCurrency}
+              />
             </CardContent>
             <CardContent className="pt-6">
               <DeleteAccount />

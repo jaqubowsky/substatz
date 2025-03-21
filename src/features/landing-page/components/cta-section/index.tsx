@@ -8,8 +8,8 @@ export const CTASection = () => {
     {
       name: "Overview",
       content: (
-        <div className="w-full overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-white"></div>
+        <div className="w-full overflow-hidden bg-white shadow-md transition-all hover:shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-white"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
               <div className="flex items-center">
@@ -36,13 +36,13 @@ export const CTASection = () => {
                 <h3 className="text-lg font-medium text-gray-900">
                   Subscription Summary
                 </h3>
-                <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800">
+                <span className="rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
                   $78.97 / month
                 </span>
               </div>
 
               <div className="mt-4">
-                <div className="rounded-lg bg-orange-50 shadow-sm p-5">
+                <div className="rounded-lg bg-primary/10 shadow-sm p-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-900">
@@ -120,8 +120,8 @@ export const CTASection = () => {
     {
       name: "Subscriptions",
       content: (
-        <div className="w-full overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-white"></div>
+        <div className="w-full overflow-hidden bg-white shadow-md transition-all hover:shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-white"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
               <h3 className="text-lg font-medium text-gray-900">
@@ -239,8 +239,8 @@ export const CTASection = () => {
     {
       name: "Analytics",
       content: (
-        <div className="w-full overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-white"></div>
+        <div className="w-full overflow-hidden bg-white shadow-md transition-all hover:shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-white"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between border-b border-gray-200 pb-4">
               <h3 className="text-lg font-medium text-gray-900">
@@ -334,7 +334,7 @@ export const CTASection = () => {
                 <h4 className="text-sm font-medium text-gray-900">
                   Monthly Spending Trend
                 </h4>
-                <div className="mt-2 h-32 w-full rounded-lg bg-orange-50 p-4">
+                <div className="mt-2 h-32 w-full rounded-lg bg-primary/10 p-4">
                   <div className="flex h-full items-end justify-between">
                     {["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map(
                       (month, i) => (
@@ -372,10 +372,10 @@ export const CTASection = () => {
           <p className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Take control of your subscriptions
           </p>
-          <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-gray-600">
-            SubscriptEase gives you a beautiful dashboard to manage all your
-            subscriptions in one place. Track spending, get reminders, and never
-            miss a payment again.
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-accent-foreground">
+            SubStatz gives you a beautiful dashboard to manage all your
+            subscriptions in one place. Track spending and never miss a payment
+            again.
           </p>
         </div>
 
@@ -387,16 +387,16 @@ export const CTASection = () => {
 
         <div className="mt-10 sm:mt-16 grid gap-6 sm:gap-8 md:grid-cols-2 items-start md:items-center">
           <div className="space-y-4 sm:space-y-6">
-            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            <h3 className="text-xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               Ready to simplify your subscription management?
             </h3>
-            <p className="text-base sm:text-lg text-gray-600">
-              Get lifetime access to SubscriptEase for just $10. No recurring
-              fees, no hidden costs.
+            <p className="text-base sm:text-lg text-accent-foreground">
+              Get lifetime access to SubStatz for just $5. No recurring fees, no
+              hidden costs.
             </p>
             <div className="flex flex-col space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
               <Button size="lg" asChild className="w-full sm:w-auto">
-                <Link href="/register">Get Started — Just $10</Link>
+                <Link href="/register">Get Started — Just $5</Link>
               </Button>
               <Button
                 variant="outline"

@@ -15,7 +15,7 @@ export function AppHeader() {
             <Link href="/dashboard" className="flex items-center space-x-2">
               <ClipboardList className="w-8 h-8 text-primary" />
               <span className="text-xl font-bold text-gray-900">
-                SubscriptEase
+                SubStatz
               </span>
             </Link>
           </div>

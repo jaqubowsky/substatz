@@ -4,7 +4,7 @@ export const TestimonialsSection = () => {
   const testimonials = [
     {
       content:
-        "SubscriptEase has saved me hundreds of dollars by helping me identify subscriptions I forgot I had. The interface is clean and intuitive, making it easy to manage everything in one place.",
+        "SubStatz has saved me hundreds of dollars by helping me identify subscriptions I forgot I had. The interface is clean and intuitive, making it easy to manage everything in one place.",
       author: {
         name: "Sarah Johnson",
         role: "Marketing Manager",
@@ -13,7 +13,7 @@ export const TestimonialsSection = () => {
     },
     {
       content:
-        "I was paying for three different streaming services I barely used. Thanks to SubscriptEase's reminders, I was able to cancel them before renewal. The one-time payment model is also refreshing!",
+        "I was paying for three different streaming services I barely used. Thanks to SubStatz, I was able to identify and cancel them before renewal. The one-time payment model is also refreshing!",
       author: {
         name: "Michael Chen",
         role: "Software Engineer",
@@ -46,7 +46,7 @@ export const TestimonialsSection = () => {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="h-full">
-                <figure className="flex h-full flex-col rounded-2xl bg-orange-50 p-8 text-sm leading-6 shadow-soft">
+                <figure className="flex h-full flex-col rounded-2xl bg-primary/10 p-8 text-sm leading-6 shadow-soft">
                   <blockquote className="flex-grow text-gray-900">
                     <p>{`"${testimonial.content}"`}</p>
                   </blockquote>
@@ -66,7 +66,7 @@ export const TestimonialsSection = () => {
                       <div className="font-semibold text-gray-900">
                         {testimonial.author.name}
                       </div>
-                      <div className="text-gray-600">
+                      <div className="text-accent-foreground">
                         {testimonial.author.role}
                       </div>
                     </div>

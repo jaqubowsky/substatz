@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { PurchaseButton } from "@/components/purchase-button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,16 +8,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { SubscriptionPlan } from "@prisma/client";
 import { CheckCircle2, Sparkles } from "lucide-react";
-import { ManageBillingButton } from "./manage-billing-button";
+import { RefundButton } from "./refund-button";
 
 export async function Billing() {
-  const session = await auth();
-  if (!session?.user) return null;
+  const session = await getServerAuth();
+  if (!session) return null;
 
-  const plan = session.user.plan || SubscriptionPlan.FREE;
-  const isPro = plan === SubscriptionPlan.PAID;
+  const isPro = session.user.plan === SubscriptionPlan.PAID;
 
   const planDetails = {
     free: {
@@ -76,10 +75,10 @@ export async function Billing() {
           </div>
         </CardHeader>
       </div>
-      <CardContent className="pt-5 pb-5">
+      <CardContent>
         <div className="flex items-baseline gap-1.5 mb-2">
           <span className="text-3xl font-semibold">{currentPlan.price}</span>
-          <span className="text-muted-foreground text-sm">
+          <span className="text-accent-foreground text-sm">
             {currentPlan.billing}
           </span>
         </div>
@@ -92,7 +91,7 @@ export async function Billing() {
             <div key={index} className="flex items-start gap-2.5">
               <CheckCircle2
                 className={`h-4 w-4 shrink-0 mt-0.5 ${
-                  isPro ? "text-primary" : "text-muted-foreground"
+                  isPro ? "text-primary" : "text-accent-foreground"
                 }`}
               />
               <span className="text-sm">{feature}</span>
@@ -102,7 +101,7 @@ export async function Billing() {
       </CardContent>
       <CardFooter className="flex justify-end border-t py-3 bg-muted/5">
         {isPro ? (
-          <ManageBillingButton />
+          <RefundButton />
         ) : (
           <PurchaseButton>Upgrade to Pro</PurchaseButton>
         )}

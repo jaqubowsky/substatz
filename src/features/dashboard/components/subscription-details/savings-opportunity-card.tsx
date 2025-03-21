@@ -26,7 +26,7 @@ export function SavingsOpportunityCard({
       </div>
       <div className="flex-1">
         <h4 className="font-medium">{opportunity.title}</h4>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-accent-foreground">
           {opportunity.description}
         </p>
         {opportunity.potentialSavings && (

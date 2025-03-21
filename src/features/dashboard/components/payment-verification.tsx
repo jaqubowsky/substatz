@@ -11,19 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { verifyPaymentAction } from "@/features/dashboard/server/actions";
-import { SubscriptionPlan } from "@prisma/client";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export function PaymentVerification() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const paymentStatus = searchParams.get("payment");
-  const { update } = useSession();
+
+  const sessionId = searchParams.get("session_id");
+  const status = searchParams.get("status");
 
   const [state, setState] = useState({
     open: false,
@@ -35,7 +33,8 @@ export function PaymentVerification() {
 
   const cleanupUrlParams = () => {
     const url = new URL(window.location.href);
-    url.searchParams.delete("payment");
+    url.searchParams.delete("session_id");
+    url.searchParams.delete("status");
     router.replace(url.pathname + url.search, { scroll: false });
   };
 
@@ -57,29 +56,21 @@ export function PaymentVerification() {
         error: null,
       }));
 
-      await update({
-        user: {
-          plan: SubscriptionPlan.PAID,
-        },
-      });
-
-      router.refresh();
-
       setTimeout(() => {
         setState((prev) => ({ ...prev, open: false }));
         cleanupUrlParams();
-      }, 3000);
+      }, 1500);
     },
     onError: (error) => {
       const errorMessage =
         error.error.serverError || "Failed to verify payment";
+
       setState((prev) => ({
         ...prev,
         isVerifying: false,
         isVerified: false,
         error: errorMessage,
       }));
-      toast.error(errorMessage);
     },
   });
 
@@ -91,24 +82,24 @@ export function PaymentVerification() {
   };
 
   useEffect(() => {
-    if (paymentStatus === "success") {
+    if (sessionId) {
       setState((prev) => ({ ...prev, open: true }));
 
-      if (!state.isVerifying && !state.isVerified) {
-        verifyAction.execute();
+      if (status === "cancelled") {
+        setState((prev) => ({
+          ...prev,
+          open: true,
+          cancelled: true,
+          isVerifying: false,
+          isVerified: false,
+          error: null,
+        }));
+      } else if (!state.isVerifying && !state.isVerified) {
+        verifyAction.execute({ sessionId });
       }
-    } else if (paymentStatus === "cancelled") {
-      setState((prev) => ({
-        ...prev,
-        open: true,
-        cancelled: true,
-        isVerifying: false,
-        isVerified: false,
-        error: null,
-      }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentStatus]);
+  }, [sessionId, status]);
 
   const getDialogContent = () => {
     if (state.isVerifying) {
@@ -144,7 +135,7 @@ export function PaymentVerification() {
       return (
         <>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-muted-foreground">
+            <DialogTitle className="flex items-center gap-2 text-accent-foreground">
               <XCircle className="h-5 w-5" />
               Payment Cancelled
             </DialogTitle>
@@ -175,7 +166,7 @@ export function PaymentVerification() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => verifyAction.execute()}
+              onClick={() => verifyAction.execute({ sessionId: sessionId! })}
               disabled={verifyAction.isExecuting}
             >
               {verifyAction.isExecuting ? "Retrying..." : "Retry Verification"}

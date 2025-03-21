@@ -21,7 +21,7 @@ export function RenewalHistory({ subscription, stats }: RenewalHistoryProps) {
       <CardContent>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">Renewal Count</p>
+            <p className="text-sm text-accent-foreground">Renewal Count</p>
             <div className="flex items-center gap-2">
               <p className="text-xl font-bold">{stats.renewalCount}</p>
               <Badge variant="outline" className="flex items-center gap-1">
@@ -32,7 +32,7 @@ export function RenewalHistory({ subscription, stats }: RenewalHistoryProps) {
           </div>
 
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">Billing Cycle</p>
+            <p className="text-sm text-accent-foreground">Billing Cycle</p>
             <p className="text-xl font-bold">
               {subscription.billingCycle.charAt(0) +
                 subscription.billingCycle.slice(1).toLowerCase()}

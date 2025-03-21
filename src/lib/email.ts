@@ -1,4 +1,14 @@
 import { transporter } from "@/server/mailer";
+import * as Sentry from "@sentry/nextjs";
+import { env } from "./env";
+
+type MailOptions = {
+  from: string;
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+};
 
 const colors = {
   primary: "#dd8244",
@@ -113,17 +123,32 @@ const styles = {
   `,
 };
 
+const sendMail = (mailOptions: MailOptions) => {
+  try {
+    transporter.sendMail(mailOptions);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    Sentry.captureException(error, {
+      level: "error",
+      tags: { origin: "email_send" },
+    });
+  }
+};
+
 export async function sendVerificationEmail(
   email: string,
   name: string,
   verificationToken: string
 ) {
-  const verificationUrl = `${process.env.AUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${env.AUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
-    subject: "Just one click to get started with SubscriptEase",
+    subject: "Just one click to get started with SubStatz",
     text: `Hey ${name || "there"},
 
 Thanks for signing up with us! Just need a quick email verification so we can keep your account secure.
@@ -136,11 +161,11 @@ This link works for 24 hours. After that, you'll need to request a new one.
 Got questions? Just hit reply - we're real humans and we'll get back to you quickly!
 
 Cheers,
-The SubscriptEase Team`,
+The SubStatz Team`,
     html: `
       <div style="${styles.emailContainer}">
         <div style="${styles.header}">
-          <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">Welcome to SubscriptEase!</h1>
+          <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">Welcome to SubStatz!</h1>
           <p style="margin: 10px 0 0 0; opacity: 0.9;">Your subscription management just got easier</p>
         </div>
 
@@ -188,21 +213,21 @@ The SubscriptEase Team`,
           <div style="${styles.footer}">
             <p style="color: ${
               colors.textMedium
-            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+            };">Cheers,<br><strong>The SubStatz Team</strong></p>
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -210,26 +235,26 @@ The SubscriptEase Team`,
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
               colors.textLight
-            };">© ${new Date().getFullYear()} SubscriptEase. All rights reserved.</p>
+            };">© ${new Date().getFullYear()} SubStatz. All rights reserved.</p>
           </div>
         </div>
       </div>
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendWelcomeEmail(email: string, name: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
-    subject: "You're in! Welcome to SubscriptEase",
+    subject: "You're in! Welcome to SubStatz",
     text: `Hey ${name}!
 
 Awesome! Your email is verified and your account is ready to roll.
 
-We built SubscriptEase because, like you, we were tired of losing track of all those monthly subscriptions. Now you can see everything in one place - no more surprise charges!
+We built SubStatz because, like you, we were tired of losing track of all those monthly subscriptions. Now you can see everything in one place - no more surprise charges!
 
 Ready to take it for a spin? Just log in and add your first subscription. It takes less than a minute.
 
@@ -238,12 +263,12 @@ Need any help getting started? Just reply to this email - I'm happy to walk you 
 Looking forward to helping you save some money!
 
 Cheers,
-The SubscriptEase Team`,
+The SubStatz Team`,
     html: `
       <div style="${styles.emailContainer}">
         <div style="${styles.header}">
           <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">You're all set! 🎉</h1>
-          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your SubscriptEase account is ready</p>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your SubStatz account is ready</p>
         </div>
 
         <div style="${styles.content}">
@@ -258,7 +283,7 @@ The SubscriptEase Team`,
           <div style="${styles.featureBox}">
             <p style="margin: 0 0 15px 0; font-size: 16px; color: ${
               colors.textDark
-            };">We built SubscriptEase because, like you, we were tired of losing track of all those monthly subscriptions. Now you can see everything in one place - no more surprise charges!</p>
+            };">We built SubStatz because, like you, we were tired of losing track of all those monthly subscriptions. Now you can see everything in one place - no more surprise charges!</p>
 
             <div style="display: flex; align-items: center; margin-bottom: 10px;">
               <span style="${styles.checkmark}">✓</span>
@@ -283,7 +308,7 @@ The SubscriptEase Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.AUTH_URL}/login" style="${styles.button}">
+            <a href="${env.AUTH_URL}/login" style="${styles.button}">
               Log In & Get Started
             </a>
           </div>
@@ -309,21 +334,21 @@ The SubscriptEase Team`,
           <div style="${styles.footer}">
             <p style="color: ${
               colors.textMedium
-            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+            };">Cheers,<br><strong>The SubStatz Team</strong></p>
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -331,14 +356,14 @@ The SubscriptEase Team`,
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
               colors.textLight
-            };">© ${new Date().getFullYear()} SubscriptEase. All rights reserved.</p>
+            };">© ${new Date().getFullYear()} SubStatz. All rights reserved.</p>
           </div>
         </div>
       </div>
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendPasswordResetEmail(
@@ -346,12 +371,12 @@ export async function sendPasswordResetEmail(
   name: string,
   resetToken: string
 ) {
-  const resetUrl = `${process.env.AUTH_URL}/reset-password?token=${resetToken}`;
+  const resetUrl = `${env.AUTH_URL}/reset-password?token=${resetToken}`;
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
-    subject: "Reset your SubscriptEase password",
+    subject: "Reset your SubStatz password",
     text: `Hey ${name || "there"},
 
 Forgot your password? No worries - it happens to everyone!
@@ -366,7 +391,7 @@ If you didn't request this, you can safely ignore this email. Your account is st
 Need help? Just reply to this email.
 
 Cheers,
-The SubscriptEase Team`,
+The SubStatz Team`,
     html: `
       <div style="${styles.emailContainer}">
         <div style="${styles.header}">
@@ -407,21 +432,21 @@ The SubscriptEase Team`,
           <div style="${styles.footer}">
             <p style="color: ${
               colors.textMedium
-            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+            };">Cheers,<br><strong>The SubStatz Team</strong></p>
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -429,14 +454,14 @@ The SubscriptEase Team`,
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
               colors.textLight
-            };">© ${new Date().getFullYear()} SubscriptEase. All rights reserved.</p>
+            };">© ${new Date().getFullYear()} SubStatz. All rights reserved.</p>
           </div>
         </div>
       </div>
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendSubscriptionThankYouEmail(
@@ -444,12 +469,12 @@ export async function sendSubscriptionThankYouEmail(
   name: string
 ) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
-    subject: "Thank you for upgrading to SubscriptEase Premium!",
+    subject: "Thank you for upgrading to SubStatz Premium!",
     text: `Hey ${name || "there"},
 
-Thank you for upgrading to SubscriptEase Premium! Your payment has been successfully processed, and your account has been upgraded.
+Thank you for upgrading to SubStatz Premium! Your payment has been successfully processed, and your account has been upgraded.
 
 With your premium subscription, you now have access to:
 - Unlimited subscription tracking
@@ -461,15 +486,15 @@ Your dashboard has been updated with all premium features. Log in now to explore
 
 If you have any questions about your subscription or need help with any features, just reply to this email - we're here to help!
 
-Thanks for supporting SubscriptEase. We're committed to making subscription management easier for you.
+Thanks for supporting SubStatz. We're committed to making subscription management easier for you.
 
 Cheers,
-The SubscriptEase Team`,
+The SubStatz Team`,
     html: `
       <div style="${styles.emailContainer}">
         <div style="${styles.header}">
           <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">Welcome to Premium! 🎉</h1>
-          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your SubscriptEase account has been upgraded</p>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your SubStatz account has been upgraded</p>
         </div>
 
         <div style="${styles.content}">
@@ -480,7 +505,7 @@ The SubscriptEase Team`,
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
           };">
-            Thank you for upgrading to SubscriptEase Premium! Your payment has been successfully processed, and your account has been upgraded.
+            Thank you for upgrading to SubStatz Premium! Your payment has been successfully processed, and your account has been upgraded.
           </p>
 
           <div style="${styles.featureBox}">
@@ -520,9 +545,7 @@ The SubscriptEase Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.AUTH_URL}/dashboard" style="${
-      styles.button
-    }">
+            <a href="${env.AUTH_URL}/dashboard" style="${styles.button}">
               Explore Premium Features
             </a>
           </div>
@@ -548,27 +571,27 @@ The SubscriptEase Team`,
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
           };">
-            Thanks for supporting SubscriptEase. We're committed to making subscription management easier for you.
+            Thanks for supporting SubStatz. We're committed to making subscription management easier for you.
           </p>
 
           <div style="${styles.footer}">
             <p style="color: ${
               colors.textMedium
-            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+            };">Cheers,<br><strong>The SubStatz Team</strong></p>
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -577,7 +600,7 @@ The SubscriptEase Team`,
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
               colors.textLight
             };">
-              © ${new Date().getFullYear()} SubscriptEase. All rights reserved.
+              © ${new Date().getFullYear()} SubStatz. All rights reserved.
             </p>
           </div>
         </div>
@@ -585,29 +608,29 @@ The SubscriptEase Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 export async function sendPaymentFailedEmail(email: string) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: email,
-    subject: "Action Required: Payment Failed for SubscriptEase Premium",
+    subject: "Action Required: Payment Failed for SubStatz Premium",
     text: `Hey there,
 
-We noticed there was an issue processing your payment for your SubscriptEase Premium subscription.
+We noticed there was an issue processing your payment for your SubStatz Premium subscription.
 
 Your premium subscription benefits are currently on hold until we can successfully process your payment. This could be due to an expired card, insufficient funds, or a change in your payment details.
 
 If you need any assistance or have questions about your subscription, just reply to this email - we're here to help!
 
 Cheers,
-The SubscriptEase Team`,
+The SubStatz Team`,
     html: `
       <div style="${styles.emailContainer}">
         <div style="${styles.header}">
           <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">Payment Failed</h1>
-          <p style="margin: 10px 0 0 0; opacity: 0.9;">Action required for your SubscriptEase subscription</p>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Action required for your SubStatz subscription</p>
         </div>
 
         <div style="${styles.content}">
@@ -618,7 +641,7 @@ The SubscriptEase Team`,
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
           };">
-            We noticed there was an issue processing your payment for your <strong>SubscriptEase Premium</strong> subscription.
+            We noticed there was an issue processing your payment for your <strong>SubStatz Premium</strong> subscription.
           </p>
 
           <div style="${styles.highlightBox}">
@@ -651,21 +674,21 @@ The SubscriptEase Team`,
           <div style="${styles.footer}">
             <p style="color: ${
               colors.textMedium
-            };">Cheers,<br><strong>The SubscriptEase Team</strong></p>
+            };">Cheers,<br><strong>The SubStatz Team</strong></p>
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                process.env.AUTH_URL
+                env.AUTH_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -674,7 +697,7 @@ The SubscriptEase Team`,
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
               colors.textLight
             };">
-              © ${new Date().getFullYear()} SubscriptEase. All rights reserved.
+              © ${new Date().getFullYear()} SubStatz. All rights reserved.
             </p>
           </div>
         </div>
@@ -682,5 +705,101 @@ The SubscriptEase Team`,
     `,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
+}
+
+export async function sendRefundFeedbackEmail(email: string, name?: string) {
+  const mailOptions = {
+    from: env.EMAIL_FROM,
+    to: email,
+    subject: "We're sorry to see you go - Help us improve",
+    text: `Hey ${name || "there"},
+
+We noticed you've recently cancelled your SubStatz Premium subscription and requested a refund. While we're sad to see you go, we completely respect your decision.
+
+We're always working to make SubStatz better, and your feedback would be incredibly valuable to us. If you have a moment, could you let us know what led to your decision? Just reply to this email with your thoughts.
+
+Your insights will help us improve SubStatz for everyone.
+
+Thanks for giving us a try, and we hope our paths cross again in the future.
+
+Best regards,
+The SubStatz Team`,
+    html: `
+      <div style="${styles.emailContainer}">
+        <div style="${styles.header}">
+          <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">We'd Love Your Feedback</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Help us improve SubStatz</p>
+        </div>
+
+        <div style="${styles.content}">
+          <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
+      name || "there"
+    } 👋</h2>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            We noticed you've recently cancelled your SubStatz Premium subscription and requested a refund. While we're sad to see you go, we completely respect your decision.
+          </p>
+
+          <div style="${styles.featureBox}">
+            <p style="margin: 0; font-size: 16px; color: ${colors.textDark};">
+              We're always working to make SubStatz better, and your feedback would be incredibly valuable to us. If you have a moment, could you let us know what led to your decision?
+            </p>
+          </div>
+
+          <div style="${styles.highlightBox}">
+            <p style="margin: 0; font-size: 15px; color: ${colors.textDark};">
+              <strong>Simply reply to this email</strong> with your thoughts - we read every response and take all feedback seriously.
+            </p>
+          </div>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Your insights will help us improve SubStatz for everyone.
+          </p>
+
+          <p style="font-size: 16px; line-height: 1.6; color: ${
+            colors.textDark
+          };">
+            Thanks for giving us a try, and we hope our paths cross again in the future.
+          </p>
+
+          <div style="${styles.footer}">
+            <p style="color: ${
+              colors.textMedium
+            };">Best regards,<br><strong>The SubStatz Team</strong></p>
+
+            <div style="margin-top: 20px; text-align: center;">
+              <a href="${
+                env.AUTH_URL
+              }" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Website</a>
+              <a href="${
+                env.AUTH_URL
+              }/help" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Help Center</a>
+              <a href="${
+                env.AUTH_URL
+              }/contact" style="display: inline-block; margin: 0 10px; ${
+      styles.linkText
+    }">Contact Us</a>
+            </div>
+
+            <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
+              colors.textLight
+            };">
+              © ${new Date().getFullYear()} SubStatz. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  return sendMail(mailOptions);
 }
