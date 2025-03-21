@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+  output: "standalone",
   poweredByHeader: false,
   async headers() {
     return [
