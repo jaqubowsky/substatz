@@ -4,6 +4,7 @@ import { env } from "@/lib/env";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { Metadata, Viewport } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -93,6 +94,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          defer
+          src="https://umami.substatz.me/script.js"
+          data-website-id="f1413321-91d3-4f2f-923b-d80847578f82"
+          strategy="afterInteractive"
+        />
+      </head>
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} min-h-screen bg-background font-sans antialiased`}
         style={{ scrollBehavior: "smooth" }}
