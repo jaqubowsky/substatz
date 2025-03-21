@@ -2,7 +2,7 @@ name: Vulnerabilities In Dependencies
 
 on:
   pull_request:
-    branches: ["develop"]
+    branches: ["prod"]
 
 jobs:
   check:

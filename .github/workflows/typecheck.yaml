@@ -2,7 +2,7 @@ name: Type Check
 
 on:
   pull_request:
-    branches: ["develop"]
+    branches: ["prod"]
 
 jobs:
   build:

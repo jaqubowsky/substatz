@@ -2,7 +2,7 @@ name: Check For Outdated Dependencies
 
 on:
   pull_request:
-    branches: ['develop']
+    branches: ['prod']
 
 jobs:
   check:
