@@ -55,26 +55,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
-# Set empty values for runtime environment variables
-ENV DATABASE_URL=""
-ENV AUTH_SECRET=""
-ENV AUTH_URL=""
-ENV GOOGLE_CLIENT_ID=""
-ENV GOOGLE_CLIENT_SECRET=""
-ENV STRIPE_SECRET_KEY=""
-ENV STRIPE_PRICE_ID=""
-ENV STRIPE_WEBHOOK_SECRET=""
-ENV EMAIL_SERVER_HOST=""
-ENV EMAIL_SERVER_PORT=""
-ENV EMAIL_SERVER_USER=""
-ENV EMAIL_SERVER_PASSWORD=""
-ENV EMAIL_FROM=""
-ENV CRON_SECRET=""
-ENV EXCHANGE_RATES_API_KEY=""
-ENV EXCHANGE_RATES_API_URL=""
-ENV UPSTASH_REDIS_REST_URL=""
-ENV UPSTASH_REDIS_REST_TOKEN=""
-
 # Use the non-root user
 USER nextjs
 
