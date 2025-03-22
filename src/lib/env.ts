@@ -19,11 +19,11 @@ export const env = createEnv({
     CRON_SECRET: z.string().min(32),
     EXCHANGE_RATES_API_KEY: z.string().min(1),
     EXCHANGE_RATES_API_URL: z.string().url(),
-    NODE_ENV: z.enum(["development", "test", "production"]),
   },
 
   client: {
     NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
+    NEXT_PUBLIC_SENTRY_DSN: z.string().min(1),
   },
 
   runtimeEnv: {
@@ -43,7 +43,7 @@ export const env = createEnv({
     CRON_SECRET: process.env.CRON_SECRET,
     EXCHANGE_RATES_API_KEY: process.env.EXCHANGE_RATES_API_KEY,
     EXCHANGE_RATES_API_URL: process.env.EXCHANGE_RATES_API_URL,
-    NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
   },
 });
