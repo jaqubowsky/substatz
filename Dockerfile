@@ -18,6 +18,9 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 
+# Copy example env variables
+COPY .env.example .env
+
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -47,7 +50,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Copy the standalone Next.js build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
 
 # Copy only what's needed from Prisma
 COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
