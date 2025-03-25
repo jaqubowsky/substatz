@@ -143,7 +143,7 @@ export async function sendVerificationEmail(
   name: string,
   verificationToken: string
 ) {
-  const verificationUrl = `${env.AUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${env.BASE_URL}/api/auth/verify-email?token=${verificationToken}`;
 
   const mailOptions = {
     from: env.EMAIL_FROM,
@@ -217,17 +217,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -308,7 +308,7 @@ The SubStatz Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${env.AUTH_URL}/login" style="${styles.button}">
+            <a href="${env.BASE_URL}/login" style="${styles.button}">
               Log In & Get Started
             </a>
           </div>
@@ -338,17 +338,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -371,7 +371,7 @@ export async function sendPasswordResetEmail(
   name: string,
   resetToken: string
 ) {
-  const resetUrl = `${env.AUTH_URL}/reset-password?token=${resetToken}`;
+  const resetUrl = `${env.BASE_URL}/reset-password?token=${resetToken}`;
 
   const mailOptions = {
     from: env.EMAIL_FROM,
@@ -436,17 +436,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -545,7 +545,7 @@ The SubStatz Team`,
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${env.AUTH_URL}/dashboard" style="${styles.button}">
+            <a href="${env.BASE_URL}/dashboard" style="${styles.button}">
               Explore Premium Features
             </a>
           </div>
@@ -581,17 +581,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -678,17 +678,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>
@@ -774,17 +774,17 @@ The SubStatz Team`,
 
             <div style="margin-top: 20px; text-align: center;">
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Website</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Help Center</a>
               <a href="${
-                env.AUTH_URL
+                env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
       styles.linkText
     }">Contact Us</a>

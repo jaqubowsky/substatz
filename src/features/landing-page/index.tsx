@@ -10,7 +10,7 @@ import { PricingSection } from "./components/pricing-section";
 import { TestimonialsSection } from "./components/testimonials-section";
 
 export const LandingPage = () => {
-  const baseUrl = env.AUTH_URL || "https://substatz.me";
+  const baseUrl = env.BASE_URL || "https://substatz.me";
 
   const websiteSchema = {
     "@context": "https://schema.org",

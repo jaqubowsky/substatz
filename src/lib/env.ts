@@ -23,13 +23,13 @@ export const env = createEnv({
   },
 
   shared: {
-    AUTH_URL: z.string().url(),
+    BASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     SENTRY_DSN: z.string().min(1),
   },
 
   experimental__runtimeEnv: {
-    AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
+    BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
   },

@@ -1,7 +1,7 @@
 import { env } from "@/lib/env";
 import { MetadataRoute } from "next";
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = env.AUTH_URL || "https://substatz.me";
+  const baseUrl = env.BASE_URL || "https://substatz.me";
 
   return {
     rules: [

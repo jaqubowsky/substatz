@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(env.AUTH_URL || "https://substatz.me"),
+  metadataBase: new URL(env.BASE_URL || "https://substatz.me"),
   alternates: {
     canonical: "/",
     languages: {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     title: "SubStatz - Subscription Management Made Easy",
     description:
       "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment.",
-    url: env.AUTH_URL,
+    url: env.BASE_URL,
     siteName: "SubStatz",
     images: [
       {
