@@ -28,15 +28,15 @@ COPY . .
 # Disable telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ARG NEXT_PUBLIC_AUTH_URL
-ARG NEXT_PUBLIC_NODE_ENV
-ARG NEXT_PUBLIC_SENTRY_DSN
-
 # Generate Prisma client and build the application
 RUN npx prisma generate && npm run build
 
 # Final production stage with absolute minimal footprint
 FROM alpine:3.19 AS runner
+
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_NODE_ENV
+ARG NEXT_PUBLIC_SENTRY_DSN
 
 # Install only Node.js runtime - no npm needed for running
 RUN apk add --no-cache nodejs
