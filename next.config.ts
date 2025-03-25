@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
   output: "standalone",
+  transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   poweredByHeader: false,
   async headers() {
     return [
@@ -54,7 +55,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              env.NEXT_PUBLIC_NODE_ENV === "production"
+              env.NODE_ENV === "production"
                 ? "default-src 'self'; " +
                   "script-src 'self' 'unsafe-eval' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleusercontent.com; " +
                   "script-src-elem 'self' 'unsafe-inline' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleapis.com; " +
