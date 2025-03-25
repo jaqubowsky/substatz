@@ -25,6 +25,14 @@ COPY .env.example .env
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_NODE_ENV
+ARG NEXT_PUBLIC_SENTRY_DSN
+
+ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
+ENV NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+
 # Disable telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -33,10 +41,6 @@ RUN npx prisma generate && npm run build
 
 # Final production stage with absolute minimal footprint
 FROM alpine:3.19 AS runner
-
-ARG NEXT_PUBLIC_AUTH_URL
-ARG NEXT_PUBLIC_NODE_ENV
-ARG NEXT_PUBLIC_SENTRY_DSN
 
 # Install only Node.js runtime - no npm needed for running
 RUN apk add --no-cache nodejs
@@ -50,10 +54,6 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-
-ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
-ENV NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
-ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 
 # Copy the standalone Next.js build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
