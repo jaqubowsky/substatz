@@ -7,7 +7,6 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     AUTH_SECRET: z.string().min(32),
-    AUTH_URL: z.string().url(),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
@@ -24,11 +23,13 @@ export const env = createEnv({
   },
 
   shared: {
+    AUTH_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     SENTRY_DSN: z.string().min(1),
   },
 
   experimental__runtimeEnv: {
+    AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
     NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
   },
