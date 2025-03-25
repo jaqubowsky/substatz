@@ -19,7 +19,6 @@ interface ErrorBoundaryProps {
 }
 
 export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
-  
   useEffect(() => {
     Sentry.captureException(error, {
       tags: {
@@ -44,7 +43,7 @@ export function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           <p className="text-accent-foreground mb-4">
             We&apos;re sorry, but we encountered an unexpected error.
           </p>
-          {env.NEXT_PUBLIC_NODE_ENV !== "production" && (
+          {env.NODE_ENV !== "production" && (
             <div className="bg-muted p-3 rounded-md text-sm overflow-auto max-h-[200px]">
               <p className="font-mono">{error.message}</p>
               {error.stack && (

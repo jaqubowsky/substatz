@@ -9,5 +9,5 @@ export const transporter = nodemailer.createTransport({
     user: env.EMAIL_SERVER_USER,
     pass: env.EMAIL_SERVER_PASSWORD,
   },
-  secure: env.NEXT_PUBLIC_NODE_ENV === "production",
+  secure: env.NODE_ENV === "production",
 });
