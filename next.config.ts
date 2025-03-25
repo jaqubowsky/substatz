@@ -1,6 +1,6 @@
 import { env } from "@/lib/env";
 import { withSentryConfig } from "@sentry/nextjs";
-import { NextConfig } from "next";
+import { NextConfig } from "next/dist/server/config";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
