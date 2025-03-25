@@ -47,8 +47,8 @@ export const createCheckoutSessionAction = privateAction.action(
         },
       ],
       mode: "payment",
-      success_url: `${env.AUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${env.AUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&status=cancelled`,
+      success_url: `${env.BASE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${env.BASE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&status=cancelled`,
       metadata: {
         userId,
       },
