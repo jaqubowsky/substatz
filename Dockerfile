@@ -28,6 +28,10 @@ COPY . .
 # Disable telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_NODE_ENV
+ARG NEXT_PUBLIC_SENTRY_DSN
+
 # Generate Prisma client and build the application
 RUN npx prisma generate && npm run build
 
@@ -46,6 +50,10 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+
+ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
+ENV NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 
 # Copy the standalone Next.js build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

@@ -28,3 +28,7 @@ jobs:
           tags: |
             jaqubowsky/substatz:latest
           platforms: linux/amd64
+          build-args: |
+            NEXT_PUBLIC_AUTH_URL=${{ secrets.NEXT_PUBLIC_AUTH_URL }}
+            NEXT_PUBLIC_NODE_ENV=${{ secrets.NEXT_PUBLIC_NODE_ENV }}
+            NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
