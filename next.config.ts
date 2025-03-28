@@ -56,9 +56,11 @@ const nextConfig: NextConfig = {
             value:
               env.NODE_ENV === "production"
                 ? "default-src 'self'; " +
-                  "script-src 'self' 'unsafe-eval' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleusercontent.com; " +
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleusercontent.com; " +
                   "script-src-elem 'self' 'unsafe-inline' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleapis.com; " +
-                  "style-src 'self' https://accounts.google.com https://fonts.googleapis.com; " +
+                  "style-src 'self' 'unsafe-inline' https://accounts.google.com https://fonts.googleapis.com; " +
+                  "style-src-attr 'self' 'unsafe-inline'; " +
+                  "style-src-elem 'self' 'unsafe-inline' https://accounts.google.com https://fonts.googleapis.com; " +
                   "img-src 'self' data: https://substatz.me https://umami.substatz.me https://*.stripe.com https://*.googleusercontent.com https://lh3.googleusercontent.com; " +
                   "font-src 'self' data: https://fonts.gstatic.com; " +
                   "connect-src 'self' https://api.stripe.com https://umami.substatz.me https://*.ingest.sentry.io https://accounts.google.com https://*.googleapis.com; " +
