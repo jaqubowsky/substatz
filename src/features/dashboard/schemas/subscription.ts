@@ -12,17 +12,14 @@ export const billingCycleEnum = z.enum([
 export type BillingCycle = z.infer<typeof billingCycleEnum>;
 
 export const editSubscriptionSchema = z.object({
-  id: z.string().optional(),
+  id: z.string(),
   name: z.string().min(1, "Name is required"),
   price: z.coerce.number().min(0.01, "Price must be greater than 0"),
-  currency: currencyEnum.default("USD"),
+  currency: currencyEnum,
   category: z.string().min(1, "Category is required"),
   billingCycle: billingCycleEnum,
   startDate: z.coerce.date(),
-  isCancelled: z.boolean().optional().default(false),
-  notes: z.string().optional(),
-  logoUrl: z.string().url().optional().or(z.literal("")),
-  websiteUrl: z.string().url().optional().or(z.literal("")),
+  isCancelled: z.boolean(),
 });
 
 export type EditSubscriptionValues = z.infer<typeof editSubscriptionSchema>;
@@ -30,14 +27,11 @@ export type EditSubscriptionValues = z.infer<typeof editSubscriptionSchema>;
 export const addSubscriptionSchema = z.object({
   name: z.string().min(1, "Subscription name is required"),
   price: z.coerce.number().min(0.01, "Price must be greater than 0"),
-  currency: currencyEnum.default("USD"),
+  currency: currencyEnum,
   category: z.string().min(1, "Category is required"),
   billingCycle: billingCycleEnum,
   startDate: z.coerce.date(),
-  isCancelled: z.boolean().optional().default(false),
-  notes: z.string().optional(),
-  logoUrl: z.string().url().optional().or(z.literal("")),
-  websiteUrl: z.string().url().optional().or(z.literal("")),
+  isCancelled: z.boolean(),
 });
 
 export type AddSubscriptionValues = z.infer<typeof addSubscriptionSchema>;
