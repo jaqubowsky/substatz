@@ -20,6 +20,7 @@ export const env = createEnv({
     CRON_SECRET: z.string().min(32),
     EXCHANGE_RATES_API_KEY: z.string().min(1),
     EXCHANGE_RATES_API_URL: z.string().url(),
+    STRIPE_API_VER: z.string().min(1),
   },
 
   shared: {

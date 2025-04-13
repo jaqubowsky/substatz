@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const currencyEnum = z.enum([
+const currencies = [
   "USD",
   "EUR",
   "GBP",
@@ -11,7 +11,10 @@ export const currencyEnum = z.enum([
   "CNY",
   "INR",
   "PLN",
-]);
+] as const;
+
+export const currencyEnum = z.enum(currencies);
+
 export type CurrencyType = z.infer<typeof currencyEnum>;
 
 export const currencySymbols: Record<CurrencyType, string> = {
