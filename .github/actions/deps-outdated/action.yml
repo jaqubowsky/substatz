@@ -4,9 +4,13 @@ description: Check for outdated dependencies
 runs:
   using: "composite"
   steps:
-    - name: Check
+    - name: Install npm-check-updates
+      run: npm i -g npm-check-updates
+      shell: bash
+
+    - name: Check for outdated dependencies
       run: |
-        OUTDATED_DEPS=$(npx ncu)
+        OUTDATED_DEPS=$(ncu)
 
         if [ -z "$OUTDATED_DEPS" ]; then
           echo "No outdated dependencies found."
