@@ -1,0 +1,21 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Check Outdated Dependencies
+        uses: ./.github/actions/deps-outdated
+
+      - name: Check Critical Dependencies
+        uses: ./.github/actions/deps-audit
+
+      - name: Verify Project
+        uses: ./.github/actions/verify-project

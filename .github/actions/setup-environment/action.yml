@@ -1,0 +1,12 @@
+name: Setup Environment
+description: Setup the environment
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      shell: bash

@@ -1,0 +1,27 @@
+name: Dependencies Outdated
+description: Check for outdated dependencies
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check
+      run: |
+        OUTDATED_DEPS=$(npx ncu)
+
+        if [ -z "$OUTDATED_DEPS" ]; then
+          echo "No outdated dependencies found."
+        else
+          # Count the number of occurrences of the "→" symbol
+          OUTDATED_COUNT=$(echo "$OUTDATED_DEPS" | grep -o '→' | wc -l)
+
+          echo "Outdated dependencies found:"
+          echo "$OUTDATED_DEPS"
+          echo "Total:"
+          echo "$OUTDATED_COUNT"
+
+          if [ "$OUTDATED_COUNT" -ge 10 ]; then
+            echo "Error: There are $OUTDATED_COUNT outdated dependencies, which is too many. Raise a separate PR to fix it."
+            exit 1
+          fi
+        fi
+      shell: bash

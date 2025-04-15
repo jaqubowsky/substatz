@@ -3,16 +3,21 @@ name: Deploy
 on:
   push:
     branches:
-      - prod
+      - main
 
 jobs:
-  build-and-push-dockerfile-image:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Verify Project
+        uses: ./.github/workflows/pull-request.yaml
 
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
