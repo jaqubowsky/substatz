@@ -13,8 +13,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-node
+      - name: Configure node
+        uses: actions/setup-node@v4
 
       - name: Verify Project
         uses: ./.github/actions/verify-project

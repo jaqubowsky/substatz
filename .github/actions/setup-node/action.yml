@@ -1,8 +1,0 @@
-name: Setup Node.js
-description: Setup Node.js
-
-runs:
-  using: "composite"
-  steps:
-    - name: Configure node
-      uses: actions/setup-node@v4

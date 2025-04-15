@@ -11,8 +11,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-node
+      - name: Configure node
+        uses: actions/setup-node@v4
 
       - name: Check Outdated Dependencies
         uses: ./.github/actions/deps-outdated
