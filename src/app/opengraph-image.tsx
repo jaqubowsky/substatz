@@ -1,7 +1,7 @@
 import { LogoSection } from "@/components/shared-image-components";
 import { ImageResponse } from "@vercel/og";
 
-export async function Image() {
+export default async function Image() {
   return new ImageResponse(
     (
       <div
