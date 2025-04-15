@@ -1,0 +1,13 @@
+name: Verify
+description: Run tests and lint
+
+runs:
+  using: "composite"
+  steps:
+    - name: Lint code
+      run: npm run lint:ci
+      shell: bash
+
+    - name: Run type checking
+      run: npm run typecheck
+      shell: bash

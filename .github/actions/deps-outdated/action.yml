@@ -1,0 +1,30 @@
+name: Dependencies Outdated
+description: Check for outdated dependencies
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check for outdated dependencies
+      run: |
+        OUTDATED_DEPS_JSON=$(npx npm-check-updates --jsonUpgraded || true)
+
+        if [ -z "$OUTDATED_DEPS_JSON" ] || [ "$OUTDATED_DEPS_JSON" == "{}" ]; then
+          echo "No outdated dependencies found."
+          echo "count=0" >> $GITHUB_OUTPUT
+        else
+          OUTDATED_COUNT=$(echo "$OUTDATED_DEPS_JSON" | jq 'keys | length')
+
+          echo "Outdated dependencies found (JSON format):"
+          echo "$OUTDATED_DEPS_JSON"
+          echo "Total outdated: $OUTDATED_COUNT"
+          echo "count=$OUTDATED_COUNT" >> $GITHUB_OUTPUT
+
+          THRESHOLD=10
+          if [ "$OUTDATED_COUNT" -ge "$THRESHOLD" ]; then
+            echo "::error::There are $OUTDATED_COUNT outdated dependencies (Threshold: $THRESHOLD), which is too many. Please update dependencies in a separate PR."
+            exit 1
+          else
+             echo "Number of outdated dependencies ($OUTDATED_COUNT) is below threshold ($THRESHOLD)."
+          fi
+        fi
+      shell: bash
