@@ -8,6 +8,10 @@ runs:
       run: npm run lint:ci
       shell: bash
 
+    - name: Copy env variables
+      run: cp .env.example .env
+      shell: bash
+
     - name: Run type checking
       run: npm run typecheck
       shell: bash
