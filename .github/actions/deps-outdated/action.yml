@@ -6,7 +6,7 @@ runs:
   steps:
     - name: Check for outdated dependencies
       run: |
-        OUTDATED_DEPS_JSON=$(npx ncu --json || true)
+        OUTDATED_DEPS_JSON=$(npx npm-check-updates --jsonUpgraded || true)
 
         if [ -z "$OUTDATED_DEPS_JSON" ] || [ "$OUTDATED_DEPS_JSON" == "{}" ]; then
           echo "No outdated dependencies found."
