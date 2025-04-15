@@ -12,12 +12,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 1,
     },
-    {
-      url: `${baseUrl}/features`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.9,
-    },
   ];
 
   const authPages = [
@@ -59,18 +53,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/faq`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
     },
   ];
 

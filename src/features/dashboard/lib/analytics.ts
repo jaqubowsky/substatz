@@ -62,31 +62,10 @@ export const filterDataByTimeRange = <T extends { month: string }>(
   });
 };
 
-export const calculateSpendingByCategory = (
-  subscriptions: Subscription[],
-  defaultCurrency: Currency
-): Record<string, number> => {
-  const categories: Record<string, number> = {};
-
-  subscriptions.forEach((subscription) => {
-    if (subscription.isCancelled) return;
-
-    const { category, price, currency } = subscription;
-    const convertedPrice = convertCurrency(price, currency, defaultCurrency);
-
-    if (categories[category]) {
-      categories[category] += convertedPrice;
-    } else {
-      categories[category] = convertedPrice;
-    }
-  });
-
-  return categories;
-};
-
 export const calculateMonthlySpending = (
   subscriptions: Subscription[],
   defaultCurrency: Currency,
+  rates: Record<Currency, number>,
   customDateRange?: DateRange,
   timeRange: TimeRange = "12months"
 ): { month: string; amount: number }[] => {
@@ -145,7 +124,7 @@ export const calculateMonthlySpending = (
       currency,
     } = subscription;
 
-    const convertedPrice = convertCurrency(price, currency, defaultCurrency);
+    const convertedPrice = convertCurrency(price, currency, defaultCurrency, rates);
     const periodInMonths = CYCLE_TO_MONTHS[billingCycle];
     const subStartDate = new Date(subscriptionStartDate);
 
@@ -193,7 +172,8 @@ export const calculateTotalPaymentCycles = (subscriptions: Subscription[]) => {
 
 export const calculateTotalStatistics = (
   subscriptions: Subscription[],
-  defaultCurrency: Currency
+  defaultCurrency: Currency,
+  rates: Record<Currency, number>
 ): {
   totalSpentFromStart: number;
   totalRenewals: number;
@@ -251,7 +231,8 @@ export const calculateTotalStatistics = (
     const convertedPrice = convertCurrency(
       subscription.price,
       subscription.currency,
-      defaultCurrency
+      defaultCurrency,
+      rates
     );
 
     const totalSpent = renewalCount * convertedPrice;

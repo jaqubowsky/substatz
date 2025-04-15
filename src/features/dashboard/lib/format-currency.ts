@@ -1,10 +1,11 @@
 import { fallbackExchangeRates } from "@/lib/currency-rates";
 import { getCurrencyRates } from "@/server/db/currency-rates";
 import { Currency } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 
 export const formatCurrency = (
   amount: number,
-  currency: Currency = "USD"
+  currency: Currency = Currency.USD
 ): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -21,10 +22,7 @@ export async function getLatestExchangeRates(): Promise<
 > {
   try {
     const dbRates = await getCurrencyRates();
-
-    if (dbRates.length === 0) {
-      return fallbackExchangeRates;
-    }
+    if (dbRates.length === 0) return fallbackExchangeRates;
 
     const rates: Partial<Record<Currency, number>> = {};
 
@@ -42,7 +40,14 @@ export async function getLatestExchangeRates(): Promise<
     });
 
     return rates as Record<Currency, number>;
-  } catch {
+  } catch (error) {
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        origin: "getLatestExchangeRates",
+      },
+    });
+
     return fallbackExchangeRates;
   }
 }
@@ -51,7 +56,7 @@ export const convertCurrency = (
   amount: number,
   fromCurrency: Currency,
   toCurrency: Currency,
-  rates: Record<Currency, number> = exchangeRates
+  rates: Record<Currency, number>
 ): number => {
   if (fromCurrency === toCurrency) return amount;
 
@@ -59,12 +64,3 @@ export const convertCurrency = (
 
   return amountInUSD * rates[toCurrency];
 };
-
-export async function convertCurrencyWithLatestRates(
-  amount: number,
-  fromCurrency: Currency,
-  toCurrency: Currency
-): Promise<number> {
-  const rates = await getLatestExchangeRates();
-  return convertCurrency(amount, fromCurrency, toCurrency, rates);
-}

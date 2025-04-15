@@ -1,5 +1,8 @@
 import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
-import { convertCurrency } from "@/features/dashboard/lib/format-currency";
+import {
+  convertCurrency,
+  getLatestExchangeRates,
+} from "@/features/dashboard/lib/format-currency";
 import {
   CategoryBreakdown,
   UpcomingPayment,
@@ -27,7 +30,8 @@ export const getSubscriptionSummary = async () => {
   const session = await getServerAuth();
   if (!session) throw new Error("User not found");
 
-  const subscriptions = await db.getSubscriptionsByUserId(session.user.id);
+  const subscriptions = await getSubscriptions();
+  const rates = await getLatestExchangeRates();
 
   let totalMonthly = 0;
   let totalYearly = 0;
@@ -41,33 +45,34 @@ export const getSubscriptionSummary = async () => {
   const upcomingPayments = [];
 
   for (const subscription of subscriptions) {
-    if (!subscription.isCancelled) {
-      const price = convertCurrency(
-        subscription.price,
-        subscription.currency,
-        session.user.defaultCurrency || Currency.USD
-      );
+    if (subscription.isCancelled) continue;
 
-      totalMonthly += calculateMonthlyCost(price, subscription.billingCycle);
-      totalYearly += calculateAnnualCost(price, subscription.billingCycle);
+    const price = convertCurrency(
+      subscription.price,
+      subscription.currency,
+      session.user.defaultCurrency || Currency.USD,
+      rates
+    );
 
-      if (categoriesBreakdown[subscription.category]) {
-        categoriesBreakdown[subscription.category] += price;
-      } else {
-        categoriesBreakdown[subscription.category] = price;
-      }
+    totalMonthly += calculateMonthlyCost(price, subscription.billingCycle);
+    totalYearly += calculateAnnualCost(price, subscription.billingCycle);
 
-      const nextPaymentDate = calculateNextPaymentDate(
-        subscription.startDate,
-        subscription.billingCycle
-      );
+    if (categoriesBreakdown[subscription.category]) {
+      categoriesBreakdown[subscription.category] += price;
+    } else {
+      categoriesBreakdown[subscription.category] = price;
+    }
 
-      if (nextPaymentDate >= today && nextPaymentDate <= endDate) {
-        upcomingPayments.push({
-          ...subscription,
-          nextPaymentDate,
-        });
-      }
+    const nextPaymentDate = calculateNextPaymentDate(
+      subscription.startDate,
+      subscription.billingCycle
+    );
+
+    if (nextPaymentDate >= today && nextPaymentDate <= endDate) {
+      upcomingPayments.push({
+        ...subscription,
+        nextPaymentDate,
+      });
     }
   }
 

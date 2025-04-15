@@ -8,7 +8,7 @@ import { LandingFooter } from "./components/landing-footer";
 import { LandingHeader } from "./components/landing-header";
 import { PricingSection } from "./components/pricing-section";
 import { TestimonialsSection } from "./components/testimonials-section";
-
+import { Currency } from "@prisma/client";
 export const LandingPage = () => {
   const baseUrl = env.BASE_URL || "https://substatz.me";
 
@@ -54,7 +54,7 @@ export const LandingPage = () => {
     offers: {
       "@type": "Offer",
       price: "0",
-      priceCurrency: "USD",
+      priceCurrency: Currency.USD,
       priceValidUntil: new Date(
         new Date().setFullYear(new Date().getFullYear() + 1)
       )

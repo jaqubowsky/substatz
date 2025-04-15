@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import { AnalyticsContent } from "./analytics-content-client";
 import { LoadingAnalytics } from "./loading-analytics";
 import { SubscriptionSummaryCards } from "./summary-cards";
+import { getLatestExchangeRates } from "@/features/dashboard/lib/format-currency";
 
 const AnalyticsTabContent = async () => {
   const session = await getServerAuth();
@@ -35,6 +36,7 @@ const AnalyticsTabContent = async () => {
 
   const subscriptions = await getSubscriptions();
   const summary = await getSubscriptionSummary();
+  const rates = await getLatestExchangeRates();
 
   const { totalMonthly, totalYearly } = summary;
   const activeSubscriptions = subscriptions.filter(
@@ -55,6 +57,7 @@ const AnalyticsTabContent = async () => {
           subscriptions={subscriptions}
           categoriesBreakdown={summary.categoriesBreakdown || {}}
           defaultCurrency={defaultCurrency}
+          rates={rates}
         />
       </div>
     </div>

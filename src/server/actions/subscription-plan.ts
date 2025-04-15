@@ -1,10 +1,13 @@
 "use server";
 
 import { env } from "@/lib/env";
-import { prisma } from "@/lib/prisma";
+import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
 import { stripe, STRIPE_PRICE_ID } from "@/lib/stripe";
-import { updateStripeCustomerId } from "@/server/db/subscription-plan";
+import {
+  getUserWithPlan,
+  updateStripeCustomerId,
+} from "@/server/db/subscription-plan";
 import { SubscriptionPlan } from "@prisma/client";
 
 export const createCheckoutSessionAction = privateAction.action(
@@ -12,16 +15,11 @@ export const createCheckoutSessionAction = privateAction.action(
     const { session } = ctx;
     const userId = session.user.id;
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { stripeCustomerId: true, plan: true },
-    });
+    const user = await getUserWithPlan(userId);
     let customerId = user?.stripeCustomerId || null;
 
     if (user?.plan === SubscriptionPlan.PAID) {
-      throw new ActionError(
-        "You already have a paid subscription. Please relogin if error persists."
-      );
+      throw new ActionError(errors.SUBSCRIPTION.ALREADY_PAID.message);
     }
 
     if (!customerId) {

@@ -56,6 +56,10 @@ export const errors = {
     NO_SUBSCRIPTION: {
       message: "No subscription found. Please add a subscription to continue.",
     },
+    ALREADY_PAID: {
+      message:
+        "You already have a paid subscription. Please relogin if error persists.",
+    },
     NO_UPCOMING_PAYMENTS: {
       message:
         "No upcoming payments found. Please add a subscription to continue.",
