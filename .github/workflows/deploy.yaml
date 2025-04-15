@@ -19,6 +19,12 @@ jobs:
       - name: Verify Project
         uses: ./.github/actions/verify-project
 
+      - name: Check Outdated Dependencies
+        uses: ./.github/actions/deps-outdated
+
+      - name: Check Critical Dependencies
+        uses: ./.github/actions/deps-audit
+
   deploy:
     needs: verify
     runs-on: ubuntu-latest
