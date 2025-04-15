@@ -4,12 +4,12 @@ description: Run tests and lint
 runs:
   using: "composite"
   steps:
-    - name: Lint code
-      run: npm run lint:ci
-      shell: bash
-
     - name: Copy env variables
       run: cp .env.example .env
+      shell: bash
+
+    - name: Lint code
+      run: npm run lint:ci
       shell: bash
 
     - name: Run type checking
