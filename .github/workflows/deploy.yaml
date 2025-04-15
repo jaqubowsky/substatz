@@ -10,8 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
       - name: Verify Project
-        uses: ./.github/workflows/pull-request.yaml
+        uses: ./.github/actions/verify-project
 
   deploy:
     needs: verify

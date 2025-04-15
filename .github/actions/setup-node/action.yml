@@ -6,4 +6,3 @@ runs:
   steps:
     - name: Configure node
       uses: actions/setup-node@v4
-      shell: bash
