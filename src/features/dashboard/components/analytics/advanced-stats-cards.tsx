@@ -21,11 +21,13 @@ import {
 interface AdvancedStatsCardsProps {
   subscriptions: Subscription[];
   defaultCurrency: Currency;
+  rates: Record<Currency, number>;
 }
 
 export function AdvancedStatsCards({
   subscriptions,
   defaultCurrency,
+  rates,
 }: AdvancedStatsCardsProps) {
   const {
     totalSpentFromStart,
@@ -33,7 +35,7 @@ export function AdvancedStatsCards({
     averageSubscriptionLifetime,
     mostExpensiveCategory,
     longestActiveSubscription,
-  } = calculateTotalStatistics(subscriptions, defaultCurrency);
+  } = calculateTotalStatistics(subscriptions, defaultCurrency, rates);
 
   const formatDuration = (days: number) => {
     const years = Math.floor(days / 365);

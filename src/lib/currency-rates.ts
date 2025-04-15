@@ -26,28 +26,17 @@ export async function fetchLatestExchangeRates(
       throw new Error("API request was not successful");
     }
 
-    const currencyMapping: Record<string, Currency> = {
-      USD: "USD",
-      EUR: "EUR",
-      GBP: "GBP",
-      JPY: "JPY",
-      CAD: "CAD",
-      AUD: "AUD",
-      CHF: "CHF",
-      CNY: "CNY",
-      INR: "INR",
-      PLN: "PLN",
-    };
-
     const rates: { currency: Currency; rate: number }[] = [
-      { currency: "USD", rate: 1 },
+      { currency: Currency.USD, rate: 1 },
     ];
 
     Object.entries(data.conversion_rates).forEach(([code, rate]) => {
-      const currency = currencyMapping[code];
-      if (currency && currency !== "USD") {
-        rates.push({ currency, rate: rate as number });
+      const currency = Currency[code as keyof typeof Currency];
+      if (!currency || currency === Currency.USD) {
+        return;
       }
+
+      rates.push({ currency, rate });
     });
 
     return rates;

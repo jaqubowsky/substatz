@@ -1,6 +1,6 @@
+import { Currency } from "@prisma/client";
 import Stripe from "stripe";
 import { env } from "./env";
-
 export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   // @ts-expect-error Valid Stripe API version
   apiVersion: env.STRIPE_API_VER,
@@ -11,7 +11,7 @@ export const STRIPE_PRICE_ID = env.STRIPE_PRICE_ID;
 
 export const formatAmountForDisplay = (
   amount: number,
-  currency: string = "USD"
+  currency: Currency = Currency.USD
 ): string => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -24,11 +24,11 @@ export const formatAmountForDisplay = (
 
 export const formatAmountForStripe = (
   amount: number,
-  currency: string
+  currency: Currency
 ): number => {
   const numberFormat = new Intl.NumberFormat(["en-US"], {
     style: "currency",
-    currency: currency,
+    currency,
     currencyDisplay: "symbol",
   });
   const parts = numberFormat.formatToParts(amount);

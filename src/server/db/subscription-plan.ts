@@ -11,6 +11,13 @@ export async function updateUserPlan(
   });
 }
 
+export async function getUserWithPlan(userId: string) {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    select: { stripeCustomerId: true, plan: true },
+  });
+}
+
 export async function updateStripeCustomerId(
   userId: string,
   stripeCustomerId: string

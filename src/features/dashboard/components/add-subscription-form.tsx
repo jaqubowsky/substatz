@@ -26,7 +26,7 @@ import { addSubscriptionAction } from "@/features/dashboard/server/actions";
 import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { BillingCycle } from "@prisma/client";
+import { BillingCycle, Currency } from "@prisma/client";
 import {
   CalendarIcon,
   CreditCard,
@@ -43,7 +43,7 @@ interface AddSubscriptionFormProps {
 const defaultValues: AddSubscriptionValues = {
   name: "",
   price: 0,
-  currency: "USD",
+  currency: Currency.USD,
   category: "",
   billingCycle: BillingCycle.MONTHLY,
   startDate: new Date(),

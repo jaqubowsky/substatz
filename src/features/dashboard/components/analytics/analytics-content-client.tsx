@@ -18,12 +18,14 @@ interface AnalyticsContentProps {
   subscriptions: Subscription[];
   categoriesBreakdown: Record<string, number>;
   defaultCurrency: Currency;
+  rates: Record<Currency, number>;
 }
 
 export function AnalyticsContent({
   subscriptions,
   categoriesBreakdown,
   defaultCurrency,
+  rates,
 }: AnalyticsContentProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("6months");
   const [customDateRange, setCustomDateRange] = useState<DateRange>({
@@ -34,6 +36,7 @@ export function AnalyticsContent({
   const monthlySpendingData = calculateMonthlySpending(
     subscriptions,
     defaultCurrency,
+    rates,
     timeRange === "custom" ? customDateRange : undefined,
     timeRange
   );
@@ -92,6 +95,7 @@ export function AnalyticsContent({
         <AdvancedStatsCards
           subscriptions={subscriptions}
           defaultCurrency={defaultCurrency}
+          rates={rates}
         />
       </TabsContent>
     </Tabs>
