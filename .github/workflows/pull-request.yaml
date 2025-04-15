@@ -8,8 +8,11 @@ jobs:
   pr-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Environment
-        uses: ./.github/actions/setup-environment
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
 
       - name: Check Outdated Dependencies
         uses: ./.github/actions/deps-outdated
