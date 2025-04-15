@@ -18,4 +18,3 @@ runs:
           else
             echo "No critical vulnerabilities detected."
           fi
-      shell: bash
