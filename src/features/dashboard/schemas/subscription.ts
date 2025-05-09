@@ -40,6 +40,16 @@ export interface UpcomingPayment extends Subscription {
   nextPaymentDate: Date;
 }
 
+export const SUB_CATEGORIES = [
+  "Entertainment",
+  "Productivity",
+  "Utilities",
+  "Health & Fitness",
+  "Education",
+  "Food & Drink",
+  "Shopping",
+  "Other",
+];
 export interface CategoryBreakdown {
   [category: string]: number;
 }

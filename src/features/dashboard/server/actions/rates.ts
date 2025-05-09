@@ -1,6 +1,6 @@
+import { env } from "@/lib/env";
 import { Currency } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
-import { env } from "./env";
 
 interface ExchangeRateResponse {
   result: string;
@@ -51,5 +51,3 @@ export async function fetchLatestExchangeRates(
     throw error;
   }
 }
-
-

@@ -1,9 +1,7 @@
-import { SavingsOpportunity } from "@/features/dashboard/components/subscription-details/savings-opportunity-card";
 import { calculateBillingCycles, formatDuration } from "@/lib/billing-utils";
 import { BillingCycle, Subscription } from "@prisma/client";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { calculateNextPaymentDate } from "./calculate-next-payment-date";
-import { generateSavingsOpportunities } from "./savings-opportunities";
 
 export interface SubscriptionStats {
   totalSpent: number;
@@ -16,7 +14,6 @@ export interface SubscriptionStats {
   renewalCount: number;
   averageCostPerMonth: number;
   nextPaymentDate: Date;
-  savingsOpportunities: SavingsOpportunity[];
 }
 
 export function calculateSubscriptionStats(
@@ -49,8 +46,6 @@ export function calculateSubscriptionStats(
     subscription.billingCycle as BillingCycle
   );
 
-  const savingsOpportunities = generateSavingsOpportunities(subscription);
-
   return {
     totalSpent,
     activeFor: {
@@ -62,6 +57,5 @@ export function calculateSubscriptionStats(
     renewalCount,
     averageCostPerMonth,
     nextPaymentDate,
-    savingsOpportunities,
   };
 }

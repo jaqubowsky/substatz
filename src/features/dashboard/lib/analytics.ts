@@ -5,7 +5,8 @@ import {
 } from "@/lib/billing-utils";
 import { Currency, Subscription } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import { convertCurrency, formatCurrency } from "./format-currency";
+import {formatCurrency } from "./format-currency";
+import { convertCurrency } from "./convert-currency";
 
 export type TimeRange = "3months" | "6months" | "12months" | "all" | "custom";
 

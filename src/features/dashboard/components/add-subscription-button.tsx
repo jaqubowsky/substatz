@@ -1,6 +1,6 @@
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Button } from "@/components/ui/button";
-import { getSubscriptions } from "@/features/dashboard/server/queries";
+import { getSubscriptionCountByUserId } from "@/features/dashboard/server/db";
 import { getServerAuth } from "@/hooks/get-server-auth";
 import { SubscriptionPlan } from "@prisma/client";
 import { Suspense } from "react";
@@ -10,10 +10,10 @@ export const AddSubscriptionButtonContent = async () => {
   const session = await getServerAuth();
   if (!session) throw new Error("User not found");
 
-  const subscriptions = await getSubscriptions();
+  const subscriptionCount = await getSubscriptionCountByUserId(session.user.id);
 
   const isPaid = session.user.plan === SubscriptionPlan.PAID;
-  const hasReachedLimit = !isPaid && subscriptions && subscriptions.length >= 1;
+  const hasReachedLimit = !isPaid && subscriptionCount >= 1;
 
   return <AddSubscriptionButtonClient hasReachedLimit={hasReachedLimit} />;
 };

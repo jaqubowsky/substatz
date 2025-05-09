@@ -3,7 +3,7 @@
 import { env } from "@/lib/env";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
-import { stripe, STRIPE_PRICE_ID } from "@/lib/stripe";
+import { stripe } from "@/lib/stripe";
 import {
   getUserWithPlan,
   updateStripeCustomerId,
@@ -40,7 +40,7 @@ export const createCheckoutSessionAction = privateAction.action(
       customer: customerId,
       line_items: [
         {
-          price: STRIPE_PRICE_ID,
+          price: env.STRIPE_PRICE_ID,
           quantity: 1,
         },
       ],

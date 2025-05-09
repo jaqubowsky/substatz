@@ -17,6 +17,7 @@ import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hoo
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+
 const defaultValues: EmailFormValues = {
   email: "",
 };
@@ -85,7 +86,7 @@ export function ForgotPasswordForm() {
       </Form>
 
       <div className="text-center text-sm text-accent-foreground">
-        Remember your password?{" "}
+        Remember your password?
         <Link
           href="/login"
           className="text-primary hover:text-primary/90 font-medium"

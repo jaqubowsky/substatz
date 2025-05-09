@@ -1,14 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDate, SubscriptionStats } from "@/features/dashboard/lib";
-import { Subscription } from "@prisma/client";
+import { formatDate } from "@/features/dashboard/lib";
 import { Clock } from "lucide-react";
 
 interface TimelineCardProps {
-  subscription: Subscription;
-  stats: SubscriptionStats;
+  activeFor: { formatted: string };
+  startDate: Date;
+  nextPaymentDate: Date;
 }
 
-export function TimelineCard({ subscription, stats }: TimelineCardProps) {
+export function TimelineCard({
+  activeFor,
+  startDate,
+  nextPaymentDate,
+}: TimelineCardProps) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -20,20 +24,20 @@ export function TimelineCard({ subscription, stats }: TimelineCardProps) {
       <CardContent className="space-y-4">
         <div>
           <p className="text-sm text-accent-foreground">Active For</p>
-          <p className="text-xl font-bold">{stats.activeFor.formatted}</p>
+          <p className="text-xl font-bold">{activeFor.formatted}</p>
         </div>
 
         <div>
           <p className="text-sm text-accent-foreground">Start Date</p>
           <p className="text-xl font-bold">
-            {formatDate(subscription.startDate.toISOString())}
+            {formatDate(startDate.toISOString())}
           </p>
         </div>
 
         <div>
           <p className="text-sm text-accent-foreground">Next Payment</p>
           <p className="text-xl font-bold">
-            {formatDate(stats.nextPaymentDate.toISOString())}
+            {formatDate(nextPaymentDate.toISOString())}
           </p>
         </div>
       </CardContent>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ButtonProps } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { createCheckoutSessionAction } from "@/server/actions/subscription-plan";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";

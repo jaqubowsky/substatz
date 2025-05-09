@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SubscriptionForm } from "@/features/dashboard/components/subscription-form";
 import {
   calculateNextPaymentDate,
   formatCurrency,
@@ -38,8 +39,8 @@ import {
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
-import { EditSubscriptionForm } from "./edit-subscription-form";
 import { SubscriptionDetails } from "./subscription-details";
+import { SubscriptionDetailsButton } from "./subscription-details-button";
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -107,7 +108,9 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
               {getBadge()}
             </div>
             <div className="flex items-center gap-1">
-              <SubscriptionDetails subscription={subscription} />
+              <SubscriptionDetailsButton>
+                <SubscriptionDetails subscription={subscription} />
+              </SubscriptionDetailsButton>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -189,8 +192,8 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
               Make changes to your subscription details below.
             </DialogDescription>
           </DialogHeader>
-          <EditSubscriptionForm
-            subscription={subscription}
+          <SubscriptionForm
+            initialSubscription={subscription}
             onSuccess={() => setIsEditDialogOpen(false)}
           />
         </DialogContent>

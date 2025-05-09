@@ -8,13 +8,10 @@ export const { auth } = NextAuth(authConfig);
 
 export default auth(async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  if (path.startsWith("/api/auth/session")) {
-    return NextResponse.next();
-  }
+  if (path.startsWith("/api/auth/session")) return NextResponse.next();
 
   const ip = await getIp();
-  const identifier = `auth:${ip}`;
-  const { success, headers } = await publicApiRateLimiter.limit(identifier);
+  const { success, headers } = await publicApiRateLimiter.limit(`auth:${ip}`);
 
   if (!success) {
     Sentry.captureMessage("Too many requests", {

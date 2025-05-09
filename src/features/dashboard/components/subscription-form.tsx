@@ -5,6 +5,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,12 +22,17 @@ import {
 import {
   addSubscriptionSchema,
   AddSubscriptionValues,
+  editSubscriptionSchema,
+  SUB_CATEGORIES,
 } from "@/features/dashboard/schemas";
-import { addSubscriptionAction } from "@/features/dashboard/server/actions";
+import {
+  addSubscriptionAction,
+  updateSubscriptionAction,
+} from "@/features/dashboard/server/actions";
 import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { BillingCycle, Currency } from "@prisma/client";
+import { BillingCycle, Currency, Subscription } from "@prisma/client";
 import {
   CalendarIcon,
   CreditCard,
@@ -36,11 +42,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-interface AddSubscriptionFormProps {
+interface SubscriptionFormProps {
+  initialSubscription?: Subscription;
   onSuccess: () => void;
 }
 
-const defaultValues: AddSubscriptionValues = {
+const ADD_MODE_DEFAULT_VALUES: AddSubscriptionValues = {
   name: "",
   price: 0,
   currency: Currency.USD,
@@ -50,21 +57,46 @@ const defaultValues: AddSubscriptionValues = {
   isCancelled: false,
 };
 
-export const AddSubscriptionForm = ({
+export function SubscriptionForm({
+  initialSubscription,
   onSuccess,
-}: AddSubscriptionFormProps) => {
+}: SubscriptionFormProps) {
+  const isEditMode = !!initialSubscription;
+
+  const selectedAction = isEditMode
+    ? updateSubscriptionAction
+    : addSubscriptionAction;
+  const selectedSchema = isEditMode
+    ? editSubscriptionSchema
+    : addSubscriptionSchema;
+
+  const defaultValues = isEditMode
+    ? {
+        ...initialSubscription,
+        price: Number(initialSubscription?.price),
+      }
+    : ADD_MODE_DEFAULT_VALUES;
+
   const { form, action, handleSubmitWithAction } = useHookFormAction(
-    addSubscriptionAction,
-    zodResolver(addSubscriptionSchema),
+    selectedAction,
+    zodResolver(selectedSchema),
     {
       actionProps: {
         onSuccess: () => {
-          toast.success("Subscription added successfully.");
-
+          toast.success(
+            isEditMode
+              ? "Subscription updated successfully."
+              : "Subscription added successfully."
+          );
           onSuccess?.();
         },
         onError: (error) => {
-          toast.error(error.error.serverError || "Failed to add subscription.");
+          toast.error(
+            error.error.serverError ||
+              (isEditMode
+                ? "Failed to update subscription."
+                : "Failed to add subscription.")
+          );
         },
       },
       formProps: {
@@ -73,16 +105,10 @@ export const AddSubscriptionForm = ({
     }
   );
 
-  const categories = [
-    "Entertainment",
-    "Productivity",
-    "Utilities",
-    "Health & Fitness",
-    "Education",
-    "Food & Drink",
-    "Shopping",
-    "Other",
-  ];
+  const submitButtonText = isEditMode
+    ? "Update Subscription"
+    : "Add Subscription";
+  const loadingButtonText = isEditMode ? "Updating..." : "Adding...";
 
   return (
     <Form {...form}>
@@ -175,7 +201,7 @@ export const AddSubscriptionForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {categories.map((category) => (
+                  {SUB_CATEGORIES.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -246,19 +272,42 @@ export const AddSubscriptionForm = ({
           />
         </div>
 
-        <div className="pt-4">
-          <Button type="submit" className="w-full" disabled={action.isPending}>
-            {action.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Adding...
-              </>
-            ) : (
-              "Add Subscription"
+        {isEditMode ? (
+          <FormField
+            control={form.control}
+            name="isCancelled"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="h-4 w-4 mt-1"
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Cancelled</FormLabel>
+                  <FormDescription>
+                    Mark this subscription as cancelled
+                  </FormDescription>
+                </div>
+              </FormItem>
             )}
-          </Button>
-        </div>
+          />
+        ) : null}
+
+        <Button type="submit" className="w-full" disabled={action.isPending}>
+          {action.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {loadingButtonText}
+            </>
+          ) : (
+            submitButtonText
+          )}
+        </Button>
       </form>
     </Form>
   );
-};
+}

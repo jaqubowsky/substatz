@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export const VerificationMessages = () => {
   const searchParams = useSearchParams();
+
   const [messages, setMessages] = useState({
     verification: searchParams.get("verification"),
     error: searchParams.get("error"),

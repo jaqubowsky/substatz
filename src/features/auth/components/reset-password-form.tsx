@@ -28,18 +28,18 @@ export function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  const defaultValues: ResetPasswordFormValues = {
+    token: token || "",
+    password: "",
+    confirmPassword: "",
+  };
+
   useEffect(() => {
     if (!token) {
       toast.error("Invalid or missing reset token");
       router.push("/forgot-password");
     }
   }, [token, router]);
-
-  const defaultValues: ResetPasswordFormValues = {
-    token: token || "",
-    password: "",
-    confirmPassword: "",
-  };
 
   const { form, action, handleSubmitWithAction } = useHookFormAction(
     resetPasswordAction,
