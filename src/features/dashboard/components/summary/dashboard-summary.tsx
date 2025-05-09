@@ -15,12 +15,12 @@ const DashboardSummaryContent = async () => {
   const session = await getServerAuth();
   if (!session) throw new Error("User not found");
 
-  const data = await getSubscriptionSummary();
+  const summary = await getSubscriptionSummary();
 
-  const totalMonthly = data?.totalMonthly || 0;
-  const totalYearly = data?.totalYearly || 0;
-  const upcomingPayments = data?.upcomingPayments || [];
-  const categoriesBreakdown = data?.categoriesBreakdown || {};
+  const totalMonthly = summary.totalMonthly;
+  const totalYearly = summary.totalYearly;
+  const upcomingPayments = summary.upcomingPayments;
+  const categoriesBreakdown = summary.categoriesBreakdown;
   const defaultCurrency = session.user.defaultCurrency || Currency.USD;
 
   return (

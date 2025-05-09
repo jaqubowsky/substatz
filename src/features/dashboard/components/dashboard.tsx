@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AddSubscriptionButton } from "./add-subscription-button";
 import { AnalyticsTab } from "./analytics";
 import { PaymentVerification } from "./payment-verification";
-import { SubscriptionList } from "./subscription-list";
+import { SubscriptionList } from "./subscription-details/subscription-list";
 import { DashboardSummary } from "./summary/dashboard-summary";
 
 export const Dashboard = async () => {

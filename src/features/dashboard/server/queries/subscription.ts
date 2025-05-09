@@ -1,8 +1,5 @@
 import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
-import {
-  convertCurrency,
-  getLatestExchangeRates,
-} from "@/features/dashboard/lib/format-currency";
+import { convertCurrency } from "@/features/dashboard/lib/convert-currency";
 import {
   CategoryBreakdown,
   UpcomingPayment,
@@ -11,6 +8,7 @@ import * as db from "@/features/dashboard/server/db/subscription";
 import { getServerAuth } from "@/hooks/get-server-auth";
 import { calculateAnnualCost, calculateMonthlyCost } from "@/lib/billing-utils";
 import { Currency } from "@prisma/client";
+import { getLatestExchangeRates } from "./rates";
 
 export interface SubscriptionSummary {
   totalMonthly: number;

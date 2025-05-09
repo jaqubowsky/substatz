@@ -5,19 +5,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SubscriptionStats } from "@/features/dashboard/lib";
-import { Subscription } from "@prisma/client";
+import { Currency } from "@prisma/client";
 import { Lightbulb } from "lucide-react";
-import { SavingsOpportunityCard } from "./savings-opportunity-card";
-
+import {
+  SavingsOpportunity,
+  SavingsOpportunityCard,
+} from "./savings-opportunity-card";
 interface SavingsOpportunitiesProps {
-  subscription: Subscription;
-  stats: SubscriptionStats;
+  savingsOpportunities: SavingsOpportunity[];
+  currency: Currency;
 }
 
 export function SavingsOpportunities({
-  subscription,
-  stats,
+  savingsOpportunities,
+  currency,
 }: SavingsOpportunitiesProps) {
   return (
     <Card className="mt-4">
@@ -31,11 +32,11 @@ export function SavingsOpportunities({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {stats.savingsOpportunities.map((opportunity, index) => (
+        {savingsOpportunities.map((opportunity, index) => (
           <SavingsOpportunityCard
             key={index}
             opportunity={opportunity}
-            currency={subscription.currency}
+            currency={currency}
           />
         ))}
       </CardContent>

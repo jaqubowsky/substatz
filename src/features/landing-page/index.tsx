@@ -1,5 +1,6 @@
 import { JsonLd } from "@/components/json-ld";
 import { env } from "@/lib/env";
+import { Currency } from "@prisma/client";
 import { FAQSection } from "./components";
 import { CTASection } from "./components/cta-section";
 import { FeaturesSection } from "./components/features-section";
@@ -8,7 +9,7 @@ import { LandingFooter } from "./components/landing-footer";
 import { LandingHeader } from "./components/landing-header";
 import { PricingSection } from "./components/pricing-section";
 import { TestimonialsSection } from "./components/testimonials-section";
-import { Currency } from "@prisma/client";
+
 export const LandingPage = () => {
   const baseUrl = env.BASE_URL || "https://substatz.me";
 

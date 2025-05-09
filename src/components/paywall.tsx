@@ -23,9 +23,7 @@ async function PaywallContent({ children }: PaywallProps) {
     <div className="relative w-full h-full">
       <div className="blur-lg rounded-lg pointer-events-none">{children}</div>
 
-      <div
-        className={`absolute inset-0 flex flex-col justify-center items-center bg-background/80 backdrop-blur-sm z-10 p-6 text-center`}
-      >
+      <div className="absolute inset-0 flex flex-col justify-center items-center bg-background/80 backdrop-blur-sm z-10 p-6 text-center">
         <div className="bg-card p-6 rounded-lg shadow-lg max-w-md mx-auto">
           <div className="flex justify-center mb-4">
             <div className="bg-primary/10 p-3 rounded-full">

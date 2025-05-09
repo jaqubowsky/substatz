@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useClientAuth } from "@/hooks";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { Settings, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

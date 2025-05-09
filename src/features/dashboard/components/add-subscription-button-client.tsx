@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { AddSubscriptionForm } from "./add-subscription-form";
+import { SubscriptionForm } from "./subscription-form";
 
 export const AddSubscriptionButtonClient = ({
   hasReachedLimit,
@@ -51,7 +51,7 @@ export const AddSubscriptionButtonClient = ({
               dashboard.
             </DialogDescription>
           </DialogHeader>
-          <AddSubscriptionForm onSuccess={() => setIsDialogOpen(false)} />
+          <SubscriptionForm onSuccess={() => setIsDialogOpen(false)} />
         </DialogContent>
       </Dialog>
     </>

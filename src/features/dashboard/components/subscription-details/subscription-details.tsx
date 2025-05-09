@@ -5,6 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { calculateSubscriptionStats } from "@/features/dashboard/lib";
+import { generateSavingsOpportunities } from "@/features/dashboard/lib/savings-opportunities";
 import { Subscription } from "@prisma/client";
 import { Tag } from "lucide-react";
 import { FinancialSummary } from "./financial-summary";
@@ -12,14 +13,15 @@ import { RenewalHistory } from "./renewal-history";
 import { SavingsOpportunities } from "./savings-opportunities";
 import { TimelineCard } from "./timeline-card";
 
-interface SubscriptionDetailsContentProps {
+interface SubscriptionDetailsProps {
   subscription: Subscription;
 }
 
-export function SubscriptionDetailsContent({
+export function SubscriptionDetails({
   subscription,
-}: SubscriptionDetailsContentProps) {
+}: SubscriptionDetailsProps) {
   const stats = calculateSubscriptionStats(subscription);
+  const savingsOpportunities = generateSavingsOpportunities(subscription);
 
   return (
     <>
@@ -37,12 +39,28 @@ export function SubscriptionDetailsContent({
       </DialogHeader>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-        <FinancialSummary subscription={subscription} stats={stats} />
-        <TimelineCard subscription={subscription} stats={stats} />
+        <FinancialSummary
+          price={subscription.price}
+          currency={subscription.currency}
+          totalSpent={stats.totalSpent}
+          averageCostPerMonth={stats.averageCostPerMonth}
+          billingCycle={subscription.billingCycle}
+        />
+        <TimelineCard
+          activeFor={stats.activeFor}
+          startDate={subscription.startDate}
+          nextPaymentDate={stats.nextPaymentDate}
+        />
       </div>
 
-      <RenewalHistory subscription={subscription} stats={stats} />
-      <SavingsOpportunities subscription={subscription} stats={stats} />
+      <RenewalHistory
+        renewalCount={stats.renewalCount}
+        billingCycle={subscription.billingCycle}
+      />
+      <SavingsOpportunities
+        savingsOpportunities={savingsOpportunities}
+        currency={subscription.currency}
+      />
     </>
   );
 }

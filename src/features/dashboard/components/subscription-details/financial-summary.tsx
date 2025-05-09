@@ -1,16 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, SubscriptionStats } from "@/features/dashboard/lib";
-import { Subscription } from "@prisma/client";
+import { formatCurrency } from "@/features/dashboard/lib";
+import { BillingCycle, Currency } from "@prisma/client";
 import { DollarSign } from "lucide-react";
 
 interface FinancialSummaryProps {
-  subscription: Subscription;
-  stats: SubscriptionStats;
+  price: number;
+  currency: Currency;
+  totalSpent: number;
+  averageCostPerMonth: number;
+  billingCycle: BillingCycle;
 }
 
 export function FinancialSummary({
-  subscription,
-  stats,
+  price,
+  currency,
+  totalSpent,
+  averageCostPerMonth,
+  billingCycle,
 }: FinancialSummaryProps) {
   return (
     <Card>
@@ -24,9 +30,9 @@ export function FinancialSummary({
         <div>
           <p className="text-sm text-accent-foreground">Current Price</p>
           <p className="text-xl font-bold">
-            {formatCurrency(subscription.price, subscription.currency)}
+            {formatCurrency(price, currency)}
             <span className="text-sm font-normal text-accent-foreground ml-1">
-              {subscription.billingCycle.toLowerCase()}
+              {billingCycle.toLowerCase()}
             </span>
           </p>
         </div>
@@ -34,14 +40,14 @@ export function FinancialSummary({
         <div>
           <p className="text-sm text-accent-foreground">Total Spent</p>
           <p className="text-xl font-bold">
-            {formatCurrency(stats.totalSpent, subscription.currency)}
+            {formatCurrency(totalSpent, currency)}
           </p>
         </div>
 
         <div>
           <p className="text-sm text-accent-foreground">Average Monthly Cost</p>
           <p className="text-xl font-bold">
-            {formatCurrency(stats.averageCostPerMonth, subscription.currency)}
+            {formatCurrency(averageCostPerMonth, currency)}
             <span className="text-sm font-normal text-accent-foreground ml-1">
               /month
             </span>

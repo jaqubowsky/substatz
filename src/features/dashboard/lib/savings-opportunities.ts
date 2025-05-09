@@ -1,5 +1,5 @@
 import { SavingsOpportunity } from "@/features/dashboard/components/subscription-details/savings-opportunity-card";
-import { Subscription } from "@prisma/client";
+import { BillingCycle, Subscription } from "@prisma/client";
 
 export type OpportunityType =
   | "annual_discount"
@@ -696,7 +696,7 @@ export function generateSavingsOpportunities(
   const price = subscription.price;
   const category = subscription.category;
 
-  if (subscription.billingCycle === "MONTHLY") {
+  if (subscription.billingCycle === BillingCycle.MONTHLY) {
     const annualOpportunity = {
       type: "annual_discount" as OpportunityType,
       title: "Switch to annual billing",
@@ -705,7 +705,7 @@ export function generateSavingsOpportunities(
     };
     allOpportunities.push(annualOpportunity);
     allOpportunities.push(...monthlyOpportunities);
-  } else if (subscription.billingCycle === "ANNUALLY") {
+  } else if (subscription.billingCycle === BillingCycle.ANNUALLY) {
     allOpportunities.push(...annualOpportunities);
   }
 

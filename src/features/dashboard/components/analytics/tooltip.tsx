@@ -1,6 +1,4 @@
-"use client";
-
-export interface CustomTooltipProps {
+type CustomTooltipProps = {
   active?: boolean;
   payload?: Array<{
     value: number;
@@ -9,7 +7,7 @@ export interface CustomTooltipProps {
   }>;
   label?: string;
   formatter?: (val: number) => [string, string] | Array<string>;
-}
+};
 
 export const CustomTooltip = ({
   active,
@@ -17,28 +15,26 @@ export const CustomTooltip = ({
   label,
   formatter,
 }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    const val = payload[0].value;
-    const formattedValue = formatter ? formatter(val) : val;
+  if (!active || !payload || !payload.length) return null;
 
-    const additionalInfo = payload[0].payload;
-    const startDate =
-      additionalInfo && "startDate" in additionalInfo
-        ? (additionalInfo.startDate as string)
-        : undefined;
+  const val = payload[0].value;
+  const formattedValue = formatter ? formatter(val) : val;
 
-    return (
-      <div className="bg-white p-3 border border-gray-200 rounded shadow-sm">
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-sm text-primary font-semibold">
-          {Array.isArray(formattedValue) ? formattedValue[0] : formattedValue}
-        </p>
-        {startDate && (
-          <p className="text-xs text-accent-foreground">Started: {startDate}</p>
-        )}
-      </div>
-    );
-  }
+  const additionalInfo = payload[0].payload;
+  const startDate =
+    additionalInfo && "startDate" in additionalInfo
+      ? (additionalInfo.startDate as string)
+      : undefined;
 
-  return null;
+  return (
+    <div className="bg-white p-3 border border-gray-200 rounded shadow-sm">
+      <p className="text-sm font-medium">{label}</p>
+      <p className="text-sm text-primary font-semibold">
+        {Array.isArray(formattedValue) ? formattedValue[0] : formattedValue}
+      </p>
+      {startDate && (
+        <p className="text-xs text-accent-foreground">Started: {startDate}</p>
+      )}
+    </div>
+  );
 };
