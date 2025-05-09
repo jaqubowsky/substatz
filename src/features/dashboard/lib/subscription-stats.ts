@@ -1,5 +1,5 @@
 import { calculateBillingCycles, formatDuration } from "@/lib/billing-utils";
-import { BillingCycle, Subscription } from "@prisma/client";
+import { Subscription } from "@prisma/client";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import { calculateNextPaymentDate } from "./calculate-next-payment-date";
 
@@ -31,7 +31,7 @@ export function calculateSubscriptionStats(
 
   const renewalCount = calculateBillingCycles(
     startDate,
-    subscription.billingCycle as BillingCycle
+    subscription.billingCycle
   );
 
   const price = subscription.price;
@@ -43,7 +43,7 @@ export function calculateSubscriptionStats(
 
   const nextPaymentDate = calculateNextPaymentDate(
     startDate,
-    subscription.billingCycle as BillingCycle
+    subscription.billingCycle
   );
 
   return {

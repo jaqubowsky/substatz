@@ -45,30 +45,37 @@ export const getSubscriptionSummary = async () => {
   for (const subscription of subscriptions) {
     if (subscription.isCancelled) continue;
 
-    const price = convertCurrency(
+    const convertedPrice = convertCurrency(
       subscription.price,
       subscription.currency,
       session.user.defaultCurrency || Currency.USD,
       rates
     );
 
-    totalMonthly += calculateMonthlyCost(price, subscription.billingCycle);
-    totalYearly += calculateAnnualCost(price, subscription.billingCycle);
+    totalMonthly += calculateMonthlyCost(
+      convertedPrice,
+      subscription.billingCycle
+    );
+    totalYearly += calculateAnnualCost(
+      convertedPrice,
+      subscription.billingCycle
+    );
 
     if (categoriesBreakdown[subscription.category]) {
-      categoriesBreakdown[subscription.category] += price;
+      categoriesBreakdown[subscription.category] += convertedPrice;
     } else {
-      categoriesBreakdown[subscription.category] = price;
+      categoriesBreakdown[subscription.category] = convertedPrice;
     }
 
     const nextPaymentDate = calculateNextPaymentDate(
-      subscription.startDate,
+      new Date(subscription.startDate),
       subscription.billingCycle
     );
 
     if (nextPaymentDate >= today && nextPaymentDate <= endDate) {
       upcomingPayments.push({
         ...subscription,
+        price: convertedPrice,
         nextPaymentDate,
       });
     }
