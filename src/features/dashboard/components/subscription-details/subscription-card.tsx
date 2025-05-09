@@ -24,7 +24,6 @@ import {
   formatCurrency,
   formatDate,
 } from "@/features/dashboard/lib";
-import { BillingCycle } from "@/features/dashboard/schemas";
 import { removeSubscriptionAction } from "@/features/dashboard/server/actions";
 import { Subscription } from "@prisma/client";
 import {
@@ -64,7 +63,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
 
   const nextPaymentDate = calculateNextPaymentDate(
     new Date(subscription.startDate),
-    subscription.billingCycle as BillingCycle
+    subscription.billingCycle
   );
 
   const formattedDate = formatDate(nextPaymentDate.toISOString());
