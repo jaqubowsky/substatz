@@ -12,8 +12,6 @@ export default function robots(): MetadataRoute.Robots {
           "/contact",
           "/terms",
           "/privacy",
-          "/api/og/*",
-          "/api/twitter-image/*",
           "/api/favicon/*",
         ],
         disallow: [
