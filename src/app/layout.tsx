@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     siteName: "SubStatz",
     images: [
       {
-        url: "/api/og",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "SubStatz - Subscription Management Made Easy",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     description:
       "Track, manage, and optimize all your subscriptions in one place. Save money and never miss a payment.",
     creator: "@SubStatz",
-    images: [{ url: "/api/og", width: 1200, height: 630 }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
 };
 
