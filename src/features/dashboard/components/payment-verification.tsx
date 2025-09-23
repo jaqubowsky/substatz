@@ -78,8 +78,6 @@ export function PaymentVerification() {
       setState({ status: "cancelled" });
     } else if (state.status === "idle") {
       verifyAction.execute({ sessionId });
-    } else {
-      setState({ status: "verifying" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, paymentStatus, state.status]);
