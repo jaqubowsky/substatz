@@ -9,19 +9,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { formatCurrency } from "@/features/dashboard/lib";
-import { Currency } from "@prisma/client";
 import { DollarSign, HelpCircle } from "lucide-react";
 
-interface YearlySpendingCardProps {
-  totalYearly: number;
-  defaultCurrency: Currency;
-}
-
 export function YearlySpendingCard({
-  totalYearly,
-  defaultCurrency,
-}: YearlySpendingCardProps) {
+  totalSpending,
+}: {
+  totalSpending: string;
+}) {
   return (
     <Card className="bg-primary/5 border-none">
       <CardHeader className="pb-2 pt-4">
@@ -45,7 +39,7 @@ export function YearlySpendingCard({
           </HoverCard>
         </CardDescription>
         <CardTitle className="text-2xl font-bold text-foreground">
-          {formatCurrency(totalYearly, defaultCurrency)}
+          {totalSpending}
         </CardTitle>
       </CardHeader>
     </Card>

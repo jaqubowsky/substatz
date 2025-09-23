@@ -1,24 +1,25 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { BillingCycle, Currency } from "@prisma/client";
 
-export async function getSubscriptionsByUserId(userId: string) {
+export const getSubscriptionsByUserId = cache(async (userId: string) => {
   return prisma.subscription.findMany({
     where: { userId },
     orderBy: [{ isCancelled: "asc" }, { name: "asc" }],
   });
-}
+});
 
-export async function getSubscriptionCountByUserId(userId: string) {
+export const getSubscriptionCountByUserId = cache(async (userId: string) => {
   return prisma.subscription.count({
     where: { userId },
   });
-}
+});
 
-export async function getSubscriptionById(id: string) {
+export const getSubscriptionById = cache(async (id: string) => {
   return prisma.subscription.findUnique({
     where: { id },
   });
-}
+});
 
 export async function createSubscription(
   userId: string,

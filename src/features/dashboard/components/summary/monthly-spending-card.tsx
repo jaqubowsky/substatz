@@ -9,19 +9,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { formatCurrency } from "@/features/dashboard/lib";
-import { Currency } from "@prisma/client";
 import { CreditCard, HelpCircle } from "lucide-react";
 
-interface MonthlySpendingCardProps {
-  totalMonthly: number;
-  defaultCurrency: Currency;
-}
-
 export function MonthlySpendingCard({
-  totalMonthly,
-  defaultCurrency,
-}: MonthlySpendingCardProps) {
+  totalSpending,
+}: {
+  totalSpending: string;
+}) {
   return (
     <Card className="bg-primary/10 border-none">
       <CardHeader className="pb-2 pt-4">
@@ -45,7 +39,7 @@ export function MonthlySpendingCard({
           </HoverCard>
         </CardDescription>
         <CardTitle className="text-3xl font-bold text-primary">
-          {formatCurrency(totalMonthly, defaultCurrency)}
+          {totalSpending}
         </CardTitle>
       </CardHeader>
     </Card>

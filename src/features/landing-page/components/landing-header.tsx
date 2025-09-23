@@ -1,4 +1,4 @@
-import { MobileMenuClient } from "@/components/mobile-menu-client";
+import { MobileMenuClient } from "@/components/mobile-menu.client";
 import { UserNav } from "@/components/user-nav";
 import { ClipboardList } from "lucide-react";
 import Link from "next/link";

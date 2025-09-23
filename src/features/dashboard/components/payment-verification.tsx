@@ -16,19 +16,23 @@ import { useAction } from "next-safe-action/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type PaymentVerificationState =
+  | { status: "idle" }
+  | { status: "verifying" }
+  | { status: "verified" }
+  | { status: "cancelled" }
+  | { status: "error"; message: string };
+
 export function PaymentVerification() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const sessionId = searchParams.get("session_id");
-  const status = searchParams.get("status");
+  const paymentStatus = searchParams.get("status");
 
-  const [state, setState] = useState({
-    open: false,
-    isVerifying: false,
-    isVerified: false,
-    error: null as string | null,
-    cancelled: false,
+  const [open, setOpen] = useState(false);
+  const [state, setState] = useState<PaymentVerificationState>({
+    status: "idle",
   });
 
   const cleanupUrlParams = () => {
@@ -40,24 +44,13 @@ export function PaymentVerification() {
 
   const verifyAction = useAction(verifyPaymentAction, {
     onExecute: () => {
-      setState((prev) => ({
-        ...prev,
-        isVerifying: true,
-        isVerified: false,
-        error: null,
-        cancelled: false,
-      }));
+      setState({ status: "verifying" });
     },
     onSuccess: async () => {
-      setState((prev) => ({
-        ...prev,
-        isVerifying: false,
-        isVerified: true,
-        error: null,
-      }));
+      setState({ status: "verified" });
 
       setTimeout(() => {
-        setState((prev) => ({ ...prev, open: false }));
+        setOpen(false);
         cleanupUrlParams();
       }, 1500);
     },
@@ -65,138 +58,125 @@ export function PaymentVerification() {
       const errorMessage =
         error.error.serverError || "Failed to verify payment";
 
-      setState((prev) => ({
-        ...prev,
-        isVerifying: false,
-        isVerified: false,
-        error: errorMessage,
-      }));
+      setState({ status: "error", message: errorMessage });
     },
   });
 
   const handleClose = () => {
-    if (state.isVerifying) return;
+    if (state.status === "verifying") return;
 
-    setState((prev) => ({ ...prev, open: false }));
+    setOpen(false);
     cleanupUrlParams();
   };
 
   useEffect(() => {
-    if (sessionId) {
-      setState((prev) => ({ ...prev, open: true }));
+    if (!sessionId) return;
 
-      if (status === "cancelled") {
-        setState((prev) => ({
-          ...prev,
-          open: true,
-          cancelled: true,
-          isVerifying: false,
-          isVerified: false,
-          error: null,
-        }));
-      } else if (!state.isVerifying && !state.isVerified) {
-        verifyAction.execute({ sessionId });
-      }
+    setOpen(true);
+
+    if (paymentStatus === "cancelled") {
+      setState({ status: "cancelled" });
+    } else if (state.status === "idle") {
+      verifyAction.execute({ sessionId });
+    } else {
+      setState({ status: "verifying" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId, status]);
+  }, [sessionId, paymentStatus, state.status]);
 
   const getDialogContent = () => {
-    if (state.isVerifying) {
-      return (
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Loader2 className="h-5 w-5 animate-spin text-primary" />
-            Verifying your payment
-          </DialogTitle>
-          <DialogDescription>
-            Please wait while we verify your payment with Stripe...
-          </DialogDescription>
-        </DialogHeader>
-      );
-    }
-
-    if (state.isVerified) {
-      return (
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-success">
-            <CheckCircle className="h-5 w-5" />
-            Payment Successful!
-          </DialogTitle>
-          <DialogDescription>
-            Your payment has been verified and your account has been upgraded to
-            the paid plan. You now have access to all premium features.
-          </DialogDescription>
-        </DialogHeader>
-      );
-    }
-
-    if (state.cancelled) {
-      return (
-        <>
+    switch (state.status) {
+      case "verifying":
+        return (
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-accent-foreground">
-              <XCircle className="h-5 w-5" />
-              Payment Cancelled
+            <DialogTitle className="flex items-center gap-2">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              Verifying your payment
             </DialogTitle>
             <DialogDescription>
-              You&apos;ve cancelled the payment process. You can upgrade to the
-              paid plan anytime to access premium features.
+              Please wait while we verify your payment with Stripe...
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button variant="default" onClick={handleClose}>
-              Close
-            </Button>
-          </DialogFooter>
-        </>
-      );
-    }
-
-    if (state.error) {
-      return (
-        <>
+        );
+      case "verified":
+        return (
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <XCircle className="h-5 w-5" />
-              Payment Verification Failed
+            <DialogTitle className="flex items-center gap-2 text-success">
+              <CheckCircle className="h-5 w-5" />
+              Payment Successful!
             </DialogTitle>
-            <DialogDescription>{state.error}</DialogDescription>
+            <DialogDescription>
+              Your payment has been verified and your account has been upgraded
+              to the paid plan. You now have access to all premium features.
+            </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => verifyAction.execute({ sessionId: sessionId! })}
-              disabled={verifyAction.isExecuting}
-            >
-              {verifyAction.isExecuting ? "Retrying..." : "Retry Verification"}
-            </Button>
-            <Button variant="default" onClick={handleClose}>
-              Close
-            </Button>
-          </DialogFooter>
-        </>
-      );
+        );
+      case "cancelled":
+        return (
+          <>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-accent-foreground">
+                <XCircle className="h-5 w-5" />
+                Payment Cancelled
+              </DialogTitle>
+              <DialogDescription>
+                You&apos;ve cancelled the payment process. You can upgrade to
+                the paid plan anytime to access premium features.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="default" onClick={handleClose}>
+                Close
+              </Button>
+            </DialogFooter>
+          </>
+        );
+      case "error":
+        return (
+          <>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-destructive">
+                <XCircle className="h-5 w-5" />
+                Payment Verification Failed
+              </DialogTitle>
+              <DialogDescription>{state.message}</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => verifyAction.execute({ sessionId: sessionId! })}
+                disabled={verifyAction.isExecuting}
+              >
+                {verifyAction.isExecuting
+                  ? "Retrying..."
+                  : "Retry Verification"}
+              </Button>
+              <Button variant="default" onClick={handleClose}>
+                Close
+              </Button>
+            </DialogFooter>
+          </>
+        );
+      default:
+        return (
+          <DialogHeader>
+            <VisuallyHidden>
+              <DialogTitle>Payment Verification</DialogTitle>
+            </VisuallyHidden>
+            <DialogDescription>
+              Processing your payment information...
+            </DialogDescription>
+          </DialogHeader>
+        );
     }
-
-    return (
-      <DialogHeader>
-        <VisuallyHidden>
-          <DialogTitle>Payment Verification</DialogTitle>
-        </VisuallyHidden>
-        <DialogDescription>
-          Processing your payment information...
-        </DialogDescription>
-      </DialogHeader>
-    );
   };
 
   return (
     <Dialog
-      open={state.open}
+      open={open}
       onOpenChange={(open) => {
         if (!open) handleClose();
-        else setState((prev) => ({ ...prev, open: true }));
+        else setOpen(true);
       }}
     >
       <DialogContent className="sm:max-w-md">

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
 import { convertCurrency } from "@/features/dashboard/lib/convert-currency";
 import {
@@ -17,14 +18,14 @@ export interface SubscriptionSummary {
   categoriesBreakdown: CategoryBreakdown;
 }
 
-export const getSubscriptions = async () => {
+export const getSubscriptions = cache(async () => {
   const session = await getServerAuth();
   if (!session) throw new Error("User not found");
 
-  return await db.getSubscriptionsByUserId(session.user.id);
-};
+  return db.getSubscriptionsByUserId(session.user.id);
+});
 
-export const getSubscriptionSummary = async () => {
+export const getSubscriptionSummary = cache(async () => {
   const session = await getServerAuth();
   if (!session) throw new Error("User not found");
 
@@ -91,4 +92,4 @@ export const getSubscriptionSummary = async () => {
     upcomingPayments,
     categoriesBreakdown,
   };
-};
+});

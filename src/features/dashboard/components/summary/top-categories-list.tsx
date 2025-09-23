@@ -7,13 +7,17 @@ interface TopCategoriesListProps {
   defaultCurrency: Currency;
 }
 
+const sortCategories = (categoriesBreakdown: Record<string, number>) => {
+  return Object.entries(categoriesBreakdown)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3);
+};
+
 export function TopCategoriesList({
   categoriesBreakdown,
   defaultCurrency,
 }: TopCategoriesListProps) {
-  const sortedCategories = Object.entries(categoriesBreakdown)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 3);
+  const sortedCategories = sortCategories(categoriesBreakdown);
 
   return (
     <div>

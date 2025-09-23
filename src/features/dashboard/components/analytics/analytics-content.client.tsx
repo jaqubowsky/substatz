@@ -10,22 +10,39 @@ import { Currency, Subscription } from "@prisma/client";
 import { BarChart3, LineChart } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import { AdvancedStatsCards } from "./advanced-stats-cards";
-import { CategoryBreakdownChart, MonthlySpendingChart } from "./charts";
 import { TimeRangeSelector } from "./time-range-selector";
+import dynamic from "next/dynamic";
 
 interface AnalyticsContentProps {
   subscriptions: Subscription[];
   categoriesBreakdown: Record<string, number>;
   defaultCurrency: Currency;
   rates: Record<Currency, number>;
+  children: React.ReactNode;
 }
+
+const DynamicMonthlySpendingChart = dynamic(
+  () => import("./charts").then((mod) => mod.MonthlySpendingChart),
+  {
+    loading: () => <div className="bg-card rounded-lg shadow-sm p-6 h-64" />,
+    ssr: false,
+  }
+);
+
+const DynamicCategoryBreakdownChart = dynamic(
+  () => import("./charts").then((mod) => mod.CategoryBreakdownChart),
+  {
+    loading: () => <div className="bg-card rounded-lg shadow-sm p-6 h-64" />,
+    ssr: false,
+  }
+);
 
 export function AnalyticsContent({
   subscriptions,
   categoriesBreakdown,
   defaultCurrency,
   rates,
+  children,
 }: AnalyticsContentProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("6months");
   const [customDateRange, setCustomDateRange] = useState<DateRange>({
@@ -80,11 +97,11 @@ export function AnalyticsContent({
 
       <TabsContent value="overview" className="mt-0 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <MonthlySpendingChart
+          <DynamicMonthlySpendingChart
             data={filteredMonthlyData}
             defaultCurrency={defaultCurrency}
           />
-          <CategoryBreakdownChart
+          <DynamicCategoryBreakdownChart
             data={categoryData}
             defaultCurrency={defaultCurrency}
           />
@@ -92,11 +109,7 @@ export function AnalyticsContent({
       </TabsContent>
 
       <TabsContent value="detailed" className="mt-0">
-        <AdvancedStatsCards
-          subscriptions={subscriptions}
-          defaultCurrency={defaultCurrency}
-          rates={rates}
-        />
+        {children}
       </TabsContent>
     </Tabs>
   );

@@ -7,23 +7,16 @@ export const metadata: Metadata = {
   description: "Sign in or register to manage your subscriptions",
 };
 
-export const revalidate = 3600;
-
-async function AuthCheck() {
-  const session = await getServerAuth();
-  if (session) redirect("/dashboard");
-
-  return null;
-}
-
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerAuth();
+  if (session) redirect("/dashboard");
+
   return (
     <div className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-secondary">
-      <AuthCheck />
       <main className="rounded-lg border border-border bg-card p-6 shadow-sm w-full max-w-md">
         {children}
       </main>
