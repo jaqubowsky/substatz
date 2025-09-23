@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "build:analyze": "cross-env ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint --fix",
     "lint:ci": "next lint",
@@ -64,6 +65,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.5.4",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24",
@@ -71,6 +73,7 @@
     "dotenv": "^17.2.2",
     "@types/nodemailer": "^6.4.19",
     "@types/react": "^19",
+    "cross-env": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "eslint-plugin-import": "^2.32.0",

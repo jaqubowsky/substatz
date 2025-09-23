@@ -15,20 +15,18 @@ export function SubscriptionDetailsButton({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs">
+          <Info className="h-3.5 w-3.5" />
+          Details
+        </Button>
+      </DialogTrigger>
       {isOpen && (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs">
-              <Info className="h-3.5 w-3.5" />
-              Details
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-            {children}
-          </DialogContent>
-        </Dialog>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          {children}
+        </DialogContent>
       )}
-    </>
+    </Dialog>
   );
 }

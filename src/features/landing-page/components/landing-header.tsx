@@ -20,7 +20,6 @@ export function LandingHeader() {
               </Link>
             </div>
 
-            {/* Navigation links - Absolutely centered */}
             <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
               <div className="flex space-x-10">
                 <Link

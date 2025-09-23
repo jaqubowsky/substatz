@@ -58,7 +58,7 @@ export const SubscriptionCardActions = ({
       toast.error(data.error.serverError || "Failed to delete subscription.");
     },
     onSettled: () => {
-      setIsEditDialogOpen(false);
+      setIsDeleteDialogOpen(false);
     },
   });
 

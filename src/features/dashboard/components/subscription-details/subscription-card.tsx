@@ -9,11 +9,15 @@ import { Subscription } from "@prisma/client";
 import { Calendar, CreditCard, Tag } from "lucide-react";
 import { SubscriptionDetailsButton } from "./subscription-details-button";
 import { SubscriptionCardActions } from "./subscription-card-actions";
-import { SubscriptionDetails } from "./subscription-details";
+import dynamic from "next/dynamic";
 
 interface SubscriptionCardProps {
   subscription: Subscription;
 }
+
+const DynamicSubscriptionDetails = dynamic(() =>
+  import("./subscription-details").then((mod) => mod.SubscriptionDetails)
+);
 
 const getStatusBadge = (subscription: Subscription, nextPaymentDate: Date) => {
   if (subscription.isCancelled) {
@@ -21,11 +25,16 @@ const getStatusBadge = (subscription: Subscription, nextPaymentDate: Date) => {
   }
 
   const today = new Date();
-  const daysUntilPayment = Math.ceil(
-    (nextPaymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-  );
+  today.setHours(0, 0, 0, 0);
+  const paymentDate = new Date(nextPaymentDate);
+  paymentDate.setHours(0, 0, 0, 0);
 
-  if (daysUntilPayment < 0) return null;
+  const daysUntilPayment = Math.ceil(
+    (paymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  if (daysUntilPayment < 0) {
+    return <Badge variant="destructive">Overdue</Badge>;
+  }
 
   if (daysUntilPayment === 0) {
     return <Badge variant="destructive">Due today</Badge>;
@@ -63,7 +72,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
           </div>
           <div className="flex items-center gap-1">
             <SubscriptionDetailsButton>
-              <SubscriptionDetails subscription={subscription} />
+              <DynamicSubscriptionDetails subscription={subscription} />
             </SubscriptionDetailsButton>
             <SubscriptionCardActions subscription={subscription} />
           </div>
