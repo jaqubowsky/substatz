@@ -5,7 +5,6 @@ import {
   UpcomingPayment,
 } from "@/features/dashboard/schemas/subscription";
 import * as db from "@/features/dashboard/server/db/subscription";
-import { getServerAuth } from "@/hooks/get-server-auth";
 import { calculateAnnualCost, calculateMonthlyCost } from "@/lib/billing-utils";
 import { Currency } from "@prisma/client";
 import { getLatestExchangeRates } from "./rates";
@@ -17,18 +16,19 @@ export interface SubscriptionSummary {
   categoriesBreakdown: CategoryBreakdown;
 }
 
-export const getSubscriptions = async () => {
-  const session = await getServerAuth();
-  if (!session) throw new Error("User not found");
+export const getSubscriptions = async (userId: string) => {
+  "use cache";
 
-  return db.getSubscriptionsByUserId(session.user.id);
+  return db.getSubscriptionsByUserId(userId);
 };
 
-export const getSubscriptionSummary = async () => {
-  const session = await getServerAuth();
-  if (!session) throw new Error("User not found");
+export const getSubscriptionSummary = async (
+  userId: string,
+  defaultCurrency: Currency
+) => {
+  "use cache";
 
-  const subscriptions = await getSubscriptions();
+  const subscriptions = await getSubscriptions(userId);
   const rates = await getLatestExchangeRates();
 
   let totalMonthly = 0;
@@ -48,7 +48,7 @@ export const getSubscriptionSummary = async () => {
     const convertedPrice = convertCurrency(
       subscription.price,
       subscription.currency,
-      session.user.defaultCurrency || Currency.USD,
+      defaultCurrency,
       rates
     );
 

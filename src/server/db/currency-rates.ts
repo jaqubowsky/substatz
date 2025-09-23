@@ -1,9 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { Currency } from "@prisma/client";
 
-export async function getCurrencyRates() {
+export const getCurrencyRates = async () => {
+  "use cache";
+
   return prisma.currencyRate.findMany();
-}
+};
 
 export async function upsertCurrencyRates(
   rates: { currency: Currency; rate: number }[]

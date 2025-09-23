@@ -31,19 +31,25 @@ export async function verifyUserEmail(token: string) {
   return updatedUser;
 }
 
-export async function getUserByEmail(email: string) {
+export const getUserByEmail = async (email: string) => {
+  "use cache";
+
   return prisma.user.findUnique({
     where: { email },
   });
-}
+};
 
-export async function getUserById(id: string) {
+export const getUserById = async (id: string) => {
+  "use cache";
+
   return prisma.user.findUnique({
     where: { id },
   });
-}
+};
 
-export async function getUserForSession(id: string) {
+export const getUserForSession = async (id: string) => {
+  "use cache";
+
   return prisma.user.findUnique({
     where: { id },
     select: {
@@ -53,4 +59,4 @@ export async function getUserForSession(id: string) {
       defaultCurrency: true,
     },
   });
-}
+};
