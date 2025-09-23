@@ -1,15 +1,33 @@
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Separator } from "@/components/ui/separator";
 import { getSubscriptionSummary } from "@/features/dashboard/server/queries";
+import { formatCurrency } from "@/features/dashboard/lib";
 import { getServerAuth } from "@/hooks/get-server-auth";
-import { Currency } from "@prisma/client";
 import { PieChart } from "lucide-react";
 import { Suspense } from "react";
-import { LoadingSummary } from "./loading-summary";
 import { MonthlySpendingCard } from "./monthly-spending-card";
 import { TopCategoriesList } from "./top-categories-list";
 import { UpcomingPaymentsList } from "./upcoming-payments-list";
 import { YearlySpendingCard } from "./yearly-spending-card";
+import { Currency } from "@prisma/client";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export const LoadingSummary = () => {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-5 w-24" />
+      <Skeleton className="h-8 w-32" />
+      <Skeleton className="h-5 w-24 mt-4" />
+      <Skeleton className="h-7 w-28" />
+      <Separator className="my-4" />
+      <Skeleton className="h-5 w-32" />
+      <div className="space-y-2 mt-3">
+        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-16 w-full" />
+      </div>
+    </div>
+  );
+};
 
 const DashboardSummaryContent = async () => {
   const session = await getServerAuth();
@@ -34,13 +52,11 @@ const DashboardSummaryContent = async () => {
 
       <div className="space-y-6">
         <MonthlySpendingCard
-          totalMonthly={totalMonthly}
-          defaultCurrency={defaultCurrency}
+          totalSpending={formatCurrency(totalMonthly, defaultCurrency)}
         />
 
         <YearlySpendingCard
-          totalYearly={totalYearly}
-          defaultCurrency={defaultCurrency}
+          totalSpending={formatCurrency(totalYearly, defaultCurrency)}
         />
 
         {upcomingPayments.length > 0 && (

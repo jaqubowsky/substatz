@@ -8,17 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getServerAuth } from "@/hooks/get-server-auth";
-import { SubscriptionPlan } from "@prisma/client";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { cn } from "@/lib/cn";
+import { Sparkles } from "lucide-react";
 import { RefundButton } from "./refund-button";
+import { BillingFeatures } from "./billing-features";
 
-export async function Billing() {
-  const session = await getServerAuth();
-  if (!session) return null;
-
-  const isPro = session.user.plan === SubscriptionPlan.PAID;
-
+export async function Billing({ isPro }: { isPro: boolean }) {
+  
   const planDetails = {
     free: {
       name: "Free",
@@ -48,7 +44,7 @@ export async function Billing() {
 
   return (
     <Card className="overflow-hidden">
-      <div className={`${isPro ? "bg-primary/5" : "bg-muted/20"} w-full`}>
+      <div className={cn("w-full", isPro ? "bg-primary/5" : "bg-muted/20")}>
         <CardHeader className="py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -66,9 +62,10 @@ export async function Billing() {
             </div>
             <Badge
               variant={currentPlan.badgeVariant}
-              className={`px-2 py-0.5 text-xs ${
+              className={cn(
+                "px-2 py-0.5 text-xs",
                 isPro ? "bg-primary/10 hover:bg-primary/20 text-primary" : ""
-              }`}
+              )}
             >
               Active
             </Badge>
@@ -86,18 +83,7 @@ export async function Billing() {
         <div className="h-px w-full bg-muted/60 my-4"></div>
 
         <h3 className="font-medium text-sm mb-3">What&apos;s included:</h3>
-        <div className="space-y-3">
-          {currentPlan.features.map((feature, index) => (
-            <div key={index} className="flex items-start gap-2.5">
-              <CheckCircle2
-                className={`h-4 w-4 shrink-0 mt-0.5 ${
-                  isPro ? "text-primary" : "text-accent-foreground"
-                }`}
-              />
-              <span className="text-sm">{feature}</span>
-            </div>
-          ))}
-        </div>
+        <BillingFeatures features={currentPlan.features} />
       </CardContent>
       <CardFooter className="flex justify-end border-t py-3 bg-muted/5">
         {isPro ? (

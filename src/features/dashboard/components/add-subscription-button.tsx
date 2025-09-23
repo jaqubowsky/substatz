@@ -4,7 +4,7 @@ import { getSubscriptionCountByUserId } from "@/features/dashboard/server/db";
 import { getServerAuth } from "@/hooks/get-server-auth";
 import { SubscriptionPlan } from "@prisma/client";
 import { Suspense } from "react";
-import { AddSubscriptionButtonClient } from "./add-subscription-button-client";
+import { AddSubscriptionButtonClient } from "./add-subscription-button.client";
 
 export const AddSubscriptionButtonContent = async () => {
   const session = await getServerAuth();

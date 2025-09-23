@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Currency } from "@prisma/client";
+import { cache } from "react";
 
 export async function updateUserPassword(
   userId: string,
@@ -11,11 +12,11 @@ export async function updateUserPassword(
   });
 }
 
-export async function getUserById(userId: string) {
+export const getUserById = cache(async (userId: string) => {
   return prisma.user.findUnique({
     where: { id: userId },
   });
-}
+});
 
 export async function deleteUser(userId: string) {
   return prisma.user.delete({

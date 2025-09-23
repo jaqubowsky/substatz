@@ -1,5 +1,5 @@
-import { AppFooter } from "@/components/app-footer";
-import { AppHeader } from "@/components/app-header";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +14,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="flex flex-col min-h-screen">
-      <AppHeader />
+      <Header />
       <main className="flex-1 flex items-center justify-center p-4 bg-secondary/30">
         <Card className="w-full max-w-md">
           <CardHeader>
@@ -36,7 +36,7 @@ export default function NotFound() {
           </CardFooter>
         </Card>
       </main>
-      <AppFooter />
+      <Footer />
     </div>
   );
 }

@@ -1,10 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AddSubscriptionButton } from "./add-subscription-button";
-import { AnalyticsTab } from "./analytics";
+import { AnalyticsTab } from "./analytics/analytics-tab";
 import { PaymentVerification } from "./payment-verification";
-import { SubscriptionList } from "./subscription-details/subscription-list";
-import { DashboardSummary } from "./summary/dashboard-summary";
+import { SubscriptionsTab } from "./subscriptions-tab";
 
 export const Dashboard = async () => {
   return (
@@ -18,36 +15,11 @@ export const Dashboard = async () => {
         </TabsList>
 
         <TabsContent value="subscriptions">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-2">
-            <div className="lg:col-span-2 space-y-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-2xl font-bold">
-                    Your Subscriptions
-                  </CardTitle>
-                  <AddSubscriptionButton />
-                </CardHeader>
-                <CardContent>
-                  <SubscriptionList />
-                </CardContent>
-              </Card>
-            </div>
-            <div className="space-y-6">
-              <Card className="sticky top-8">
-                <CardContent className="pt-6">
-                  <DashboardSummary />
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <SubscriptionsTab />
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card>
-            <CardContent className="pt-6">
-              <AnalyticsTab />
-            </CardContent>
-          </Card>
+          <AnalyticsTab />
         </TabsContent>
       </Tabs>
     </div>

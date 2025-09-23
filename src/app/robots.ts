@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
 import { MetadataRoute } from "next";
+
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = env.BASE_URL || "https://substatz.me";
 
@@ -7,13 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: [
-          "/",
-          "/contact",
-          "/terms",
-          "/privacy",
-          "/api/favicon/*",
-        ],
+        allow: ["/", "/contact", "/terms", "/privacy", "/api/favicon/*"],
         disallow: [
           "/api/",
           "/dashboard/",

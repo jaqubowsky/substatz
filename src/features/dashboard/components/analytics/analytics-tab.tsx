@@ -8,9 +8,11 @@ import { getLatestExchangeRates } from "@/features/dashboard/server/queries/rate
 import { getServerAuth } from "@/hooks/get-server-auth";
 import { Currency, SubscriptionPlan } from "@prisma/client";
 import { Suspense } from "react";
-import { AnalyticsContent } from "./analytics-content-client";
+import { AnalyticsContent } from "./analytics-content.client";
 import { LoadingAnalytics } from "./loading-analytics";
 import { SubscriptionSummaryCards } from "./summary-cards";
+import { Card, CardContent } from "@/components/ui/card";
+import { AdvancedStatsCards } from "./advanced-stats-cards";
 
 const PlaceholderSkeleton = () => {
   return (
@@ -40,34 +42,46 @@ const AnalyticsTabContent = async () => {
     );
   }
 
-  const subscriptions = await getSubscriptions();
-  const summary = await getSubscriptionSummary();
-  const { totalMonthly, totalYearly, categoriesBreakdown } = summary;
+  const [subscriptions, summary, rates] = await Promise.all([
+    getSubscriptions(),
+    getSubscriptionSummary(),
+    getLatestExchangeRates(),
+  ]);
 
-  const rates = await getLatestExchangeRates();
+  const { totalMonthly, totalYearly, categoriesBreakdown } = summary;
 
   const activeSubscriptions = subscriptions.filter(
     (s) => !s.isCancelled
   ).length;
 
   return (
-    <div className="space-y-6">
-      <SubscriptionSummaryCards
-        activeSubscriptions={activeSubscriptions}
-        totalMonthly={totalMonthly}
-        totalYearly={totalYearly}
-        defaultCurrency={defaultCurrency}
-      />
+    <Card>
+      <CardContent className="pt-6">
+        <div className="space-y-6">
+          <SubscriptionSummaryCards
+            activeSubscriptions={activeSubscriptions}
+            totalMonthly={totalMonthly}
+            totalYearly={totalYearly}
+            defaultCurrency={defaultCurrency}
+          />
 
-      <div className="bg-card rounded-lg shadow-sm overflow-hidden p-6">
-        <AnalyticsContent
-          subscriptions={subscriptions}
-          categoriesBreakdown={categoriesBreakdown}
-          defaultCurrency={defaultCurrency}
-          rates={rates}
-        />
-      </div>
-    </div>
+          <div className="bg-card rounded-lg shadow-sm overflow-hidden p-6">
+            <AnalyticsContent
+              subscriptions={subscriptions}
+              categoriesBreakdown={categoriesBreakdown}
+              defaultCurrency={defaultCurrency}
+              rates={rates}
+            >
+              <AdvancedStatsCards
+                subscriptions={subscriptions}
+                defaultCurrency={defaultCurrency}
+                rates={rates}
+              />
+            </AnalyticsContent>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

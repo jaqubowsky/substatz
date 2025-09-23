@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getServerAuth } from "@/hooks/get-server-auth";
-import { Provider } from "@prisma/client";
-import { Billing } from "./billing";
-import { ChangePasswordForm } from "./change-password-form";
+import { Provider, SubscriptionPlan } from "@prisma/client";
 import { CurrencySettingsForm } from "./currency-settings-form";
 import { DeleteAccount } from "./delete-account";
+import { Billing } from "./billing";
+import { ChangePasswordForm } from "./change-password-form";
 
 export const Settings = async () => {
   const session = await getServerAuth();
@@ -40,7 +40,7 @@ export const Settings = async () => {
         <TabsContent value="billing">
           <Card>
             <CardContent className="pt-6">
-              <Billing />
+              <Billing isPro={session.user.plan === SubscriptionPlan.PAID} />
             </CardContent>
           </Card>
         </TabsContent>

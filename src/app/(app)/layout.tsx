@@ -1,6 +1,6 @@
 import "@/app/globals.css";
-import { AppFooter } from "@/components/app-footer";
-import { AppHeader } from "@/components/app-header";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/navigation";
 import { getServerAuth } from "@/hooks/get-server-auth";
 import { setSentryUserContext } from "@/lib/auth-sentry";
 import { Metadata } from "next";
@@ -26,9 +26,13 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AppHeader />
+      <header className="sticky top-0 inset-x-0 z-40 w-full border-b border-border bg-background backdrop-blur supports-[backdrop-filter]:bg-background/95">
+        <Header />
+      </header>
       <main className="flex-1 flex flex-col bg-secondary/30">{children}</main>
-      <AppFooter />
+      <footer className="bg-background border-t border-border">
+        <Footer />
+      </footer>
     </div>
   );
 }
