@@ -101,9 +101,8 @@ export const SubscriptionCardActions = ({
         }
         icon={<AlertTriangle className="h-12 w-12 text-destructive" />}
         isProcessing={deleteAction.status === "executing"}
-        confirmText={
-          deleteAction.status === "executing" ? "Deleting..." : "Delete"
-        }
+        confirmText="Delete"
+        processingText="Deleting..."
         cancelText="Cancel"
         variant="destructive"
       />
