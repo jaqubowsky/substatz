@@ -15,9 +15,11 @@ export const fallbackExchangeRates: Record<Currency, number> = {
   PLN: 3.94,
 };
 
-export async function getLatestExchangeRates(): Promise<
+export const getLatestExchangeRates = async (): Promise<
   Record<Currency, number>
-> {
+> => {
+  "use cache";
+
   try {
     const dbRates = await getCurrencyRates();
     if (dbRates.length === 0) return fallbackExchangeRates;
@@ -48,4 +50,4 @@ export async function getLatestExchangeRates(): Promise<
 
     return fallbackExchangeRates;
   }
-}
+};

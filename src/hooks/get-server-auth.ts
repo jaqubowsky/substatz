@@ -2,11 +2,12 @@
 
 import { auth } from "@/auth";
 import { userDb } from "@/server";
-import { cache } from "react";
 
-export const getUserData = cache(async (userId: string) => {
+export const getUserData = async (userId: string) => {
+  "use cache";
+
   return userDb.getUserForSession(userId);
-});
+};
 
 export async function getServerAuth() {
   const session = await auth();

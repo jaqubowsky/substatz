@@ -11,9 +11,13 @@ import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { LoadingSubscriptionList } from "./loading-subscription-list";
 import { SubscriptionCard } from "./subscription-card";
+import { getServerAuth } from "@/hooks/get-server-auth";
 
 const SubscriptionListContent = async () => {
-  const subscriptions = await getSubscriptions();
+  const session = await getServerAuth();
+  if (!session) throw new Error("User not found");
+
+  const subscriptions = await getSubscriptions(session.user.id);
 
   if (subscriptions.length === 0) {
     return (

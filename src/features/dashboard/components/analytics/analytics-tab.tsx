@@ -43,8 +43,8 @@ const AnalyticsTabContent = async () => {
   }
 
   const [subscriptions, summary, rates] = await Promise.all([
-    getSubscriptions(),
-    getSubscriptionSummary(),
+    getSubscriptions(session.user.id),
+    getSubscriptionSummary(session.user.id, defaultCurrency),
     getLatestExchangeRates(),
   ]);
 
