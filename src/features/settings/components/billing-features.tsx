@@ -12,8 +12,8 @@ export const BillingFeature = ({ feature }: { feature: string }) => {
 export const BillingFeatures = ({ features }: { features: string[] }) => {
   return (
     <div className="space-y-3">
-      {features.map((feature, index) => (
-        <BillingFeature key={index} feature={feature} />
+      {features.map((feature) => (
+        <BillingFeature key={feature} feature={feature} />
       ))}
     </div>
   );

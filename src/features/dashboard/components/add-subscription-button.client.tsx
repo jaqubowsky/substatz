@@ -42,7 +42,7 @@ export const AddSubscriptionButtonClient = ({
         <PurchaseButton
           size="sm"
           className="gap-1"
-          aria-label="Add subscription"
+          aria-label="Unlock subscription limit"
         >
           Unlock Now
         </PurchaseButton>
@@ -58,18 +58,20 @@ export const AddSubscriptionButtonClient = ({
         </Button>
       )}
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Add New Subscription</DialogTitle>
-            <DialogDescription>
-              Fill in the details below to add a new subscription to your
-              dashboard.
-            </DialogDescription>
-          </DialogHeader>
-          <DynamicSubscriptionForm onSuccess={() => setIsDialogOpen(false)} />
-        </DialogContent>
-      </Dialog>
+      {!hasReachedLimit && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Add New Subscription</DialogTitle>
+              <DialogDescription>
+                Fill in the details below to add a new subscription to your
+                dashboard.
+              </DialogDescription>
+            </DialogHeader>
+            <DynamicSubscriptionForm onSuccess={() => setIsDialogOpen(false)} />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

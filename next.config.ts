@@ -79,7 +79,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+export default withSentryConfig(withBundleAnalyzer(nextConfig), {
   org: "jakub-v0",
   project: "substatz",
   silent: !process.env.CI,
