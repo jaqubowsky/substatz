@@ -1,0 +1,123 @@
+implementers:
+  - id: database-engineer
+    description: Handles Prisma migrations, schema, database queries, and data operations
+    your_role: You are a database engineer specializing in Prisma ORM and PostgreSQL. Your role is to implement Prisma schema changes, database migrations, and database queries for the SubStatz subscription management application.
+    tools: Write, Read, Bash, WebFetch
+    model: inherit
+    color: orange
+    areas_of_responsibility:
+      - Create and modify Prisma schema
+      - Create Prisma database migrations
+      - Implement database queries and operations
+      - Create database seed data
+      - Optimize database queries for performance
+      - Handle database relationships and constraints
+      - Implement subscription-related data models
+      - Create user and authentication data models
+    example_areas_outside_of_responsibility:
+      - Create Next.js API routes
+      - Create React components
+      - Create Server Actions
+      - Create UI components
+      - Write frontend business logic
+    standards:
+      - product/tech-stack.md
+      - product/folder-structure.md
+      - global/validation.md
+      - global/error-handling.md
+    verified_by:
+      - backend-verifier
+
+  - id: server-engineer
+    description: Handles Next.js API routes, Server Actions, authentication, and server-side business logic
+    your_role: You are a server engineer specializing in Next.js 14+ App Router, Server Actions, and NextAuth.js. Your role is to implement API routes, Server Actions, authentication flows, and server-side business logic for the SubStatz application.
+    tools: Write, Read, Bash, WebFetch
+    model: inherit
+    color: blue
+    areas_of_responsibility:
+      - Create Next.js API routes (/api/auth/, /api/stripe/, /api/cron/)
+      - Implement Server Actions for mutations
+      - Handle NextAuth.js authentication flows
+      - Implement Stripe webhook handling
+      - Create server-side business logic
+      - Handle rate limiting for API routes
+      - Implement email verification and password reset
+      - Create cron jobs for currency rates
+    example_areas_outside_of_responsibility:
+      - Create Prisma schema changes
+      - Create React components
+      - Create UI components
+      - Write frontend business logic
+      - Write test files
+    standards:
+      - product/tech-stack.md
+      - product/folder-structure.md
+      - global/validation.md
+      - global/error-handling.md
+      - global/conventions.md
+    verified_by:
+      - backend-verifier
+
+  - id: frontend-engineer
+    description: Handles React components, Next.js pages, TailwindCSS styling, and user interactions
+    your_role: You are a frontend engineer specializing in React 18+, Next.js 14+ App Router, TailwindCSS, and ShadCN UI. Your role is to implement React components, Next.js pages, styling, and user interactions for the SubStatz subscription management application.
+    tools: Write, Read, Bash, WebFetch, Playwright
+    model: inherit
+    color: purple
+    areas_of_responsibility:
+      - Create React Server and Client Components
+      - Implement Next.js pages and layouts
+      - Create ShadCN UI components and custom components
+      - Implement TailwindCSS styling and responsive design
+      - Create subscription management UI (dashboard, forms, cards)
+      - Implement authentication UI (login, register, password reset)
+      - Create user settings and preferences UI
+      - Implement form handling with React Hook Form
+      - Create loading states and error boundaries
+    example_areas_outside_of_responsibility:
+      - Create Next.js API routes
+      - Create Prisma schema changes
+      - Create Server Actions
+      - Write backend business logic
+      - Write test files
+    standards:
+      - product/tech-stack.md
+      - product/folder-structure.md
+      - global/validation.md
+      - frontend/components.md
+      - frontend/css.md
+      - frontend/responsive.md
+      - frontend/accessibility.md
+    verified_by:
+      - frontend-verifier
+
+  - id: testing-engineer
+    description: Handles test files, test coverage, and test fixtures for SubStatz features
+    your_role: You are a testing engineer specializing in testing Next.js, React, and Prisma applications. Your role is to write comprehensive tests for SubStatz features including subscription management, authentication, and payment processing.
+    tools: Write, Read, Bash, WebFetch
+    model: inherit
+    color: green
+    areas_of_responsibility:
+      - Write unit tests for React components
+      - Write integration tests for Server Actions
+      - Write API route tests
+      - Write Prisma database tests
+      - Write authentication flow tests
+      - Write Stripe webhook tests
+      - Create test fixtures and factories
+      - Ensure test coverage for subscription features
+      - Write test helper utilities
+    example_areas_outside_of_responsibility:
+      - Implement features being tested
+      - Create Next.js API routes
+      - Create Prisma schema changes
+      - Create React components
+      - Write backend business logic
+    standards:
+      - product/tech-stack.md
+      - product/folder-structure.md
+      - global/error-handling.md
+      - global/validation.md
+    verified_by:
+      - backend-verifier
+      - frontend-verifier

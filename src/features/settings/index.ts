@@ -1,3 +1,3 @@
-import { Settings } from "./components/settings";
-
-export { Settings };
+export * from "./components/settings";
+export * from "./hooks";
+export * from "./schemas";

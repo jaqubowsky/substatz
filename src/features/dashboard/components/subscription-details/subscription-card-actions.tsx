@@ -23,25 +23,13 @@ import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface SubscriptionCardActionsProps {
   subscription: Subscription;
 }
 
-const DynamicSubscriptionForm = dynamic(
-  () => import("../subscription-form").then((mod) => mod.SubscriptionForm),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-      </div>
-    ),
-  }
+const DynamicSubscriptionForm = dynamic(() =>
+  import("../subscription-form").then((mod) => mod.SubscriptionForm)
 );
 
 export const SubscriptionCardActions = ({
