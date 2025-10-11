@@ -2,7 +2,7 @@
 FROM alpine:3.19 AS base
 
 # Install Node.js and only essential dependencies
-RUN apk add --no-cache nodejs npm libc6-compat
+RUN apk add --no-cache nodejs-current icu-data-full npm libc6-compat
 
 # Install dependencies only when needed
 FROM base AS deps
