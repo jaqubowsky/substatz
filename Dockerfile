@@ -43,7 +43,7 @@ RUN npx prisma generate && npm run build
 FROM alpine:3.19 AS runner
 
 # Install only Node.js runtime - no npm needed for running
-RUN apk add --no-cache nodejs
+RUN apk add --no-cache nodejs-current icu-data-full
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs && \
