@@ -85,15 +85,21 @@ export const exportSubscriptionsAction = privateAction
     let mimeType: string;
     let fileExtension: string;
 
-    if (format === "excel") {
-      fileData = await generateExcelFile(subscriptions);
-      mimeType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      fileExtension = "xlsx";
-    } else {
-      fileData = await generatePdfFile(subscriptions);
-      mimeType = "application/pdf";
-      fileExtension = "pdf";
+    try {
+      if (format === "excel") {
+        fileData = await generateExcelFile(subscriptions);
+        mimeType =
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        fileExtension = "xlsx";
+      } else {
+        fileData = await generatePdfFile(subscriptions);
+        mimeType = "application/pdf";
+        fileExtension = "pdf";
+      }
+    } catch {
+      throw new ActionError(
+        errors.SUBSCRIPTION.EXPORT_GENERATION_FAILED.message
+      );
     }
 
     const currentDate = new Date().toISOString().split("T")[0];
