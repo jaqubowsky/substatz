@@ -5,7 +5,15 @@ import { Provider, SubscriptionPlan } from "@prisma/client";
 import { CurrencySettingsForm } from "./currency-settings-form";
 import { DeleteAccount } from "./delete-account";
 import { Billing } from "./billing";
-import { ChangePasswordForm } from "./change-password-form";
+import dynamic from "next/dynamic";
+
+const DynamicChangePasswordForm = dynamic(() =>
+  import("./change-password-form").then((mod) => mod.ChangePasswordForm)
+);
+
+const DynamicExportDataSection = dynamic(() =>
+  import("./export-data-section.client").then((mod) => mod.ExportDataSection)
+);
 
 export const Settings = async () => {
   const session = await getServerAuth();
@@ -23,13 +31,16 @@ export const Settings = async () => {
           <Card>
             {session.user.provider === Provider.CREDENTIALS && (
               <CardContent className="pt-6">
-                <ChangePasswordForm />
+                <DynamicChangePasswordForm />
               </CardContent>
             )}
             <CardContent className="pt-6">
               <CurrencySettingsForm
                 defaultCurrency={session.user.defaultCurrency}
               />
+            </CardContent>
+            <CardContent className="pt-6">
+              <DynamicExportDataSection userPlan={session.user.plan} />
             </CardContent>
             <CardContent className="pt-6">
               <DeleteAccount />

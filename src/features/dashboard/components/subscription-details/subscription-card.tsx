@@ -9,15 +9,11 @@ import { Subscription } from "@prisma/client";
 import { Calendar, CreditCard, Tag } from "lucide-react";
 import { SubscriptionDetailsButton } from "./subscription-details-button";
 import { SubscriptionCardActions } from "./subscription-card-actions";
-import dynamic from "next/dynamic";
+import { SubscriptionDetails } from "./subscription-details";
 
 interface SubscriptionCardProps {
   subscription: Subscription;
 }
-
-const DynamicSubscriptionDetails = dynamic(() =>
-  import("./subscription-details").then((mod) => mod.SubscriptionDetails)
-);
 
 const getStatusBadge = (subscription: Subscription, nextPaymentDate: Date) => {
   if (subscription.isCancelled) {
@@ -72,7 +68,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
           </div>
           <div className="flex items-center gap-1">
             <SubscriptionDetailsButton>
-              <DynamicSubscriptionDetails subscription={subscription} />
+              <SubscriptionDetails subscription={subscription} />
             </SubscriptionDetailsButton>
             <SubscriptionCardActions subscription={subscription} />
           </div>
