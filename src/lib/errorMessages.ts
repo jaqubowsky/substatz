@@ -80,6 +80,17 @@ export const errors = {
       message:
         "Payment status is {{status}}. Please try again or contact support.",
     },
+    NO_SUBSCRIPTIONS_TO_EXPORT: {
+      message:
+        "No subscriptions found to export. Please add subscriptions first.",
+    },
+    EXPORT_GENERATION_FAILED: {
+      message: "Failed to generate export file. Please try again later.",
+    },
+    EXPORT_PREMIUM_ONLY: {
+      message:
+        "Export feature is only available for premium users. Please upgrade your plan.",
+    },
   },
   USER: {
     GOOGLE_PROVIDER: {

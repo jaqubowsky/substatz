@@ -9,25 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-const DynamicSubscriptionForm = dynamic(
-  () => import("./subscription-form").then((mod) => mod.SubscriptionForm),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-      </div>
-    ),
-  }
-);
+  const DynamicSubscriptionForm = dynamic(() =>
+    import("./subscription-form").then((mod) => mod.SubscriptionForm)
+  );
 
 export const AddSubscriptionButtonClient = ({
   hasReachedLimit,
