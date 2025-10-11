@@ -13,9 +13,9 @@ import dynamic from "next/dynamic";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-const DynamicSubscriptionForm = dynamic(() =>
-  import("./subscription-form").then((mod) => mod.SubscriptionForm)
-);
+  const DynamicSubscriptionForm = dynamic(() =>
+    import("./subscription-form").then((mod) => mod.SubscriptionForm)
+  );
 
 export const AddSubscriptionButtonClient = ({
   hasReachedLimit,
