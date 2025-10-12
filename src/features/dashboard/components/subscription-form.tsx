@@ -32,7 +32,7 @@ import {
 import { currencySymbols } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { BillingCycle, Currency, Subscription } from "@prisma/client";
+import { BillingCycle, Currency } from "@prisma/client";
 import {
   CalendarIcon,
   CreditCard,
@@ -42,8 +42,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
+
 interface SubscriptionFormProps {
-  initialSubscription?: Subscription;
+  initialSubscription?: Partial<SubscriptionWithFinancials>;
   onSuccess: () => void;
 }
 
@@ -66,6 +68,7 @@ export function SubscriptionForm({
   const selectedAction = isEditMode
     ? updateSubscriptionAction
     : addSubscriptionAction;
+
   const selectedSchema = isEditMode
     ? editSubscriptionSchema
     : addSubscriptionSchema;
@@ -108,6 +111,7 @@ export function SubscriptionForm({
   const submitButtonText = isEditMode
     ? "Update Subscription"
     : "Add Subscription";
+
   const loadingButtonText = isEditMode ? "Updating..." : "Adding...";
 
   return (

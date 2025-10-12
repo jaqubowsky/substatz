@@ -13,6 +13,7 @@
     "pre-commit": "prisma generate && npm run typecheck && npm run lint:ci",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
+    "db:wipe": "prisma migrate reset --force",
     "db:push": "prisma db push",
     "db:studio": "prisma studio"
   },

@@ -5,8 +5,11 @@ import {
 } from "@/lib/billing-utils";
 import { Currency, Subscription } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import {formatCurrency } from "./format-currency";
+import { formatCurrency } from "./format-currency";
 import { convertCurrency } from "./convert-currency";
+import { prisma } from "@/lib/prisma";
+import { differenceInMonths } from "date-fns";
+import { SubscriptionWithFinancials } from "./subscription-utils";
 
 export type TimeRange = "3months" | "6months" | "12months" | "all" | "custom";
 
@@ -63,13 +66,11 @@ export const filterDataByTimeRange = <T extends { month: string }>(
   });
 };
 
-export const calculateMonthlySpending = (
+export const calculateMonthlySpendingWithHistory = async (
   subscriptions: Subscription[],
   defaultCurrency: Currency,
-  rates: Record<Currency, number>,
-  customDateRange?: DateRange,
-  timeRange: TimeRange = "12months"
-): { month: string; amount: number }[] => {
+  rates: Record<Currency, number>
+): Promise<{ month: string; amount: number }[]> => {
   const now = new Date();
   const monthlyData: Record<string, number> = {};
 
@@ -87,64 +88,57 @@ export const calculateMonthlySpending = (
     }
   });
 
-  if (timeRange === "all") {
-    const startYear = earliestStartDate.getFullYear();
-    const startMonth = earliestStartDate.getMonth();
-    const endYear = now.getFullYear();
-    const endMonth = now.getMonth();
+  const startYear = earliestStartDate.getFullYear();
+  const startMonth = earliestStartDate.getMonth();
+  const endYear = now.getFullYear();
+  const endMonth = now.getMonth();
 
-    for (let year = startYear; year <= endYear; year++) {
-      const monthStart = year === startYear ? startMonth : 0;
-      const monthEnd = year === endYear ? endMonth : 11;
+  for (let year = startYear; year <= endYear; year++) {
+    const monthStart = year === startYear ? startMonth : 0;
+    const monthEnd = year === endYear ? endMonth : 11;
 
-      for (let month = monthStart; month <= monthEnd; month++) {
-        const date = new Date(year, month, 1);
-        const monthYear = getMonthYear(date);
-        monthlyData[monthYear] = 0;
-      }
-    }
-  } else {
-    const startDate = customDateRange?.from || now;
-
-    const monthsToShow =
-      timeRange === "3months" ? 3 : timeRange === "6months" ? 6 : 12;
-
-    for (let i = monthsToShow - 1; i >= 0; i--) {
-      const date = new Date(startDate);
-      date.setMonth(startDate.getMonth() - i);
+    for (let month = monthStart; month <= monthEnd; month++) {
+      const date = new Date(year, month, 1);
       const monthYear = getMonthYear(date);
       monthlyData[monthYear] = 0;
     }
   }
 
-  activeSubscriptions.forEach((subscription) => {
-    const {
-      startDate: subscriptionStartDate,
-      billingCycle,
-      price,
-      currency,
-    } = subscription;
-
-    const convertedPrice = convertCurrency(price, currency, defaultCurrency, rates);
-    const periodInMonths = CYCLE_TO_MONTHS[billingCycle];
-    const subStartDate = new Date(subscriptionStartDate);
-
-    Object.keys(monthlyData).forEach((monthYear) => {
-      const [month, year] = monthYear.split(" ");
-      const currentDate = new Date(`${month} 1, ${year}`);
-
-      if (currentDate < subStartDate) return;
-
-      const monthsSinceStart = calculateMonthsDifference(
-        subStartDate,
-        currentDate
-      );
-
-      if (monthsSinceStart % periodInMonths === 0) {
-        monthlyData[monthYear] += convertedPrice;
-      }
+  for (const subscription of activeSubscriptions) {
+    const allHistoryPeriods = await prisma.subscriptionHistory.findMany({
+      where: { subscriptionId: subscription.id },
+      orderBy: { effectiveFrom: "asc" },
     });
-  });
+
+    for (const period of allHistoryPeriods) {
+      const periodStart = new Date(period.effectiveFrom);
+      const periodEnd = period.effectiveTo ? new Date(period.effectiveTo) : now;
+
+      const convertedPrice = convertCurrency(
+        period.price,
+        period.currency,
+        defaultCurrency,
+        rates
+      );
+      const periodInMonths = CYCLE_TO_MONTHS[period.billingCycle];
+
+      Object.keys(monthlyData).forEach((monthYear) => {
+        const [month, year] = monthYear.split(" ");
+        const currentDate = new Date(`${month} 1, ${year}`);
+
+        if (currentDate < periodStart || currentDate > periodEnd) return;
+
+        const monthsSinceStart = calculateMonthsDifference(
+          periodStart,
+          currentDate
+        );
+
+        if (monthsSinceStart % periodInMonths === 0) {
+          monthlyData[monthYear] += convertedPrice;
+        }
+      });
+    }
+  }
 
   return Object.entries(monthlyData)
     .map(([month, amount]) => ({
@@ -161,7 +155,9 @@ export const calculateMonthlySpending = (
     });
 };
 
-export const calculateTotalPaymentCycles = (subscriptions: Subscription[]) => {
+export const calculateTotalPaymentCycles = (
+  subscriptions: SubscriptionWithFinancials[]
+) => {
   return subscriptions.reduce((sum, sub) => {
     if (sub.isCancelled) return sum;
 
@@ -171,17 +167,17 @@ export const calculateTotalPaymentCycles = (subscriptions: Subscription[]) => {
   }, 0);
 };
 
-export const calculateTotalStatistics = (
+export const calculateTotalStatistics = async (
   subscriptions: Subscription[],
   defaultCurrency: Currency,
   rates: Record<Currency, number>
-): {
+): Promise<{
   totalSpentFromStart: number;
   totalRenewals: number;
   averageSubscriptionLifetime: number;
   mostExpensiveCategory: { name: string; amount: number } | null;
   longestActiveSubscription: { name: string; days: number } | null;
-} => {
+}> => {
   let totalSpentFromStart = 0;
   let totalRenewals = 0;
   let totalDays = 0;
@@ -201,8 +197,20 @@ export const calculateTotalStatistics = (
     };
   }
 
-  activeSubscriptions.forEach((subscription) => {
-    const startDate = new Date(subscription.startDate);
+  for (const subscription of activeSubscriptions) {
+    const allHistoryPeriods = await prisma.subscriptionHistory.findMany({
+      where: { subscriptionId: subscription.id },
+      orderBy: { effectiveFrom: "asc" },
+    });
+
+    if (allHistoryPeriods.length === 0) continue;
+
+    const actualStartDate = new Date(allHistoryPeriods[0].effectiveFrom);
+    const startDate =
+      actualStartDate < new Date(subscription.startDate)
+        ? actualStartDate
+        : new Date(subscription.startDate);
+
     const daysActive = Math.max(
       1,
       Math.floor(
@@ -222,29 +230,46 @@ export const calculateTotalStatistics = (
 
     totalDays += daysActive;
 
-    const renewalCount = calculateBillingCycles(
-      startDate,
-      subscription.billingCycle
-    );
+    for (const period of allHistoryPeriods) {
+      const periodStart = new Date(period.effectiveFrom);
+      const periodEnd = period.effectiveTo
+        ? new Date(period.effectiveTo)
+        : today;
 
-    totalRenewals += renewalCount;
+      const cycleMonths =
+        period.billingCycle === "MONTHLY"
+          ? 1
+          : period.billingCycle === "QUARTERLY"
+          ? 3
+          : period.billingCycle === "BIANNUALLY"
+          ? 6
+          : 12;
 
-    const convertedPrice = convertCurrency(
-      subscription.price,
-      subscription.currency,
-      defaultCurrency,
-      rates
-    );
+      const monthsInPeriod = differenceInMonths(periodEnd, periodStart);
+      const cyclesInPeriod = Math.max(
+        0,
+        Math.floor(monthsInPeriod / cycleMonths)
+      );
 
-    const totalSpent = renewalCount * convertedPrice;
-    totalSpentFromStart += totalSpent;
+      totalRenewals += cyclesInPeriod;
 
-    if (categoryTotals[subscription.category]) {
-      categoryTotals[subscription.category] += convertedPrice;
-    } else {
-      categoryTotals[subscription.category] = convertedPrice;
+      const convertedPrice = convertCurrency(
+        period.price,
+        period.currency,
+        defaultCurrency,
+        rates
+      );
+
+      const totalSpentInPeriod = cyclesInPeriod * convertedPrice;
+      totalSpentFromStart += totalSpentInPeriod;
+
+      if (categoryTotals[period.category]) {
+        categoryTotals[period.category] += totalSpentInPeriod;
+      } else {
+        categoryTotals[period.category] = totalSpentInPeriod;
+      }
     }
-  });
+  }
 
   let mostExpensiveCategory: { name: string; amount: number } | null = null;
   Object.entries(categoryTotals).forEach(([category, amount]) => {

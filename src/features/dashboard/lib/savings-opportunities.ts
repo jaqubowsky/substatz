@@ -1,5 +1,7 @@
 import { SavingsOpportunity } from "@/features/dashboard/components/subscription-details/savings-opportunity-card";
-import { BillingCycle, Subscription } from "@prisma/client";
+import { BillingCycle, Currency, Subscription } from "@prisma/client";
+
+import { SubscriptionWithFinancials } from "./subscription-utils";
 
 export type OpportunityType =
   | "annual_discount"
@@ -690,7 +692,7 @@ const highPriceOpportunities: SavingsOpportunity[] = [
 ];
 
 export function generateSavingsOpportunities(
-  subscription: Subscription
+  subscription: SubscriptionWithFinancials
 ): SavingsOpportunity[] {
   const allOpportunities: SavingsOpportunity[] = [];
   const price = subscription.price;

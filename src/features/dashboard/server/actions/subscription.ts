@@ -11,6 +11,10 @@ import { SubscriptionPlan } from "@prisma/client";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import {
+  trackSubscriptionChanges,
+  createInitialHistory,
+} from "@/features/dashboard/lib/history";
 
 export const addSubscriptionAction = privateAction
   .schema(addSubscriptionSchema)
@@ -35,12 +39,16 @@ export const addSubscriptionAction = privateAction
     const subscription = await db.createSubscription(
       ctx.session.user.id,
       name,
+      new Date(startDate)
+    );
+
+    await createInitialHistory({
+      ...subscription,
       price,
       currency,
       category,
       billingCycle,
-      new Date(startDate)
-    );
+    });
 
     revalidatePath("/dashboard");
 
@@ -53,24 +61,23 @@ export const updateSubscriptionAction = privateAction
     const {
       id,
       name,
-      price,
-      currency,
-      category,
-      billingCycle,
       startDate,
       isCancelled,
     } = parsedInput;
     if (!id) throw new ActionError(errors.SUBSCRIPTION.NO_SUBSCRIPTION.message);
 
+    const originalSubscription = await db.getSubscriptionById(id);
+    if (!originalSubscription) {
+      throw new ActionError(errors.SUBSCRIPTION.NO_SUBSCRIPTION.message);
+    }
+
     const subscription = await db.updateSubscription(id, {
       name,
-      price,
-      currency,
-      category,
-      billingCycle,
       startDate: new Date(startDate),
       isCancelled,
     });
+
+    await trackSubscriptionChanges(id, parsedInput);
 
     revalidatePath("/dashboard");
 
