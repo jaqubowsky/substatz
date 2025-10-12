@@ -10,11 +10,6 @@
 !.yarn/releases
 !.yarn/versions
 
-#prisma
-/prisma/dev.db
-/prisma/dev.db-journal
-/prisma/migrations
-
 #cursor
 .cursor/rules
 
