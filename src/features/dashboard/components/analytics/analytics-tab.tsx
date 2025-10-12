@@ -13,6 +13,7 @@ import { LoadingAnalytics } from "./loading-analytics";
 import { SubscriptionSummaryCards } from "./summary-cards";
 import { Card, CardContent } from "@/components/ui/card";
 import { AdvancedStatsCards } from "./advanced-stats-cards";
+import { calculateMonthlySpendingWithHistory } from "@/features/dashboard/lib/analytics";
 
 const PlaceholderSkeleton = () => {
   return (
@@ -54,6 +55,12 @@ const AnalyticsTabContent = async () => {
     (s) => !s.isCancelled
   ).length;
 
+  const monthlySpendingData = await calculateMonthlySpendingWithHistory(
+    subscriptions,
+    defaultCurrency,
+    rates
+  );
+
   return (
     <Card>
       <CardContent className="pt-6">
@@ -71,6 +78,7 @@ const AnalyticsTabContent = async () => {
               categoriesBreakdown={categoriesBreakdown}
               defaultCurrency={defaultCurrency}
               rates={rates}
+              monthlySpendingData={monthlySpendingData}
             >
               <AdvancedStatsCards
                 subscriptions={subscriptions}

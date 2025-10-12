@@ -17,19 +17,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { removeSubscriptionAction } from "@/features/dashboard/server/actions";
-import { Subscription } from "@prisma/client";
 import { AlertTriangle, Edit, MoreVertical, Trash } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+import { SubscriptionFormLoading } from "@/features/dashboard/components/subscription-form-loading";
+import {
+  SubscriptionWithCurrentValues,
+  getCurrentValues,
+} from "@/features/dashboard/lib/subscription-utils";
 
 interface SubscriptionCardActionsProps {
-  subscription: Subscription;
+  subscription: SubscriptionWithCurrentValues;
 }
 
-const DynamicSubscriptionForm = dynamic(() =>
-  import("../subscription-form").then((mod) => mod.SubscriptionForm)
+const DynamicSubscriptionForm = dynamic(
+  () => import("../subscription-form").then((mod) => mod.SubscriptionForm),
+  {
+    loading: () => <SubscriptionFormLoading />,
+  }
 );
 
 export const SubscriptionCardActions = ({
@@ -37,6 +44,7 @@ export const SubscriptionCardActions = ({
 }: SubscriptionCardActionsProps) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const currentValues = getCurrentValues(subscription);
 
   const deleteAction = useAction(removeSubscriptionAction, {
     onSuccess: () => {
@@ -105,7 +113,10 @@ export const SubscriptionCardActions = ({
               </DialogDescription>
             </DialogHeader>
             <DynamicSubscriptionForm
-              initialSubscription={subscription}
+              initialSubscription={{
+                ...subscription,
+                ...currentValues,
+              }}
               onSuccess={() => setIsEditDialogOpen(false)}
             />
           </DialogContent>

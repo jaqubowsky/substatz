@@ -8,3 +8,4 @@
 - **Remove Dead Code**: Delete unused code, commented-out blocks, and imports rather than leaving them as clutter
 - **Backward compatability only when required:** Unless specifically instructed otherwise, assume you do not need to write additional code logic to handle backward compatability.
 - **DRY Principle**: Avoid duplication by extracting common logic into reusable functions or modules
+- **Import Paths**: Always use absolute paths with aliases defined in `tsconfig.json` (e.g., `@/lib/...`, `@/features/...`). Avoid relative imports (`../`) that traverse outside of the current feature directory to prevent violating ESLint rules and creating fragile import paths.

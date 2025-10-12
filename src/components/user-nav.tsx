@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useClientAuth } from "@/hooks";
 import { cn } from "@/lib/cn";
-import { Settings, User } from "lucide-react";
+import { Settings, ShieldAlert, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
@@ -54,6 +54,7 @@ export function UserNav() {
   const isActive = (path: string) => {
     if (path === "/dashboard" && pathname === "/dashboard") return true;
     if (path === "/settings" && pathname.startsWith("/settings")) return true;
+    if (path === "/admin" && pathname.startsWith("/admin")) return true;
     return false;
   };
 
@@ -86,6 +87,22 @@ export function UserNav() {
           <span>Settings</span>
         </Link>
       </Button>
+
+      {user?.isAdmin && (
+        <Button
+          variant={isActive("/admin") ? "default" : "ghost"}
+          asChild
+          className={cn(
+            "flex items-center",
+            isActive("/admin") && "bg-primary text-primary-foreground"
+          )}
+        >
+          <Link href="/admin">
+            <ShieldAlert className="mr-2 h-4 w-4" />
+            <span>Admin</span>
+          </Link>
+        </Button>
+      )}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

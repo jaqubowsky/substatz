@@ -62,3 +62,12 @@ export const publicActionWithLimiter = (
 
     return next();
   });
+
+export const adminAction = privateAction.use(async ({ next, ctx }) => {
+  const { isAdmin } = ctx.session.user;
+  if (!isAdmin) {
+    throw new ActionError(errors.AUTH.UNAUTHORIZED.message);
+  }
+
+  return next({ ctx });
+});

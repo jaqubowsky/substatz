@@ -45,37 +45,43 @@ export const getSubscriptionSummary = async (
   for (const subscription of subscriptions) {
     if (subscription.isCancelled) continue;
 
+    const currentPeriod = subscription.history[0];
+    if (!currentPeriod) continue;
+
     const convertedPrice = convertCurrency(
-      subscription.price,
-      subscription.currency,
+      currentPeriod.price,
+      currentPeriod.currency,
       defaultCurrency,
       rates
     );
 
     totalMonthly += calculateMonthlyCost(
       convertedPrice,
-      subscription.billingCycle
+      currentPeriod.billingCycle
     );
     totalYearly += calculateAnnualCost(
       convertedPrice,
-      subscription.billingCycle
+      currentPeriod.billingCycle
     );
 
-    if (categoriesBreakdown[subscription.category]) {
-      categoriesBreakdown[subscription.category] += convertedPrice;
+    if (categoriesBreakdown[currentPeriod.category]) {
+      categoriesBreakdown[currentPeriod.category] += convertedPrice;
     } else {
-      categoriesBreakdown[subscription.category] = convertedPrice;
+      categoriesBreakdown[currentPeriod.category] = convertedPrice;
     }
 
     const nextPaymentDate = calculateNextPaymentDate(
       new Date(subscription.startDate),
-      subscription.billingCycle
+      currentPeriod.billingCycle
     );
 
     if (nextPaymentDate >= today && nextPaymentDate <= endDate) {
       upcomingPayments.push({
         ...subscription,
         price: convertedPrice,
+        currency: currentPeriod.currency,
+        billingCycle: currentPeriod.billingCycle,
+        category: currentPeriod.category,
         nextPaymentDate,
       });
     }

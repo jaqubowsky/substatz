@@ -1,23 +1,21 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  calculateMonthlySpending,
-  filterDataByTimeRange,
-  TimeRange,
-} from "@/features/dashboard/lib";
-import { Currency, Subscription } from "@prisma/client";
+import { filterDataByTimeRange, TimeRange } from "@/features/dashboard/lib";
+import { Currency } from "@prisma/client";
 import { BarChart3, LineChart } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { TimeRangeSelector } from "./time-range-selector";
 import dynamic from "next/dynamic";
+import { SubscriptionWithCurrentValues } from "@/features/dashboard/lib/subscription-utils";
 
 interface AnalyticsContentProps {
-  subscriptions: Subscription[];
+  subscriptions: SubscriptionWithCurrentValues[];
   categoriesBreakdown: Record<string, number>;
   defaultCurrency: Currency;
   rates: Record<Currency, number>;
+  monthlySpendingData: { month: string; amount: number }[];
   children: React.ReactNode;
 }
 
@@ -38,10 +36,9 @@ const DynamicCategoryBreakdownChart = dynamic(
 );
 
 export function AnalyticsContent({
-  subscriptions,
   categoriesBreakdown,
   defaultCurrency,
-  rates,
+  monthlySpendingData,
   children,
 }: AnalyticsContentProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("6months");
@@ -49,14 +46,6 @@ export function AnalyticsContent({
     from: undefined,
     to: undefined,
   });
-
-  const monthlySpendingData = calculateMonthlySpending(
-    subscriptions,
-    defaultCurrency,
-    rates,
-    timeRange === "custom" ? customDateRange : undefined,
-    timeRange
-  );
 
   const filteredMonthlyData = filterDataByTimeRange(
     monthlySpendingData,

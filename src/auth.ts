@@ -8,6 +8,7 @@ import { encode as defaultEncode } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import { SignOutParams } from "next-auth/react";
 import authConfig from "./auth.config";
+import { isAdmin } from "./lib/admin";
 import { verifyPassword } from "./lib/auth";
 import { clearSentryUser, setSentryUserContext } from "./lib/auth-sentry";
 import { sendWelcomeEmail } from "./lib/email";
@@ -71,9 +72,10 @@ export const {
     async jwt({ token, account, user }) {
       if (user) {
         token.id = user.id;
-        token.image = user.image;
+        token.image = user.image ?? undefined;
         token.provider =
           account?.provider?.toUpperCase() || Provider.CREDENTIALS;
+        token.isAdmin = isAdmin(user.email);
 
         setSentryUserContext({
           id: user.id as string,
@@ -89,6 +91,7 @@ export const {
         session.user.id = token.id as string;
         session.user.image = token.image as string;
         session.user.provider = token.provider as Provider;
+        session.user.isAdmin = token.isAdmin ?? false;
       }
 
       return session;

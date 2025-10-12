@@ -8,6 +8,16 @@ declare module "next-auth" {
       name: string;
       image: string | null;
       provider: Provider;
+      isAdmin: boolean;
     } & DefaultSession["user"];
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    image?: string;
+    provider?: Provider;
+    isAdmin?: boolean;
   }
 }
