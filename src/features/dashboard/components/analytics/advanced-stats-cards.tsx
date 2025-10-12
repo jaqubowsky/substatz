@@ -24,7 +24,7 @@ interface AdvancedStatsCardsProps {
   rates: Record<Currency, number>;
 }
 
-export function AdvancedStatsCards({
+export async function AdvancedStatsCards({
   subscriptions,
   defaultCurrency,
   rates,
@@ -35,7 +35,7 @@ export function AdvancedStatsCards({
     averageSubscriptionLifetime,
     mostExpensiveCategory,
     longestActiveSubscription,
-  } = calculateTotalStatistics(subscriptions, defaultCurrency, rates);
+  } = await calculateTotalStatistics(subscriptions, defaultCurrency, rates);
 
   const formatDuration = (days: number) => {
     const years = Math.floor(days / 365);
