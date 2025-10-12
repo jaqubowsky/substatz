@@ -42,8 +42,8 @@ RUN npx prisma generate && npm run build
 # Final production stage with absolute minimal footprint
 FROM alpine:3.19 AS runner
 
-# Install only Node.js runtime - no npm needed for running
-RUN apk add --no-cache nodejs-current icu-data-full
+# Install Node.js runtime with npm (needed for npx prisma commands)
+RUN apk add --no-cache nodejs-current icu-data-full npm
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs && \
@@ -62,6 +62,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copy only what's needed from Prisma
 COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 # Copy Prisma schema and migrations for runtime access (e.g., admin pages)
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
