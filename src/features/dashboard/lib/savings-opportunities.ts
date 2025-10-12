@@ -1,5 +1,5 @@
 import { SavingsOpportunity } from "@/features/dashboard/components/subscription-details/savings-opportunity-card";
-import { BillingCycle, Currency, Subscription } from "@prisma/client";
+import { BillingCycle } from "@prisma/client";
 
 import { SubscriptionWithFinancials } from "./subscription-utils";
 
