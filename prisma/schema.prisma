@@ -92,20 +92,36 @@ model Session {
 }
 
 model Subscription {
-  id           String       @id @default(cuid())
-  userId       String
-  name         String
-  price        Float
-  currency     Currency     @default(USD)
-  category     String
-  billingCycle BillingCycle
-  startDate    DateTime     @default(now())
-  isCancelled  Boolean      @default(false)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String                @id @default(cuid())
+  userId      String
+  name        String
+  startDate   DateTime              @default(now())
+  isCancelled Boolean               @default(false)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  history     SubscriptionHistory[]
 
   @@index([userId])
+}
+
+model SubscriptionHistory {
+  id             String       @id @default(cuid())
+  subscriptionId String
+
+  price          Float
+  currency       Currency
+  billingCycle   BillingCycle
+  category       String
+
+  effectiveFrom  DateTime
+  effectiveTo    DateTime?
+
+  createdAt      DateTime     @default(now())
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@index([subscriptionId, effectiveFrom, effectiveTo])
 }
 
 model CurrencyRate {

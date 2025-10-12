@@ -1,6 +1,7 @@
 import { currencyEnum } from "@/schemas";
-import { Subscription } from "@prisma/client";
 import { z } from "zod";
+
+import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 
 export const billingCycleEnum = z.enum([
   "MONTHLY",
@@ -36,7 +37,7 @@ export const addSubscriptionSchema = z.object({
 
 export type AddSubscriptionValues = z.infer<typeof addSubscriptionSchema>;
 
-export interface UpcomingPayment extends Subscription {
+export interface UpcomingPayment extends SubscriptionWithFinancials {
   nextPaymentDate: Date;
 }
 

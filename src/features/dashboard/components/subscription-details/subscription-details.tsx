@@ -6,22 +6,29 @@ import {
 } from "@/components/ui/dialog";
 import { calculateSubscriptionStats } from "@/features/dashboard/lib";
 import { generateSavingsOpportunities } from "@/features/dashboard/lib/savings-opportunities";
-import { Subscription } from "@prisma/client";
 import { Tag } from "lucide-react";
 import { FinancialSummary } from "./financial-summary";
 import { RenewalHistory } from "./renewal-history";
 import { SavingsOpportunities } from "./savings-opportunities";
 import { TimelineCard } from "./timeline-card";
+import {
+  SubscriptionWithCurrentValues,
+  getCurrentValues,
+} from "@/features/dashboard/lib/subscription-utils";
 
 interface SubscriptionDetailsProps {
-  subscription: Subscription;
+  subscription: SubscriptionWithCurrentValues;
 }
 
-export function SubscriptionDetails({
+export async function SubscriptionDetails({
   subscription,
 }: SubscriptionDetailsProps) {
-  const stats = calculateSubscriptionStats(subscription);
-  const savingsOpportunities = generateSavingsOpportunities(subscription);
+  const currentValues = getCurrentValues(subscription);
+  const stats = await calculateSubscriptionStats(subscription);
+  const savingsOpportunities = generateSavingsOpportunities({
+    ...subscription,
+    ...currentValues,
+  });
 
   return (
     <>
@@ -34,17 +41,17 @@ export function SubscriptionDetails({
         </DialogTitle>
         <DialogDescription className="flex items-center gap-1">
           <Tag className="h-3.5 w-3.5" />
-          {subscription.category}
+          {currentValues.category}
         </DialogDescription>
       </DialogHeader>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
         <FinancialSummary
-          price={subscription.price}
-          currency={subscription.currency}
+          price={currentValues.price}
+          currency={currentValues.currency}
           totalSpent={stats.totalSpent}
           averageCostPerMonth={stats.averageCostPerMonth}
-          billingCycle={subscription.billingCycle}
+          billingCycle={currentValues.billingCycle}
         />
         <TimelineCard
           activeFor={stats.activeFor}
@@ -55,11 +62,11 @@ export function SubscriptionDetails({
 
       <RenewalHistory
         renewalCount={stats.renewalCount}
-        billingCycle={subscription.billingCycle}
+        billingCycle={currentValues.billingCycle}
       />
       <SavingsOpportunities
         savingsOpportunities={savingsOpportunities}
-        currency={subscription.currency}
+        currency={currentValues.currency}
       />
     </>
   );

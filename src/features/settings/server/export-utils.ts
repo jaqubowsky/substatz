@@ -1,10 +1,10 @@
-import { Subscription } from "@prisma/client";
 import * as XLSX from "xlsx";
 import { pdf } from "@react-pdf/renderer";
 import { SubscriptionPdfDocument } from "@/features/settings/components/export-modal";
+import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 
 export async function generateExcelFile(
-  subscriptions: Subscription[]
+  subscriptions: SubscriptionWithFinancials[]
 ): Promise<string> {
   const rows = subscriptions.map((sub) => ({
     Name: sub.name,
@@ -39,9 +39,11 @@ export async function generateExcelFile(
 }
 
 export async function generatePdfFile(
-  subscriptions: Subscription[]
+  subscriptions: SubscriptionWithFinancials[]
 ): Promise<string> {
-  const pdfBlob = await pdf(SubscriptionPdfDocument({ subscriptions })).toBlob();
+  const pdfBlob = await pdf(
+    SubscriptionPdfDocument({ subscriptions })
+  ).toBlob();
   const arrayBuffer = await pdfBlob.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 

@@ -1,7 +1,8 @@
-import { calculateBillingCycles, formatDuration } from "@/lib/billing-utils";
-import { Subscription } from "@prisma/client";
-import { differenceInDays, differenceInMonths } from "date-fns";
+import { formatDuration } from "@/lib/billing-utils";
+import { Subscription, BillingCycle } from "@prisma/client";
+import { differenceInDays, differenceInMonths, addMonths } from "date-fns";
 import { calculateNextPaymentDate } from "./calculate-next-payment-date";
+import { prisma } from "@/lib/prisma";
 
 export interface SubscriptionStats {
   totalSpent: number;
@@ -16,11 +17,45 @@ export interface SubscriptionStats {
   nextPaymentDate: Date;
 }
 
-export function calculateSubscriptionStats(
+function calculateCyclesInPeriod(
+  periodStart: Date,
+  periodEnd: Date,
+  billingCycle: BillingCycle
+): number {
+  const cycleMonths =
+    billingCycle === "MONTHLY"
+      ? 1
+      : billingCycle === "QUARTERLY"
+      ? 3
+      : billingCycle === "BIANNUALLY"
+      ? 6
+      : 12;
+
+  const monthsInPeriod = differenceInMonths(periodEnd, periodStart);
+  const cycles = Math.floor(monthsInPeriod / cycleMonths);
+
+  return Math.max(0, cycles);
+}
+
+export async function calculateSubscriptionStats(
   subscription: Subscription
-): SubscriptionStats {
+): Promise<SubscriptionStats> {
   const today = new Date();
-  const startDate = new Date(subscription.startDate);
+
+  const allHistoryPeriods = await prisma.subscriptionHistory.findMany({
+    where: { subscriptionId: subscription.id },
+    orderBy: { effectiveFrom: "asc" },
+  });
+
+  if (allHistoryPeriods.length === 0) {
+    throw new Error(`Subscription ${subscription.id} has no history periods`);
+  }
+
+  const actualStartDate = new Date(allHistoryPeriods[0].effectiveFrom);
+  const startDate =
+    actualStartDate < new Date(subscription.startDate)
+      ? actualStartDate
+      : new Date(subscription.startDate);
 
   const totalDays = differenceInDays(today, startDate);
   const totalMonths = differenceInMonths(today, startDate);
@@ -29,21 +64,33 @@ export function calculateSubscriptionStats(
 
   const formattedDuration = formatDuration(totalDays, months, years);
 
-  const renewalCount = calculateBillingCycles(
-    startDate,
-    subscription.billingCycle
-  );
+  const historyPeriods = allHistoryPeriods;
 
-  const price = subscription.price;
+  let totalSpent = 0;
+  let totalRenewals = 0;
 
-  const totalSpent = renewalCount * price;
+  for (const period of historyPeriods) {
+    const periodStart = new Date(period.effectiveFrom);
+    const periodEnd = period.effectiveTo ? new Date(period.effectiveTo) : today;
 
-  const averageCostPerMonth =
-    totalMonths > 0 ? totalSpent / totalMonths : price;
+    const cyclesInPeriod = calculateCyclesInPeriod(
+      periodStart,
+      periodEnd,
+      period.billingCycle
+    );
+
+    totalRenewals += cyclesInPeriod;
+    totalSpent += cyclesInPeriod * period.price;
+  }
+
+  const averageCostPerMonth = totalMonths > 0 ? totalSpent / totalMonths : 0;
+
+  const currentPeriod = historyPeriods.find((p) => !p.effectiveTo);
+  const currentBillingCycle = currentPeriod?.billingCycle || "MONTHLY";
 
   const nextPaymentDate = calculateNextPaymentDate(
     startDate,
-    subscription.billingCycle
+    currentBillingCycle
   );
 
   return {
@@ -54,7 +101,7 @@ export function calculateSubscriptionStats(
       years,
       formatted: formattedDuration,
     },
-    renewalCount,
+    renewalCount: totalRenewals,
     averageCostPerMonth,
     nextPaymentDate,
   };

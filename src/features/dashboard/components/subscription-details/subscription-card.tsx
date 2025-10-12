@@ -5,17 +5,25 @@ import {
   formatCurrency,
   formatDate,
 } from "@/features/dashboard/lib";
-import { Subscription } from "@prisma/client";
 import { Calendar, CreditCard, Tag } from "lucide-react";
 import { SubscriptionDetailsButton } from "./subscription-details-button";
 import { SubscriptionCardActions } from "./subscription-card-actions";
 import { SubscriptionDetails } from "./subscription-details";
+import { SubscriptionHistoryButton } from "./history/subscription-history-button";
+import { SubscriptionHistoryWrapper } from "./history/subscription-history-wrapper";
+import {
+  SubscriptionWithCurrentValues,
+  getCurrentValues,
+} from "@/features/dashboard/lib/subscription-utils";
 
 interface SubscriptionCardProps {
-  subscription: Subscription;
+  subscription: SubscriptionWithCurrentValues;
 }
 
-const getStatusBadge = (subscription: Subscription, nextPaymentDate: Date) => {
+const getStatusBadge = (
+  subscription: SubscriptionWithCurrentValues,
+  nextPaymentDate: Date
+) => {
   if (subscription.isCancelled) {
     return <Badge variant="destructive">Cancelled</Badge>;
   }
@@ -48,9 +56,11 @@ const getStatusBadge = (subscription: Subscription, nextPaymentDate: Date) => {
 };
 
 export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
+  const currentValues = getCurrentValues(subscription);
+
   const nextPaymentDate = calculateNextPaymentDate(
     new Date(subscription.startDate),
-    subscription.billingCycle
+    currentValues.billingCycle
   );
 
   const formattedDate = formatDate(nextPaymentDate.toISOString());
@@ -70,12 +80,15 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
             <SubscriptionDetailsButton>
               <SubscriptionDetails subscription={subscription} />
             </SubscriptionDetailsButton>
+            <SubscriptionHistoryButton subscription={subscription}>
+              <SubscriptionHistoryWrapper subscription={subscription} />
+            </SubscriptionHistoryButton>
             <SubscriptionCardActions subscription={subscription} />
           </div>
         </div>
         <div className="flex items-center text-accent-foreground text-sm">
           <Tag className="h-3.5 w-3.5 mr-1" />
-          {subscription.category}
+          {currentValues.category}
         </div>
       </CardHeader>
       <CardContent>
@@ -89,12 +102,12 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-foreground">
-              {formatCurrency(subscription.price, subscription.currency)}
+              {formatCurrency(currentValues.price, currentValues.currency)}
             </p>
             <p className="text-sm text-accent-foreground flex items-center justify-end">
               <CreditCard className="h-3.5 w-3.5 mr-1" />
-              {subscription.billingCycle.charAt(0) +
-                subscription.billingCycle.slice(1).toLowerCase()}
+              {currentValues.billingCycle.charAt(0) +
+                currentValues.billingCycle.slice(1).toLowerCase()}
             </p>
           </div>
         </div>

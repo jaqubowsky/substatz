@@ -6,12 +6,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getSubscriptions } from "@/features/dashboard/server/queries";
-import { Subscription } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { LoadingSubscriptionList } from "./loading-subscription-list";
 import { SubscriptionCard } from "./subscription-card";
 import { getServerAuth } from "@/hooks/get-server-auth";
+import { SubscriptionWithCurrentValues } from "@/features/dashboard/lib/subscription-utils";
 
 const SubscriptionListContent = async () => {
   const session = await getServerAuth();
@@ -42,7 +42,7 @@ const SubscriptionListContent = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-4 overflow-y-auto pr-2 max-h-[900px]">
-      {subscriptions.map((subscription: Subscription) => (
+      {subscriptions.map((subscription: SubscriptionWithCurrentValues) => (
         <SubscriptionCard key={subscription.id} subscription={subscription} />
       ))}
     </div>

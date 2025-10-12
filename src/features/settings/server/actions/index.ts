@@ -81,18 +81,26 @@ export const exportSubscriptionsAction = privateAction
       );
     }
 
+    const subscriptionsWithFinancials = subscriptions.map((sub) => ({
+      ...sub,
+      price: sub.history[0]?.price || 0,
+      currency: sub.history[0]?.currency || "USD",
+      billingCycle: sub.history[0]?.billingCycle || "MONTHLY",
+      category: sub.history[0]?.category || "",
+    }));
+
     let fileData: string;
     let mimeType: string;
     let fileExtension: string;
 
     try {
       if (format === "excel") {
-        fileData = await generateExcelFile(subscriptions);
+        fileData = await generateExcelFile(subscriptionsWithFinancials);
         mimeType =
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         fileExtension = "xlsx";
       } else {
-        fileData = await generatePdfFile(subscriptions);
+        fileData = await generatePdfFile(subscriptionsWithFinancials);
         mimeType = "application/pdf";
         fileExtension = "pdf";
       }
