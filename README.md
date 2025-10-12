@@ -12,6 +12,7 @@ A subscription management application to help users track and manage their subsc
 - View upcoming payments
 - Analyze subscription spending by category
 - Rate limiting for API routes
+- Admin panel for database migration management
 
 ## Tech Stack
 
@@ -109,6 +110,27 @@ A subscription management application to help users track and manage their subsc
 - Run migrations in development: `npm run migrate:dev`
 - Apply migrations in production: `npm run migrate:deploy`
 - View and edit database with Prisma Studio: `npm run db:studio`
+
+### Admin Panel
+
+SubStatz includes a web-based admin panel for managing database migrations. To set it up:
+
+1. Add the admin email to your environment variables:
+   ```bash
+   ADMIN_EMAIL=admin@example.com
+   ```
+
+2. Sign in with the admin email account
+
+3. Access the admin panel at `/admin`
+
+The admin panel allows you to:
+- View all database migrations and their status
+- Deploy pending migrations
+- Check migration status
+- Reset the database (development only)
+
+**Security Note**: Only the email specified in `ADMIN_EMAIL` will have access to the admin panel. Keep this email secure and only assign to trusted administrators.
 
 ## Security Considerations
 

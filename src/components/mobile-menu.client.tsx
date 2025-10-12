@@ -13,7 +13,7 @@ export function MobileMenuClient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  const { isAuthenticated } = useClientAuth();
+  const { user, isAuthenticated } = useClientAuth();
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
 
@@ -134,6 +134,14 @@ export function MobileMenuClient() {
                           >
                             Settings
                           </MenuLink>
+                          {user?.isAdmin && (
+                            <MenuLink
+                              href="/admin"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              Admin Panel
+                            </MenuLink>
+                          )}
                           <div className="menu-item">
                             <button
                               className="block w-full text-left py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg"

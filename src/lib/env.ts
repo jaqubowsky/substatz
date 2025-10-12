@@ -21,6 +21,7 @@ export const env = createEnv({
     EXCHANGE_RATES_API_KEY: z.string().min(1),
     EXCHANGE_RATES_API_URL: z.string().url(),
     STRIPE_API_VER: z.string().min(1),
+    ADMIN_EMAIL: z.string().email(),
   },
 
   shared: {
