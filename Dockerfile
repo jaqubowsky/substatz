@@ -63,6 +63,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
+# Copy Prisma schema and migrations for runtime access (e.g., admin pages)
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
 # Use the non-root user
 USER nextjs
 

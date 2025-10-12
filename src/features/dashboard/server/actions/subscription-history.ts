@@ -7,6 +7,11 @@ import { addHistoricalPeriodSchema } from "@/features/dashboard/schemas/subscrip
 import { ActionError } from "@/lib/safe-action";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import {
+  findOverlappingPeriods,
+  resolveOverlaps,
+  validateCurrentPeriodExists,
+} from "@/features/dashboard/lib/period-overlap-resolver";
 
 export const addHistoricalPeriodAction = privateAction
   .schema(addHistoricalPeriodSchema)
@@ -22,7 +27,9 @@ export const addHistoricalPeriodAction = privateAction
     } = parsedInput;
 
     if (effectiveTo && effectiveTo <= effectiveFrom) {
-      throw new ActionError("End date must be after start date");
+      throw new ActionError(
+        "End date must be after start date. Please check your date range."
+      );
     }
 
     const subscription = await prisma.subscription.findUnique({
@@ -30,82 +37,21 @@ export const addHistoricalPeriodAction = privateAction
     });
 
     if (!subscription) {
-      throw new ActionError("Subscription not found");
+      throw new ActionError(
+        `Subscription not found. It may have been deleted. Please refresh the page.`
+      );
     }
 
-    const overlappingPeriods = await prisma.subscriptionHistory.findMany({
-      where: {
-        subscriptionId,
-        OR: [
-          {
-            AND: [
-              { effectiveFrom: { lte: effectiveFrom } },
-              {
-                OR: [
-                  { effectiveTo: null },
-                  { effectiveTo: { gt: effectiveFrom } },
-                ],
-              },
-            ],
-          },
-          effectiveTo
-            ? {
-                AND: [
-                  { effectiveFrom: { lt: effectiveTo } },
-                  {
-                    OR: [
-                      { effectiveTo: null },
-                      { effectiveTo: { gt: effectiveTo } },
-                    ],
-                  },
-                ],
-              }
-            : {},
-        ],
-      },
+    const overlappingPeriods = await findOverlappingPeriods(subscriptionId, {
+      effectiveFrom,
+      effectiveTo: effectiveTo ?? null,
     });
 
     await prisma.$transaction(async (tx) => {
-      for (const overlappingPeriod of overlappingPeriods) {
-        if (
-          overlappingPeriod.effectiveFrom < effectiveFrom &&
-          (overlappingPeriod.effectiveTo === null ||
-            overlappingPeriod.effectiveTo > effectiveFrom)
-        ) {
-          const dayBefore = new Date(effectiveFrom);
-          dayBefore.setDate(dayBefore.getDate() - 1);
-
-          await tx.subscriptionHistory.update({
-            where: { id: overlappingPeriod.id },
-            data: {
-              effectiveTo: dayBefore,
-            },
-          });
-        } else if (
-          effectiveTo &&
-          overlappingPeriod.effectiveFrom >= effectiveFrom &&
-          overlappingPeriod.effectiveFrom < effectiveTo
-        ) {
-          if (
-            overlappingPeriod.effectiveTo === null ||
-            overlappingPeriod.effectiveTo <= effectiveTo
-          ) {
-            await tx.subscriptionHistory.delete({
-              where: { id: overlappingPeriod.id },
-            });
-          } else {
-            const dayAfter = new Date(effectiveTo);
-            dayAfter.setDate(dayAfter.getDate() + 1);
-
-            await tx.subscriptionHistory.update({
-              where: { id: overlappingPeriod.id },
-              data: {
-                effectiveFrom: dayAfter,
-              },
-            });
-          }
-        }
-      }
+      await resolveOverlaps(tx, overlappingPeriods, {
+        effectiveFrom,
+        effectiveTo: effectiveTo ?? null,
+      });
 
       await tx.subscriptionHistory.create({
         data: {
@@ -152,7 +98,9 @@ export const updateHistoricalPeriodAction = privateAction
     } = parsedInput;
 
     if (effectiveTo && effectiveTo <= effectiveFrom) {
-      throw new ActionError("End date must be after start date");
+      throw new ActionError(
+        "End date must be after start date. Please check your date range."
+      );
     }
 
     const existingPeriod = await prisma.subscriptionHistory.findUnique({
@@ -160,7 +108,9 @@ export const updateHistoricalPeriodAction = privateAction
     });
 
     if (!existingPeriod) {
-      throw new ActionError("Period not found");
+      throw new ActionError(
+        `Historical period not found. It may have been deleted. Please refresh the page.`
+      );
     }
 
     const subscription = await prisma.subscription.findUnique({
@@ -168,112 +118,31 @@ export const updateHistoricalPeriodAction = privateAction
     });
 
     if (!subscription) {
-      throw new ActionError("Subscription not found");
-    }
-
-    const allPeriods = await prisma.subscriptionHistory.findMany({
-      where: { subscriptionId: existingPeriod.subscriptionId },
-    });
-
-    if (
-      allPeriods.length === 1 &&
-      effectiveTo !== null &&
-      effectiveTo !== undefined
-    ) {
       throw new ActionError(
-        "Cannot set an end date for the only period. The subscription must always have at least one current period."
+        `Subscription not found. It may have been deleted. Please refresh the page.`
       );
     }
 
-    if (
-      existingPeriod.effectiveTo === null &&
-      effectiveTo !== null &&
-      effectiveTo !== undefined
-    ) {
-      const hasOtherCurrentPeriod = allPeriods.some(
-        (p) => p.id !== id && p.effectiveTo === null
-      );
-      if (!hasOtherCurrentPeriod) {
-        throw new ActionError(
-          "Cannot set an end date for this period as it's the only current period. Please create a new current period first."
-        );
-      }
-    }
+    await validateCurrentPeriodExists(
+      existingPeriod.subscriptionId,
+      id,
+      effectiveTo
+    );
 
-    const overlappingPeriods = await prisma.subscriptionHistory.findMany({
-      where: {
-        subscriptionId: existingPeriod.subscriptionId,
-        id: { not: id },
-        OR: [
-          {
-            AND: [
-              { effectiveFrom: { lte: effectiveFrom } },
-              {
-                OR: [
-                  { effectiveTo: null },
-                  { effectiveTo: { gt: effectiveFrom } },
-                ],
-              },
-            ],
-          },
-          effectiveTo
-            ? {
-                AND: [
-                  { effectiveFrom: { lt: effectiveTo } },
-                  {
-                    OR: [
-                      { effectiveTo: null },
-                      { effectiveTo: { gt: effectiveTo } },
-                    ],
-                  },
-                ],
-              }
-            : {},
-        ],
+    const overlappingPeriods = await findOverlappingPeriods(
+      existingPeriod.subscriptionId,
+      {
+        effectiveFrom,
+        effectiveTo: effectiveTo ?? null,
       },
-    });
+      id
+    );
 
     await prisma.$transaction(async (tx) => {
-      for (const overlappingPeriod of overlappingPeriods) {
-        if (
-          overlappingPeriod.effectiveFrom < effectiveFrom &&
-          (overlappingPeriod.effectiveTo === null ||
-            overlappingPeriod.effectiveTo > effectiveFrom)
-        ) {
-          const dayBefore = new Date(effectiveFrom);
-          dayBefore.setDate(dayBefore.getDate() - 1);
-
-          await tx.subscriptionHistory.update({
-            where: { id: overlappingPeriod.id },
-            data: {
-              effectiveTo: dayBefore,
-            },
-          });
-        } else if (
-          effectiveTo &&
-          overlappingPeriod.effectiveFrom >= effectiveFrom &&
-          overlappingPeriod.effectiveFrom < effectiveTo
-        ) {
-          if (
-            overlappingPeriod.effectiveTo === null ||
-            overlappingPeriod.effectiveTo <= effectiveTo
-          ) {
-            await tx.subscriptionHistory.delete({
-              where: { id: overlappingPeriod.id },
-            });
-          } else {
-            const dayAfter = new Date(effectiveTo);
-            dayAfter.setDate(dayAfter.getDate() + 1);
-
-            await tx.subscriptionHistory.update({
-              where: { id: overlappingPeriod.id },
-              data: {
-                effectiveFrom: dayAfter,
-              },
-            });
-          }
-        }
-      }
+      await resolveOverlaps(tx, overlappingPeriods, {
+        effectiveFrom,
+        effectiveTo: effectiveTo ?? null,
+      });
 
       await tx.subscriptionHistory.update({
         where: { id },
@@ -287,6 +156,7 @@ export const updateHistoricalPeriodAction = privateAction
         },
       });
 
+      // Update subscription start date if this period starts earlier
       if (effectiveFrom < subscription.startDate) {
         await tx.subscription.update({
           where: { id: existingPeriod.subscriptionId },
@@ -312,7 +182,9 @@ export const deleteHistoricalPeriodAction = privateAction
     });
 
     if (!period) {
-      throw new ActionError("Period not found");
+      throw new ActionError(
+        `Historical period not found. It may have already been deleted. Please refresh the page.`
+      );
     }
 
     const allPeriods = await prisma.subscriptionHistory.findMany({

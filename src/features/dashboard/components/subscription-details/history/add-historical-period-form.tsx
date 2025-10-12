@@ -21,7 +21,11 @@ import {
 } from "@/components/ui/select";
 import { addHistoricalPeriodAction } from "@/features/dashboard/server/actions/subscription-history";
 import { addHistoricalPeriodSchema } from "@/features/dashboard/schemas/subscription-history";
-import { SUB_CATEGORIES } from "@/features/dashboard/schemas/subscription";
+import {
+  SUB_CATEGORIES,
+  CURRENCY_OPTIONS,
+  BILLING_CYCLE_OPTIONS,
+} from "@/features/dashboard/constants/subscription";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BillingCycle, Currency } from "@prisma/client";
 import { Loader2 } from "lucide-react";
@@ -108,16 +112,11 @@ export const AddHistoricalPeriodForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="USD">USD</SelectItem>
-                    <SelectItem value="EUR">EUR</SelectItem>
-                    <SelectItem value="GBP">GBP</SelectItem>
-                    <SelectItem value="PLN">PLN</SelectItem>
-                    <SelectItem value="JPY">JPY</SelectItem>
-                    <SelectItem value="CAD">CAD</SelectItem>
-                    <SelectItem value="AUD">AUD</SelectItem>
-                    <SelectItem value="CHF">CHF</SelectItem>
-                    <SelectItem value="CNY">CNY</SelectItem>
-                    <SelectItem value="INR">INR</SelectItem>
+                    {CURRENCY_OPTIONS.map((currency) => (
+                      <SelectItem key={currency.value} value={currency.value}>
+                        {currency.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -143,10 +142,11 @@ export const AddHistoricalPeriodForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="MONTHLY">Monthly</SelectItem>
-                    <SelectItem value="QUARTERLY">Quarterly</SelectItem>
-                    <SelectItem value="BIANNUALLY">Biannually</SelectItem>
-                    <SelectItem value="ANNUALLY">Annually</SelectItem>
+                    {BILLING_CYCLE_OPTIONS.map((cycle) => (
+                      <SelectItem key={cycle.value} value={cycle.value}>
+                        {cycle.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
