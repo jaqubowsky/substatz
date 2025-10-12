@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Subscription, BillingCycle, Currency } from "@prisma/client";
+import { BillingCycle, Currency } from "@prisma/client";
 import { EditSubscriptionValues } from "@/features/dashboard/schemas/subscription";
 
 function hasTrackedChanges(
@@ -47,7 +47,9 @@ export async function trackSubscriptionChanges(
   const currentValues = await getCurrentSubscriptionValues(subscriptionId);
 
   if (!currentValues) {
-    throw new Error(`Subscription ${subscriptionId} has no current period in history`);
+    throw new Error(
+      `Subscription ${subscriptionId} has no current period in history`
+    );
   }
 
   if (!hasTrackedChanges(currentValues, updatedData)) {
@@ -158,7 +160,9 @@ export async function getSubscriptionWithCurrentValues(subscriptionId: string) {
   const currentValues = await getCurrentSubscriptionValues(subscriptionId);
 
   if (!currentValues) {
-    throw new Error(`Subscription ${subscriptionId} has no current period in history`);
+    throw new Error(
+      `Subscription ${subscriptionId} has no current period in history`
+    );
   }
 
   return {
