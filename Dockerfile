@@ -42,7 +42,7 @@ RUN npx prisma generate && npm run build
 # Final production stage with absolute minimal footprint
 FROM alpine:3.19 AS runner
 
-# Install Node.js runtime with npm (needed for npx prisma commands)
+# Install Node.js + npm (npm adds ~40MB but needed for admin panel migrations)
 RUN apk add --no-cache nodejs-current icu-data-full npm
 
 # Create a non-root user
@@ -59,12 +59,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy only what's needed from Prisma
+# Copy Prisma essentials (client + CLI from builder, reusing what we already have)
 COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 
-# Copy Prisma schema and migrations for runtime access (e.g., admin pages)
+# Copy schema and migrations for admin panel
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 # Use the non-root user
