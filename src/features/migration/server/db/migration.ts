@@ -104,27 +104,28 @@ export async function getUserTables(): Promise<Array<{ TABLE_NAME: string }>> {
 }
 
 export async function dropTable(tableName: string): Promise<void> {
-  await prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS \`${tableName}\``);
+  const validTableName = tableName.replace(/[^a-zA-Z0-9_]/g, '');
+  if (!validTableName) {
+    throw new Error("Invalid table name");
+  }
+  await prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS \`${validTableName}\``);
 }
 
 export async function acquireMigrationLock(): Promise<void> {
   try {
-    // Try to create a new lock record
     await prisma.migrationLock.create({
       data: {
         lockedAt: new Date(),
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes from now
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
     return;
   } catch (error) {
-    // Lock already exists, check if it's expired
     const existingLock = await prisma.migrationLock.findFirst({
       orderBy: { createdAt: "desc" },
     });
 
     if (!existingLock || existingLock.expiresAt < new Date()) {
-      // Lock is expired, try to delete it and create a new one
       await prisma.migrationLock.deleteMany();
       return await acquireMigrationLock();
     }
@@ -140,5 +141,5 @@ export async function releaseMigrationLock(): Promise<void> {
 }
 
 export async function setForeignKeyChecks(enabled: boolean): Promise<void> {
-  await prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = ${enabled ? 1 : 0}`);
+  await prisma.$executeRaw`SET FOREIGN_KEY_CHECKS = ${enabled ? 1 : 0}`;
 }
