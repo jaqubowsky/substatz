@@ -9,7 +9,6 @@ import { MigrationResult } from "@/features/migration/schemas/migration";
 interface MigrationState {
   isDeploying: boolean;
   statusOutput: string;
-  showOutput: boolean;
   lastResult: MigrationResult | null;
 }
 
@@ -18,13 +17,11 @@ type MigrationAction =
   | { type: "COMPLETE_SUCCESS"; result: MigrationResult; output: string }
   | { type: "COMPLETE_ERROR"; error: string }
   | { type: "CLEAR_OUTPUT" }
-  | { type: "SHOW_OUTPUT"; output: string }
   | { type: "HIDE_OUTPUT" };
 
 const initialState: MigrationState = {
   isDeploying: false,
   statusOutput: "",
-  showOutput: false,
   lastResult: null,
 };
 
@@ -38,14 +35,12 @@ function migrationReducer(
         ...state,
         isDeploying: true,
         statusOutput: "",
-        showOutput: false,
       };
     case "COMPLETE_SUCCESS":
       return {
         ...state,
         isDeploying: false,
         statusOutput: action.output,
-        showOutput: true,
         lastResult: action.result,
       };
     case "COMPLETE_ERROR":
@@ -53,25 +48,16 @@ function migrationReducer(
         ...state,
         isDeploying: false,
         statusOutput: action.error,
-        showOutput: true,
         lastResult: null,
       };
     case "CLEAR_OUTPUT":
       return {
         ...state,
         statusOutput: "",
-        showOutput: false,
-      };
-    case "SHOW_OUTPUT":
-      return {
-        ...state,
-        statusOutput: action.output,
-        showOutput: true,
       };
     case "HIDE_OUTPUT":
       return {
         ...state,
-        showOutput: false,
       };
     default:
       return state;
@@ -148,12 +134,6 @@ export function useMigrationState() {
     });
   };
 
-  const showOutput = (output: string) => {
-    startTransition(() => {
-      dispatch({ type: "SHOW_OUTPUT", output });
-    });
-  };
-
   const hideOutput = () => {
     startTransition(() => {
       dispatch({ type: "HIDE_OUTPUT" });
@@ -166,7 +146,6 @@ export function useMigrationState() {
     handleDeploy,
     handleRefresh,
     clearOutput,
-    showOutput,
     hideOutput,
   };
 }

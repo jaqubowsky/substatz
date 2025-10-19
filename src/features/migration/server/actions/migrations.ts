@@ -16,7 +16,6 @@ export const deployMigrations = adminAction
 
     const results = await MigrationEngine.deployMigrations();
 
-    // Revalidate the admin path to refresh the UI
     revalidatePath("/admin");
 
     const displayResult =
@@ -45,8 +44,6 @@ export const rollbackMigration = adminAction
       throw new ActionError(errors.GENERAL.VALIDATION_ERROR.message);
     }
 
-    // TODO: Implement rollback functionality
-    // For now, we'll log the attempt and throw an error
     Sentry.addBreadcrumb({
       message: "Rollback attempted",
       level: "info",
@@ -57,7 +54,6 @@ export const rollbackMigration = adminAction
     throw new ActionError(errors.MIGRATION.ROLLBACK_NOT_SUPPORTED.message);
   });
 
-// New action for getting migration status with better error handling
 export const getMigrationStatusAction = adminAction
   .schema(migrationActionSchema.pick({ action: true }))
   .action(async ({ parsedInput: { action } }) => {

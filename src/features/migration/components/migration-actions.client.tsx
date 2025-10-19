@@ -13,18 +13,12 @@ interface MigrationActionsProps {
 export function MigrationActions({ pendingCount }: MigrationActionsProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const {
-    isExecuting,
-    statusOutput,
-    showOutput,
-    handleDeploy,
-    handleRefresh,
-    hideOutput,
-  } = useMigrationState();
+  const { isExecuting, statusOutput, handleDeploy, handleRefresh, hideOutput } =
+    useMigrationState();
 
   async function handleRefreshClick() {
     setIsRefreshing(true);
-    await handleRefresh();
+    handleRefresh();
     setIsRefreshing(false);
   }
 
@@ -60,13 +54,12 @@ export function MigrationActions({ pendingCount }: MigrationActionsProps) {
           />
           Refresh
         </Button>
-
       </div>
 
       <MigrationOutput
         output={statusOutput}
         onClose={hideOutput}
-        isVisible={typeof showOutput === 'boolean' ? showOutput : false}
+        isVisible={statusOutput !== ""}
       />
     </>
   );
