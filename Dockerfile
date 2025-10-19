@@ -42,8 +42,8 @@ RUN npx prisma generate && npm run build
 # Final production stage with absolute minimal footprint
 FROM alpine:3.19 AS runner
 
-# Install Node.js + npm (npm adds ~40MB but needed for admin panel migrations)
-RUN apk add --no-cache nodejs-current icu-data-full npm
+# Install Node.js only (no npm needed anymore)
+RUN apk add --no-cache nodejs-current icu-data-full
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs && \
@@ -59,11 +59,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy Prisma essentials (client + CLI from builder, reusing what we already have)
+# Copy Prisma client only (no CLI needed anymore)
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/.bin ./node_modules/.bin
 
 # Copy schema and migrations for admin panel
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma

@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
-import { getMigrations, MigrationPanel } from "@/features/admin";
+import { MigrationPanel } from "@/features/migration";
+import { getMigrationStatus } from "@/features/migration/server/queries/migration";
 import { isAdmin } from "@/lib/admin";
 import { redirect } from "next/navigation";
 
@@ -10,7 +11,7 @@ export default async function AdminPage() {
     redirect("/dashboard");
   }
 
-  const { migrations } = await getMigrations();
+  const migrationStatus = await getMigrationStatus();
 
   return (
     <div className="container mx-auto py-10">
@@ -21,7 +22,7 @@ export default async function AdminPage() {
         </p>
       </div>
 
-      <MigrationPanel initialMigrations={migrations} />
+      <MigrationPanel initialStatus={migrationStatus} />
     </div>
   );
 }
