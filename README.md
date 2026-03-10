@@ -4,7 +4,7 @@
 
 **[Live Demo](https://substatz.me)**
 
-![SubStatz Banner](./public/og-image.png)
+![SubStatz Banner](./public/og-image.webp)
 
 ---
 
@@ -69,4 +69,4 @@ npm run migrate:dev          # run Prisma migrations
 npm run dev                  # start dev server (Turbopack)
 ```
 
-Requires Node.js 18+ and a MySQL database.
+Requires Node.js 22+ and a MySQL database.
