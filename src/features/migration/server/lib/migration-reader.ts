@@ -1,18 +1,18 @@
-import { readdir, readFile } from "fs/promises";
-import { join } from "path";
-import { MigrationFile } from "@/features/migration/schemas/migration";
+import { readdir, readFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { MigrationFile } from "@/features/migration/schemas/migration";
 import { generateChecksum } from "@/features/migration/utils/generate-checksum";
 
 export class MigrationReader {
   private static readonly MIGRATIONS_PATH = join(
     process.cwd(),
     "prisma",
-    "migrations"
+    "migrations",
   );
 
   static async getMigrationFiles(): Promise<MigrationFile[]> {
     try {
-      const entries = await readdir(this.MIGRATIONS_PATH, {
+      const entries = await readdir(MigrationReader.MIGRATIONS_PATH, {
         withFileTypes: true,
       });
       const migrationDirs = entries
@@ -24,7 +24,7 @@ export class MigrationReader {
       const migrationFiles: MigrationFile[] = [];
 
       for (const dir of migrationDirs) {
-        const migrationPath = join(this.MIGRATIONS_PATH, dir);
+        const migrationPath = join(MigrationReader.MIGRATIONS_PATH, dir);
         const migrationSqlPath = join(migrationPath, "migration.sql");
 
         try {
@@ -48,13 +48,13 @@ export class MigrationReader {
       }
 
       return migrationFiles.sort((a, b) =>
-        a.timestamp.localeCompare(b.timestamp)
+        a.timestamp.localeCompare(b.timestamp),
       );
     } catch (error) {
       throw new Error(
         `Failed to read migration files: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
     }
   }
@@ -66,7 +66,7 @@ export class MigrationReader {
       throw new Error(
         `Failed to read migration SQL from ${filePath}: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
     }
   }

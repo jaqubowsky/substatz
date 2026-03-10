@@ -1,10 +1,13 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
 import { useCallback } from "react";
-
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,16 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { LoginFormValues, loginSchema } from "@/features/auth/schemas";
+import { type LoginFormValues, loginSchema } from "@/features/auth/schemas";
 import {
   loginAction,
   resendVerificationAction,
 } from "@/features/auth/server/actions/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { GoogleSignInButton } from "./google-sign-in-button";
 import { VerificationMessages } from "./login-verification-messages";
 
@@ -55,7 +53,7 @@ export function LoginForm() {
     },
     onError: (error) => {
       toast.error(
-        error.error.serverError || "Failed to send verification email"
+        error.error.serverError || "Failed to send verification email",
       );
     },
   });
@@ -89,7 +87,7 @@ export function LoginForm() {
       formProps: {
         defaultValues,
       },
-    }
+    },
   );
 
   return (

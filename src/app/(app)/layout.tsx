@@ -1,10 +1,10 @@
 import "@/app/globals.css";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/navigation";
 import { getServerAuth } from "@/hooks/get-server-auth";
 import { setSentryUserContext } from "@/lib/auth-sentry";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "SubStatz - Dashboard",

@@ -1,6 +1,6 @@
 import { JsonLd } from "@/components/json-ld";
+import { Currency } from "@/generated/prisma/client";
 import { env } from "@/lib/env";
-import { Currency } from "@prisma/client";
 import { FAQSection } from "./components";
 import { CTASection } from "./components/cta-section";
 import { FeaturesSection } from "./components/features-section";
@@ -57,7 +57,7 @@ export const LandingPage = () => {
       price: "0",
       priceCurrency: Currency.USD,
       priceValidUntil: new Date(
-        new Date().setFullYear(new Date().getFullYear() + 1)
+        new Date().setFullYear(new Date().getFullYear() + 1),
       )
         .toISOString()
         .split("T")[0],

@@ -20,6 +20,7 @@ export const FAQItem = memo(({ question, answer }: FAQItemProps) => {
   return (
     <div className="group">
       <button
+        type="button"
         onClick={toggleFaq}
         className="flex w-full items-center justify-between bg-white px-6 py-5 text-left hover:bg-gray-50 transition-colors"
         aria-expanded={isOpen}

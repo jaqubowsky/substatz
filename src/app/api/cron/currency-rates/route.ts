@@ -1,9 +1,9 @@
+import * as Sentry from "@sentry/nextjs";
+import { type NextRequest, NextResponse } from "next/server";
 import { fetchLatestExchangeRates } from "@/lib/currency-rates";
 import { env } from "@/lib/env";
 import { authRateLimiter, getIp } from "@/lib/rate-limit";
 import { upsertCurrencyRates } from "@/server/db/currency-rates";
-import * as Sentry from "@sentry/nextjs";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         message: error instanceof Error ? error.message : "Unknown error",
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

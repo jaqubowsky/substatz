@@ -1,3 +1,4 @@
+import { Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DialogDescription,
@@ -6,15 +7,14 @@ import {
 } from "@/components/ui/dialog";
 import { calculateSubscriptionStats } from "@/features/dashboard/lib";
 import { generateSavingsOpportunities } from "@/features/dashboard/lib/savings-opportunities";
-import { Tag } from "lucide-react";
+import {
+  getCurrentValues,
+  type SubscriptionWithCurrentValues,
+} from "@/features/dashboard/lib/subscription-utils";
 import { FinancialSummary } from "./financial-summary";
 import { RenewalHistory } from "./renewal-history";
 import { SavingsOpportunities } from "./savings-opportunities";
 import { TimelineCard } from "./timeline-card";
-import {
-  SubscriptionWithCurrentValues,
-  getCurrentValues,
-} from "@/features/dashboard/lib/subscription-utils";
 
 interface SubscriptionDetailsProps {
   subscription: SubscriptionWithCurrentValues;

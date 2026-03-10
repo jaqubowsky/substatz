@@ -1,6 +1,8 @@
 "use client";
 
+import { Crown, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,11 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ExportModal } from "./export-modal";
 import { useCheckoutRedirect } from "@/features/settings/hooks";
-import { SubscriptionPlan } from "@prisma/client";
-import { Download, Loader2, Crown } from "lucide-react";
+import { SubscriptionPlan } from "@/generated/prisma/client";
+import { ExportModal } from "./export-modal";
 
 interface ExportDataSectionProps {
   userPlan: SubscriptionPlan;

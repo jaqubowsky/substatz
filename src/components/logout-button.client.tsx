@@ -1,9 +1,9 @@
 "use client";
 
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export function LogoutButton() {
   const pathname = usePathname();

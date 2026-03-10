@@ -1,5 +1,5 @@
-import { User } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
+import type { User } from "@/generated/prisma/client";
 
 export async function setSentryUserContext(user: Partial<User>) {
   Sentry.setUser({

@@ -1,8 +1,10 @@
 "use client";
 
-import { SubscriptionHistoryCard } from "./subscription-history-card";
-import { SubscriptionHistory as SubscriptionHistoryType } from "@prisma/client";
+import { AlertTriangle } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
+import { toast } from "sonner";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import {
   Dialog,
   DialogContent,
@@ -10,12 +12,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EditHistoricalPeriodForm } from "./edit-historical-period-form";
-import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { AlertTriangle } from "lucide-react";
 import { deleteHistoricalPeriodAction } from "@/features/dashboard/server/actions/subscription-history";
-import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
+import type { SubscriptionHistory as SubscriptionHistoryType } from "@/generated/prisma/client";
+import { EditHistoricalPeriodForm } from "./edit-historical-period-form";
+import { SubscriptionHistoryCard } from "./subscription-history-card";
 
 interface SubscriptionHistoryProps {
   history: SubscriptionHistoryType[];

@@ -1,48 +1,49 @@
-import * as XLSX from "xlsx";
 import { pdf } from "@react-pdf/renderer";
+import ExcelJS from "exceljs";
+import type { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 import { SubscriptionPdfDocument } from "@/features/settings/components/export-modal";
-import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 
 export async function generateExcelFile(
-  subscriptions: SubscriptionWithFinancials[]
+  subscriptions: SubscriptionWithFinancials[],
 ): Promise<string> {
-  const rows = subscriptions.map((sub) => ({
-    Name: sub.name,
-    Price: sub.price,
-    Currency: sub.currency,
-    Category: sub.category,
-    "Billing Cycle": sub.billingCycle,
-    "Start Date": sub.startDate.toISOString().split("T")[0],
-    Status: sub.isCancelled ? "Cancelled" : "Active",
-    "Created Date": sub.createdAt.toISOString().split("T")[0],
-    "Updated Date": sub.updatedAt.toISOString().split("T")[0],
-  }));
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Subscriptions");
 
-  const worksheet = XLSX.utils.json_to_sheet(rows);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Subscriptions");
-
-  worksheet["!cols"] = [
-    { wch: 25 }, // Name
-    { wch: 10 }, // Price
-    { wch: 10 }, // Currency
-    { wch: 15 }, // Category
-    { wch: 15 }, // Billing Cycle
-    { wch: 12 }, // Start Date
-    { wch: 10 }, // Status
-    { wch: 12 }, // Created Date
-    { wch: 12 }, // Updated Date
+  worksheet.columns = [
+    { header: "Name", key: "name", width: 25 },
+    { header: "Price", key: "price", width: 10 },
+    { header: "Currency", key: "currency", width: 10 },
+    { header: "Category", key: "category", width: 15 },
+    { header: "Billing Cycle", key: "billingCycle", width: 15 },
+    { header: "Start Date", key: "startDate", width: 12 },
+    { header: "Status", key: "status", width: 10 },
+    { header: "Created Date", key: "createdDate", width: 12 },
+    { header: "Updated Date", key: "updatedDate", width: 12 },
   ];
 
-  const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+  for (const sub of subscriptions) {
+    worksheet.addRow({
+      name: sub.name,
+      price: sub.price,
+      currency: sub.currency,
+      category: sub.category,
+      billingCycle: sub.billingCycle,
+      startDate: sub.startDate.toISOString().split("T")[0],
+      status: sub.isCancelled ? "Cancelled" : "Active",
+      createdDate: sub.createdAt.toISOString().split("T")[0],
+      updatedDate: sub.updatedAt.toISOString().split("T")[0],
+    });
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(buffer).toString("base64");
 }
 
 export async function generatePdfFile(
-  subscriptions: SubscriptionWithFinancials[]
+  subscriptions: SubscriptionWithFinancials[],
 ): Promise<string> {
   const pdfBlob = await pdf(
-    SubscriptionPdfDocument({ subscriptions })
+    SubscriptionPdfDocument({ subscriptions }),
   ).toBlob();
   const arrayBuffer = await pdfBlob.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);

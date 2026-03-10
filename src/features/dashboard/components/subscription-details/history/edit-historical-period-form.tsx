@@ -1,5 +1,10 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
@@ -18,19 +23,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { updateHistoricalPeriodAction } from "@/features/dashboard/server/actions/subscription-history";
-import { addHistoricalPeriodSchema } from "@/features/dashboard/schemas/subscription-history";
 import {
-  SUB_CATEGORIES,
-  CURRENCY_OPTIONS,
   BILLING_CYCLE_OPTIONS,
+  CURRENCY_OPTIONS,
+  SUB_CATEGORIES,
 } from "@/features/dashboard/constants/subscription";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SubscriptionHistory } from "@prisma/client";
-import { Loader2 } from "lucide-react";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { toast } from "sonner";
-import { z } from "zod";
+import { addHistoricalPeriodSchema } from "@/features/dashboard/schemas/subscription-history";
+import { updateHistoricalPeriodAction } from "@/features/dashboard/server/actions/subscription-history";
+import type { SubscriptionHistory } from "@/generated/prisma/client";
 
 interface EditHistoricalPeriodFormProps {
   history: SubscriptionHistory;
@@ -48,7 +48,7 @@ export const EditHistoricalPeriodForm = ({
     zodResolver(
       addHistoricalPeriodSchema.extend({
         id: z.string(),
-      })
+      }),
     ),
     {
       actionProps: {
@@ -72,7 +72,7 @@ export const EditHistoricalPeriodForm = ({
           effectiveTo: history.effectiveTo || undefined,
         },
       },
-    }
+    },
   );
 
   const isSubmitting = form.formState.isSubmitting;

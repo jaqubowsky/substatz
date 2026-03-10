@@ -1,10 +1,10 @@
 "use server";
 
 import { auth } from "@/auth";
-import { isAdmin } from "@/lib/admin";
-import { MigrationEngine } from "@/features/migration/server/lib/migration-engine";
+import type { MigrationStatus } from "@/features/migration/schemas/migration";
 import * as dbOperations from "@/features/migration/server/db/migration";
-import { MigrationStatus } from "@/features/migration/schemas/migration";
+import { MigrationEngine } from "@/features/migration/server/lib/migration-engine";
+import { isAdmin } from "@/lib/admin";
 
 export async function getMigrationStatus(): Promise<MigrationStatus> {
   const session = await auth();

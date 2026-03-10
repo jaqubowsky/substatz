@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { DatePreset } from "@/features/settings/hooks/use-date-presets";
+import type { DatePreset } from "@/features/settings/hooks/use-date-presets";
 
 interface DatePresetButtonsProps {
   onPresetClick: (preset: DatePreset) => void;
@@ -21,7 +21,7 @@ export function DatePresetButtons({
 }: DatePresetButtonsProps) {
   return (
     <div className="space-y-3">
-      <label className="text-sm font-medium leading-none">Date Range</label>
+      <span className="text-sm font-medium leading-none">Date Range</span>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {presets.map(({ value, label }) => (
           <Button
@@ -40,4 +40,3 @@ export function DatePresetButtons({
     </div>
   );
 }
-

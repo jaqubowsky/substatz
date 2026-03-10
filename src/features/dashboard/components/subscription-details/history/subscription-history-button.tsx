@@ -1,5 +1,7 @@
 "use client";
 
+import { History, Plus } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,10 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { History, Plus } from "lucide-react";
-import { useState } from "react";
+import type { Subscription } from "@/generated/prisma/client";
 import { AddHistoricalPeriodForm } from "./add-historical-period-form";
-import { Subscription } from "@prisma/client";
 
 interface SubscriptionHistoryButtonProps {
   children: React.ReactNode;

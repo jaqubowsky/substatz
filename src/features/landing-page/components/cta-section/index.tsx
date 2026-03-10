@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Check, Plus, User } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { DashboardTabs } from "./dashboard-tabs";
 
 export const CTASection = () => {
@@ -127,7 +127,10 @@ export const CTASection = () => {
               <h3 className="text-lg font-medium text-gray-900">
                 Your Subscriptions
               </h3>
-              <button className="rounded-full bg-primary p-1 text-white hover:bg-primary/90 transition-colors">
+              <button
+                type="button"
+                className="rounded-full bg-primary p-1 text-white hover:bg-primary/90 transition-colors"
+              >
                 <Plus className="h-5 w-5" />
               </button>
             </div>
@@ -247,10 +250,16 @@ export const CTASection = () => {
                 Spending Analytics
               </h3>
               <div className="flex space-x-2">
-                <button className="rounded-md bg-orange-100 px-2 py-1 text-xs font-medium text-primary">
+                <button
+                  type="button"
+                  className="rounded-md bg-orange-100 px-2 py-1 text-xs font-medium text-primary"
+                >
                   Monthly
                 </button>
-                <button className="rounded-md px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 transition-colors">
+                <button
+                  type="button"
+                  className="rounded-md px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 transition-colors"
+                >
                   Yearly
                 </button>
               </div>
@@ -350,7 +359,7 @@ export const CTASection = () => {
                           ></div>
                           <span className="text-xs text-gray-500">{month}</span>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

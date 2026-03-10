@@ -1,8 +1,8 @@
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { MigrationPanel } from "@/features/migration";
 import { getMigrationStatus } from "@/features/migration/server/queries/migration";
 import { isAdmin } from "@/lib/admin";
-import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
   const session = await auth();

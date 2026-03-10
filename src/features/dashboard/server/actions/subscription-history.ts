@@ -1,20 +1,19 @@
 "use server";
 
-import { privateAction } from "@/lib/safe-action";
-import * as db from "@/features/dashboard/server/db/subscription";
 import { revalidatePath } from "next/cache";
-import { addHistoricalPeriodSchema } from "@/features/dashboard/schemas/subscription-history";
-import { ActionError } from "@/lib/safe-action";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
 import {
   findOverlappingPeriods,
   resolveOverlaps,
   validateCurrentPeriodExists,
 } from "@/features/dashboard/lib/period-overlap-resolver";
+import { addHistoricalPeriodSchema } from "@/features/dashboard/schemas/subscription-history";
+import * as db from "@/features/dashboard/server/db/subscription";
+import { prisma } from "@/lib/prisma";
+import { ActionError, privateAction } from "@/lib/safe-action";
 
 export const addHistoricalPeriodAction = privateAction
-  .schema(addHistoricalPeriodSchema)
+  .inputSchema(addHistoricalPeriodSchema)
   .action(async ({ parsedInput }) => {
     const {
       subscriptionId,
@@ -28,7 +27,7 @@ export const addHistoricalPeriodAction = privateAction
 
     if (effectiveTo && effectiveTo <= effectiveFrom) {
       throw new ActionError(
-        "End date must be after start date. Please check your date range."
+        "End date must be after start date. Please check your date range.",
       );
     }
 
@@ -38,7 +37,7 @@ export const addHistoricalPeriodAction = privateAction
 
     if (!subscription) {
       throw new ActionError(
-        `Subscription not found. It may have been deleted. Please refresh the page.`
+        `Subscription not found. It may have been deleted. Please refresh the page.`,
       );
     }
 
@@ -81,10 +80,10 @@ export const addHistoricalPeriodAction = privateAction
   });
 
 export const updateHistoricalPeriodAction = privateAction
-  .schema(
+  .inputSchema(
     addHistoricalPeriodSchema.extend({
       id: z.string(),
-    })
+    }),
   )
   .action(async ({ parsedInput }) => {
     const {
@@ -99,7 +98,7 @@ export const updateHistoricalPeriodAction = privateAction
 
     if (effectiveTo && effectiveTo <= effectiveFrom) {
       throw new ActionError(
-        "End date must be after start date. Please check your date range."
+        "End date must be after start date. Please check your date range.",
       );
     }
 
@@ -109,7 +108,7 @@ export const updateHistoricalPeriodAction = privateAction
 
     if (!existingPeriod) {
       throw new ActionError(
-        `Historical period not found. It may have been deleted. Please refresh the page.`
+        `Historical period not found. It may have been deleted. Please refresh the page.`,
       );
     }
 
@@ -119,14 +118,14 @@ export const updateHistoricalPeriodAction = privateAction
 
     if (!subscription) {
       throw new ActionError(
-        `Subscription not found. It may have been deleted. Please refresh the page.`
+        `Subscription not found. It may have been deleted. Please refresh the page.`,
       );
     }
 
     await validateCurrentPeriodExists(
       existingPeriod.subscriptionId,
       id,
-      effectiveTo
+      effectiveTo,
     );
 
     const overlappingPeriods = await findOverlappingPeriods(
@@ -135,7 +134,7 @@ export const updateHistoricalPeriodAction = privateAction
         effectiveFrom,
         effectiveTo: effectiveTo ?? null,
       },
-      id
+      id,
     );
 
     await prisma.$transaction(async (tx) => {
@@ -173,7 +172,7 @@ export const updateHistoricalPeriodAction = privateAction
   });
 
 export const deleteHistoricalPeriodAction = privateAction
-  .schema(z.object({ id: z.string() }))
+  .inputSchema(z.object({ id: z.string() }))
   .action(async ({ parsedInput }) => {
     const { id } = parsedInput;
 
@@ -183,7 +182,7 @@ export const deleteHistoricalPeriodAction = privateAction
 
     if (!period) {
       throw new ActionError(
-        `Historical period not found. It may have already been deleted. Please refresh the page.`
+        `Historical period not found. It may have already been deleted. Please refresh the page.`,
       );
     }
 
@@ -193,17 +192,17 @@ export const deleteHistoricalPeriodAction = privateAction
 
     if (allPeriods.length === 1) {
       throw new ActionError(
-        "Cannot delete the only period. A subscription must always have at least one period."
+        "Cannot delete the only period. A subscription must always have at least one period.",
       );
     }
 
     if (period.effectiveTo === null) {
       const hasOtherCurrentPeriod = allPeriods.some(
-        (p) => p.id !== id && p.effectiveTo === null
+        (p) => p.id !== id && p.effectiveTo === null,
       );
       if (!hasOtherCurrentPeriod) {
         throw new ActionError(
-          "Cannot delete this period as it's the only current period. Please create a new current period first."
+          "Cannot delete this period as it's the only current period. Please create a new current period first.",
         );
       }
     }

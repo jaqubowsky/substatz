@@ -1,12 +1,12 @@
 import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
 import { convertCurrency } from "@/features/dashboard/lib/convert-currency";
-import {
+import type {
   CategoryBreakdown,
   UpcomingPayment,
 } from "@/features/dashboard/schemas/subscription";
 import * as db from "@/features/dashboard/server/db/subscription";
+import type { Currency } from "@/generated/prisma/client";
 import { calculateAnnualCost, calculateMonthlyCost } from "@/lib/billing-utils";
-import { Currency } from "@prisma/client";
 import { getLatestExchangeRates } from "./rates";
 
 export interface SubscriptionSummary {
@@ -24,7 +24,7 @@ export const getSubscriptions = async (userId: string) => {
 
 export const getSubscriptionSummary = async (
   userId: string,
-  defaultCurrency: Currency
+  defaultCurrency: Currency,
 ) => {
   "use cache";
 
@@ -52,16 +52,16 @@ export const getSubscriptionSummary = async (
       currentPeriod.price,
       currentPeriod.currency,
       defaultCurrency,
-      rates
+      rates,
     );
 
     totalMonthly += calculateMonthlyCost(
       convertedPrice,
-      currentPeriod.billingCycle
+      currentPeriod.billingCycle,
     );
     totalYearly += calculateAnnualCost(
       convertedPrice,
-      currentPeriod.billingCycle
+      currentPeriod.billingCycle,
     );
 
     if (categoriesBreakdown[currentPeriod.category]) {
@@ -72,7 +72,7 @@ export const getSubscriptionSummary = async (
 
     const nextPaymentDate = calculateNextPaymentDate(
       new Date(subscription.startDate),
-      currentPeriod.billingCycle
+      currentPeriod.billingCycle,
     );
 
     if (nextPaymentDate >= today && nextPaymentDate <= endDate) {
@@ -88,7 +88,7 @@ export const getSubscriptionSummary = async (
   }
 
   upcomingPayments.sort(
-    (a, b) => a.nextPaymentDate.getTime() - b.nextPaymentDate.getTime()
+    (a, b) => a.nextPaymentDate.getTime() - b.nextPaymentDate.getTime(),
   );
 
   return {

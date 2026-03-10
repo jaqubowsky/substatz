@@ -1,7 +1,7 @@
+import { History, Repeat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BillingCycle } from "@prisma/client";
-import { History, Repeat } from "lucide-react";
+import type { BillingCycle } from "@/generated/prisma/client";
 
 interface RenewalHistoryProps {
   renewalCount: number;

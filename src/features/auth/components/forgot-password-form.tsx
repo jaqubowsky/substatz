@@ -1,5 +1,10 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,13 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { EmailFormValues, emailSchema } from "@/features/auth/schemas";
+import { type EmailFormValues, emailSchema } from "@/features/auth/schemas";
 import { forgotPasswordAction } from "@/features/auth/server/actions/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { toast } from "sonner";
 
 const defaultValues: EmailFormValues = {
   email: "",
@@ -39,7 +39,7 @@ export function ForgotPasswordForm() {
       formProps: {
         defaultValues,
       },
-    }
+    },
   );
 
   return (

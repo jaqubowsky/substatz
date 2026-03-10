@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
-import { useState } from "react";
 
 interface TabContent {
   name: string;
@@ -50,9 +50,8 @@ export const DashboardTabs = ({ tabs }: DashboardTabsProps) => {
             aria-labelledby={`tab-${index}`}
             className={cn(
               "transition-all",
-              activeTab === index ? "opacity-100 block" : "opacity-0 hidden"
+              activeTab === index ? "opacity-100 block" : "opacity-0 hidden",
             )}
-            tabIndex={0}
           >
             {tab.content}
           </div>

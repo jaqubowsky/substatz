@@ -1,10 +1,10 @@
 "use client";
 
-import { startTransition, useOptimistic } from "react";
 import { useRouter } from "next/navigation";
+import { startTransition, useOptimistic } from "react";
 import { toast } from "sonner";
+import type { MigrationResult } from "@/features/migration/schemas/migration";
 import { deployMigrations } from "@/features/migration/server/actions/migrations";
-import { MigrationResult } from "@/features/migration/schemas/migration";
 
 interface MigrationState {
   isDeploying: boolean;
@@ -27,7 +27,7 @@ const initialState: MigrationState = {
 
 function migrationReducer(
   state: MigrationState,
-  action: MigrationAction
+  action: MigrationAction,
 ): MigrationState {
   switch (action.type) {
     case "START_DEPLOY":
@@ -110,7 +110,7 @@ export function useMigrationState() {
               ? `Successfully applied ${successfulMigrations} migration${
                   successfulMigrations > 1 ? "s" : ""
                 }`
-              : "Migration operation completed"
+              : "Migration operation completed",
           );
         }
 

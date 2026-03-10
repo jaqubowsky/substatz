@@ -1,5 +1,5 @@
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
+import type { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 
 const styles = StyleSheet.create({
   page: {

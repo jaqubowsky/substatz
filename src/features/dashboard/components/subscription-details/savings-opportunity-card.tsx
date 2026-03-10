@@ -1,7 +1,7 @@
-import { formatCurrency } from "@/features/dashboard/lib/format-currency";
-import { OpportunityType } from "@/features/dashboard/lib/savings-opportunities";
-import { Currency } from "@prisma/client";
 import { Sparkles } from "lucide-react";
+import { formatCurrency } from "@/features/dashboard/lib/format-currency";
+import type { OpportunityType } from "@/features/dashboard/lib/savings-opportunities";
+import type { Currency } from "@/generated/prisma/client";
 
 export interface SavingsOpportunity {
   type: OpportunityType;

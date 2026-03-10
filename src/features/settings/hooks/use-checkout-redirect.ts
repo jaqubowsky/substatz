@@ -1,8 +1,8 @@
 "use client";
 
-import { createCheckoutSessionAction } from "@/server/actions/subscription-plan";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
+import { createCheckoutSessionAction } from "@/server/actions/subscription-plan";
 
 export function useCheckoutRedirect() {
   const action = useAction(createCheckoutSessionAction, {
@@ -17,7 +17,7 @@ export function useCheckoutRedirect() {
     onError: (error) => {
       toast.error(
         error.error.serverError ||
-          "Failed to redirect to checkout. Please try again."
+          "Failed to redirect to checkout. Please try again.",
       );
     },
   });

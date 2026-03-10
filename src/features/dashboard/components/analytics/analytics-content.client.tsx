@@ -1,14 +1,17 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { filterDataByTimeRange, TimeRange } from "@/features/dashboard/lib";
-import { Currency } from "@prisma/client";
 import { BarChart3, LineChart } from "lucide-react";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
-import { TimeRangeSelector } from "./time-range-selector";
 import dynamic from "next/dynamic";
-import { SubscriptionWithCurrentValues } from "@/features/dashboard/lib/subscription-utils";
+import { useState } from "react";
+import type { DateRange } from "react-day-picker";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  filterDataByTimeRange,
+  type TimeRange,
+} from "@/features/dashboard/lib";
+import type { SubscriptionWithCurrentValues } from "@/features/dashboard/lib/subscription-utils";
+import type { Currency } from "@/generated/prisma/client";
+import { TimeRangeSelector } from "./time-range-selector";
 
 interface AnalyticsContentProps {
   subscriptions: SubscriptionWithCurrentValues[];
@@ -24,7 +27,7 @@ const DynamicMonthlySpendingChart = dynamic(
   {
     loading: () => <div className="bg-card rounded-lg shadow-sm p-6 h-64" />,
     ssr: false,
-  }
+  },
 );
 
 const DynamicCategoryBreakdownChart = dynamic(
@@ -32,7 +35,7 @@ const DynamicCategoryBreakdownChart = dynamic(
   {
     loading: () => <div className="bg-card rounded-lg shadow-sm p-6 h-64" />,
     ssr: false,
-  }
+  },
 );
 
 export function AnalyticsContent({
@@ -50,14 +53,14 @@ export function AnalyticsContent({
   const filteredMonthlyData = filterDataByTimeRange(
     monthlySpendingData,
     timeRange,
-    timeRange === "custom" ? customDateRange : undefined
+    timeRange === "custom" ? customDateRange : undefined,
   );
 
   const categoryData = Object.entries(categoriesBreakdown).map(
     ([name, value]) => ({
       name,
       value,
-    })
+    }),
   );
 
   return (

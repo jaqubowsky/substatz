@@ -1,15 +1,15 @@
+import { differenceInMonths } from "date-fns";
+import type { DateRange } from "react-day-picker";
+import type { Currency, Subscription } from "@/generated/prisma/client";
 import {
   CYCLE_TO_MONTHS,
   calculateBillingCycles,
   calculateMonthsDifference,
 } from "@/lib/billing-utils";
-import { Currency, Subscription } from "@prisma/client";
-import { DateRange } from "react-day-picker";
-import { formatCurrency } from "./format-currency";
-import { convertCurrency } from "./convert-currency";
 import { prisma } from "@/lib/prisma";
-import { differenceInMonths } from "date-fns";
-import { SubscriptionWithFinancials } from "./subscription-utils";
+import { convertCurrency } from "./convert-currency";
+import { formatCurrency } from "./format-currency";
+import type { SubscriptionWithFinancials } from "./subscription-utils";
 
 export type TimeRange = "3months" | "6months" | "12months" | "all" | "custom";
 
@@ -19,7 +19,7 @@ export const getMonthName = (date: Date): string => {
 
 export const formatCurrencyValue = (
   value: number,
-  defaultCurrency: Currency
+  defaultCurrency: Currency,
 ): [string, string] => [formatCurrency(value, defaultCurrency), "Amount"];
 
 export const getMonthYear = (date: Date): string => {
@@ -31,7 +31,7 @@ export const getMonthYear = (date: Date): string => {
 export const filterDataByTimeRange = <T extends { month: string }>(
   data: T[],
   timeRange: TimeRange,
-  customDateRange?: DateRange
+  customDateRange?: DateRange,
 ): T[] => {
   if (timeRange === "all") return data;
 
@@ -69,7 +69,7 @@ export const filterDataByTimeRange = <T extends { month: string }>(
 export const calculateMonthlySpendingWithHistory = async (
   subscriptions: Subscription[],
   defaultCurrency: Currency,
-  rates: Record<Currency, number>
+  rates: Record<Currency, number>,
 ): Promise<{ month: string; amount: number }[]> => {
   const now = new Date();
   const monthlyData: Record<string, number> = {};
@@ -118,7 +118,7 @@ export const calculateMonthlySpendingWithHistory = async (
         period.price,
         period.currency,
         defaultCurrency,
-        rates
+        rates,
       );
       const periodInMonths = CYCLE_TO_MONTHS[period.billingCycle];
 
@@ -130,7 +130,7 @@ export const calculateMonthlySpendingWithHistory = async (
 
         const monthsSinceStart = calculateMonthsDifference(
           periodStart,
-          currentDate
+          currentDate,
         );
 
         if (monthsSinceStart % periodInMonths === 0) {
@@ -156,7 +156,7 @@ export const calculateMonthlySpendingWithHistory = async (
 };
 
 export const calculateTotalPaymentCycles = (
-  subscriptions: SubscriptionWithFinancials[]
+  subscriptions: SubscriptionWithFinancials[],
 ) => {
   return subscriptions.reduce((sum, sub) => {
     if (sub.isCancelled) return sum;
@@ -170,7 +170,7 @@ export const calculateTotalPaymentCycles = (
 export const calculateTotalStatistics = async (
   subscriptions: Subscription[],
   defaultCurrency: Currency,
-  rates: Record<Currency, number>
+  rates: Record<Currency, number>,
 ): Promise<{
   totalSpentFromStart: number;
   totalRenewals: number;
@@ -214,8 +214,8 @@ export const calculateTotalStatistics = async (
     const daysActive = Math.max(
       1,
       Math.floor(
-        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-      )
+        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+      ),
     );
 
     if (
@@ -240,15 +240,15 @@ export const calculateTotalStatistics = async (
         period.billingCycle === "MONTHLY"
           ? 1
           : period.billingCycle === "QUARTERLY"
-          ? 3
-          : period.billingCycle === "BIANNUALLY"
-          ? 6
-          : 12;
+            ? 3
+            : period.billingCycle === "BIANNUALLY"
+              ? 6
+              : 12;
 
       const monthsInPeriod = differenceInMonths(periodEnd, periodStart);
       const cyclesInPeriod = Math.max(
         0,
-        Math.floor(monthsInPeriod / cycleMonths)
+        Math.floor(monthsInPeriod / cycleMonths),
       );
 
       totalRenewals += cyclesInPeriod;
@@ -257,7 +257,7 @@ export const calculateTotalStatistics = async (
         period.price,
         period.currency,
         defaultCurrency,
-        rates
+        rates,
       );
 
       const totalSpentInPeriod = cyclesInPeriod * convertedPrice;

@@ -1,7 +1,6 @@
-import { currencyEnum } from "@/schemas";
 import { z } from "zod";
-
-import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
+import type { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
+import { currencyEnum } from "@/schemas";
 
 export const billingCycleEnum = z.enum([
   "MONTHLY",

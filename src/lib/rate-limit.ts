@@ -41,11 +41,11 @@ export class MemoryRateLimiter implements RateLimiter {
       unit === "s"
         ? 1000
         : unit === "m"
-        ? 60 * 1000
-        : unit === "h"
-        ? 60 * 60 * 1000
-        : 1000;
-    this.windowMs = parseInt(amount) * multiplier;
+          ? 60 * 1000
+          : unit === "h"
+            ? 60 * 60 * 1000
+            : 1000;
+    this.windowMs = parseInt(amount, 10) * multiplier;
   }
 
   async limit(identifier: string): Promise<RateLimitResponse> {
@@ -59,7 +59,7 @@ export class MemoryRateLimiter implements RateLimiter {
     const record = this.store.get(identifier)!;
 
     record.timestamps = record.timestamps.filter(
-      (timestamp) => timestamp > windowStart
+      (timestamp) => timestamp > windowStart,
     );
 
     const isRateLimited = record.timestamps.length >= this.maxRequests;

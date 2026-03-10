@@ -114,25 +114,30 @@ export const errors = {
   },
   MIGRATION: {
     LOCK_ACQUISITION_FAILED: {
-      message: "Another migration is currently in progress. Please wait and try again.",
+      message:
+        "Another migration is currently in progress. Please wait and try again.",
     },
     DATABASE_CONNECTION_ERROR: {
-      message: "Failed to connect to database. Please check your configuration and try again.",
+      message:
+        "Failed to connect to database. Please check your configuration and try again.",
     },
     MIGRATION_FILE_NOT_FOUND: {
       message: "Migration file not found. Please check your migration files.",
     },
     MIGRATION_SQL_INVALID: {
-      message: "Invalid migration SQL syntax. Please check your migration file.",
+      message:
+        "Invalid migration SQL syntax. Please check your migration file.",
     },
     MIGRATION_ALREADY_APPLIED: {
       message: "Migration has already been applied to the database.",
     },
     MIGRATION_FAILED: {
-      message: "Migration failed to execute. Please check the migration SQL and try again.",
+      message:
+        "Migration failed to execute. Please check the migration SQL and try again.",
     },
     DATABASE_RESET_FAILED: {
-      message: "Failed to reset database. Please check your permissions and try again.",
+      message:
+        "Failed to reset database. Please check your permissions and try again.",
     },
     NO_MIGRATIONS_FOUND: {
       message: "No migration files found. Please create migration files first.",

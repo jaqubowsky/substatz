@@ -1,14 +1,14 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
+import { AlertCircle } from "lucide-react";
+import { Component, type ReactNode } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import * as Sentry from "@sentry/nextjs";
-import { AlertCircle } from "lucide-react";
-import { Component, ReactNode } from "react";
 import { RefreshButton } from "./refresh-button";
 
 interface ErrorBoundaryProps {

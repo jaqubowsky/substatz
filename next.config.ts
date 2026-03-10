@@ -1,6 +1,6 @@
-import { env } from "@/lib/env";
 import { withSentryConfig } from "@sentry/nextjs";
-import { NextConfig } from "next";
+import type { NextConfig } from "next";
+import { env } from "@/lib/env";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -16,10 +16,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  reactCompiler: true,
   experimental: {
     optimizePackageImports: ["lucide-react"],
-    reactCompiler: true,
-    useCache: true
+    useCache: true,
   },
   output: "standalone",
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],

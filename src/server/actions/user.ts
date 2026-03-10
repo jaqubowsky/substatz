@@ -6,7 +6,7 @@ import { ActionError, publicAction } from "@/lib/safe-action";
 import { verifyUserEmail } from "@/server/db/user";
 
 export const verifyEmailAction = publicAction
-  .schema(z.object({ token: z.string() }))
+  .inputSchema(z.object({ token: z.string() }))
   .action(async ({ parsedInput }) => {
     const { token } = parsedInput;
 

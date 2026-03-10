@@ -27,7 +27,7 @@ import { userDb } from "@/server";
 import { getUserByEmail } from "@/server/db/user";
 
 export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
-  .schema(registerSchema)
+  .inputSchema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
     const existingUser = await userDb.getUserByEmail(email);
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE.message);
@@ -46,7 +46,7 @@ export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
   });
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
-  .schema(loginSchema)
+  .inputSchema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
     const user = await getUserByEmail(email);
     if (!user) throw new ActionError(errors.AUTH.INVALID_CREDENTIALS.message);
@@ -88,9 +88,9 @@ export const googleLoginAction = publicAction.action(async () => {
 
 export const resendVerificationAction = publicActionWithLimiter(
   authRateLimiter,
-  "auth"
+  "auth",
 )
-  .schema(emailSchema)
+  .inputSchema(emailSchema)
   .action(async ({ parsedInput }) => {
     const { email } = parsedInput;
 
@@ -112,7 +112,7 @@ export const resendVerificationAction = publicActionWithLimiter(
     const emailResult = await sendVerificationEmail(
       result.email,
       result.name,
-      result.verificationToken
+      result.verificationToken,
     );
 
     if (!emailResult?.success) {
@@ -127,9 +127,9 @@ export const resendVerificationAction = publicActionWithLimiter(
 
 export const forgotPasswordAction = publicActionWithLimiter(
   authRateLimiter,
-  "auth"
+  "auth",
 )
-  .schema(emailSchema)
+  .inputSchema(emailSchema)
   .action(async ({ parsedInput }) => {
     const { email } = parsedInput;
 
@@ -150,7 +150,7 @@ export const forgotPasswordAction = publicActionWithLimiter(
     const emailResult = await sendPasswordResetEmail(
       result.email,
       result.name,
-      result.resetToken
+      result.resetToken,
     );
 
     if (!emailResult?.success) {
@@ -166,9 +166,9 @@ export const forgotPasswordAction = publicActionWithLimiter(
 
 export const resetPasswordAction = publicActionWithLimiter(
   authRateLimiter,
-  "auth"
+  "auth",
 )
-  .schema(resetPasswordSchema)
+  .inputSchema(resetPasswordSchema)
   .action(async ({ parsedInput }) => {
     const { token, password } = parsedInput;
 

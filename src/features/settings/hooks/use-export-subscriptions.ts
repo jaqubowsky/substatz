@@ -1,8 +1,8 @@
 "use client";
 
-import { exportSubscriptionsAction } from "@/features/settings/server/actions";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
+import { exportSubscriptionsAction } from "@/features/settings/server/actions";
 
 export function useExportSubscriptions() {
   const action = useAction(exportSubscriptionsAction, {
@@ -14,7 +14,7 @@ export function useExportSubscriptions() {
     onError: (error) => {
       toast.error(
         error.error.serverError ||
-          "Failed to export subscriptions. Please try again."
+          "Failed to export subscriptions. Please try again.",
       );
     },
   });

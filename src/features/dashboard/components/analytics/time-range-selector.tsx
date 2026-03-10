@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/ui/date-picker";
 import {
   Select,
@@ -8,9 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TimeRange } from "@/features/dashboard/lib";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
+import type { TimeRange } from "@/features/dashboard/lib";
 
 interface TimeRangeSelectorProps {
   timeRange: TimeRange;

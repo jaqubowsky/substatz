@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, ButtonProps } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { createCheckoutSessionAction } from "@/server/actions/subscription-plan";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export function PurchaseButton({ children, className, ...props }: ButtonProps) {
   const router = useRouter();

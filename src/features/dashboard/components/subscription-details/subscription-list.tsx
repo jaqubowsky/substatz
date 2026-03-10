@@ -1,3 +1,5 @@
+import { PlusCircle } from "lucide-react";
+import { Suspense } from "react";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import {
   Card,
@@ -5,13 +7,11 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
+import type { SubscriptionWithCurrentValues } from "@/features/dashboard/lib/subscription-utils";
 import { getSubscriptions } from "@/features/dashboard/server/queries";
-import { PlusCircle } from "lucide-react";
-import { Suspense } from "react";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { LoadingSubscriptionList } from "./loading-subscription-list";
 import { SubscriptionCard } from "./subscription-card";
-import { getServerAuth } from "@/hooks/get-server-auth";
-import { SubscriptionWithCurrentValues } from "@/features/dashboard/lib/subscription-utils";
 
 const SubscriptionListContent = async () => {
   const session = await getServerAuth();

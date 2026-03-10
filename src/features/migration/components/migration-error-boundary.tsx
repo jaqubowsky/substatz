@@ -1,9 +1,9 @@
 "use client";
 
-import { Component, ErrorInfo, ReactNode } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Props {
   children: ReactNode;
@@ -25,7 +25,11 @@ export class MigrationErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Migration error boundary caught an error:", error, errorInfo);
+    console.error(
+      "Migration error boundary caught an error:",
+      error,
+      errorInfo,
+    );
   }
 
   private handleRetry = () => {

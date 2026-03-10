@@ -1,5 +1,5 @@
+import type { BillingCycle, Currency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { BillingCycle, Currency } from "@prisma/client";
 
 export const getSubscriptionsByUserId = async (userId: string) => {
   "use cache";
@@ -35,7 +35,7 @@ export const getSubscriptionById = async (id: string) => {
 export async function createSubscription(
   userId: string,
   name: string,
-  startDate: Date
+  startDate: Date,
 ) {
   return prisma.subscription.create({
     data: {
@@ -53,7 +53,7 @@ export async function updateSubscription(
     name?: string;
     startDate?: Date;
     isCancelled?: boolean;
-  }
+  },
 ) {
   return prisma.subscription.update({
     where: { id: subscriptionId },
@@ -108,7 +108,7 @@ export const updateHistoricalPeriod = async (
     category?: string;
     effectiveFrom?: Date;
     effectiveTo?: Date | null;
-  }
+  },
 ) => {
   return prisma.subscriptionHistory.update({
     where: { id },

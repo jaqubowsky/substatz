@@ -1,9 +1,9 @@
-import {
-  Subscription,
-  SubscriptionHistory,
+import type {
   BillingCycle,
   Currency,
-} from "@prisma/client";
+  Subscription,
+  SubscriptionHistory,
+} from "@/generated/prisma/client";
 
 export type SubscriptionWithCurrentValues = Subscription & {
   history: SubscriptionHistory[];
@@ -20,7 +20,7 @@ export function getCurrentValues(subscription: SubscriptionWithCurrentValues) {
   const currentPeriod = subscription.history[0];
   if (!currentPeriod) {
     throw new Error(
-      `Subscription "${subscription.name}" (ID: ${subscription.id}) has no current pricing period. This is a data integrity issue - every subscription must have at least one active period.`
+      `Subscription "${subscription.name}" (ID: ${subscription.id}) has no current pricing period. This is a data integrity issue - every subscription must have at least one active period.`,
     );
   }
 
@@ -33,7 +33,7 @@ export function getCurrentValues(subscription: SubscriptionWithCurrentValues) {
 }
 
 export function toSubscriptionWithFinancials(
-  subscription: SubscriptionWithCurrentValues
+  subscription: SubscriptionWithCurrentValues,
 ): SubscriptionWithFinancials {
   return {
     ...subscription,

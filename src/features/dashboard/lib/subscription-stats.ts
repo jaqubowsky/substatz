@@ -1,8 +1,8 @@
-import { formatDuration } from "@/lib/billing-utils";
-import { Subscription, BillingCycle } from "@prisma/client";
 import { differenceInDays, differenceInMonths } from "date-fns";
-import { calculateNextPaymentDate } from "./calculate-next-payment-date";
+import type { BillingCycle, Subscription } from "@/generated/prisma/client";
+import { formatDuration } from "@/lib/billing-utils";
 import { prisma } from "@/lib/prisma";
+import { calculateNextPaymentDate } from "./calculate-next-payment-date";
 
 export interface SubscriptionStats {
   totalSpent: number;
@@ -20,16 +20,16 @@ export interface SubscriptionStats {
 function calculateCyclesInPeriod(
   periodStart: Date,
   periodEnd: Date,
-  billingCycle: BillingCycle
+  billingCycle: BillingCycle,
 ): number {
   const cycleMonths =
     billingCycle === "MONTHLY"
       ? 1
       : billingCycle === "QUARTERLY"
-      ? 3
-      : billingCycle === "BIANNUALLY"
-      ? 6
-      : 12;
+        ? 3
+        : billingCycle === "BIANNUALLY"
+          ? 6
+          : 12;
 
   const monthsInPeriod = differenceInMonths(periodEnd, periodStart);
   const cycles = Math.floor(monthsInPeriod / cycleMonths);
@@ -38,7 +38,7 @@ function calculateCyclesInPeriod(
 }
 
 export async function calculateSubscriptionStats(
-  subscription: Subscription
+  subscription: Subscription,
 ): Promise<SubscriptionStats> {
   const today = new Date();
 
@@ -76,7 +76,7 @@ export async function calculateSubscriptionStats(
     const cyclesInPeriod = calculateCyclesInPeriod(
       periodStart,
       periodEnd,
-      period.billingCycle
+      period.billingCycle,
     );
 
     totalRenewals += cyclesInPeriod;
@@ -90,7 +90,7 @@ export async function calculateSubscriptionStats(
 
   const nextPaymentDate = calculateNextPaymentDate(
     startDate,
-    currentBillingCycle
+    currentBillingCycle,
   );
 
   return {

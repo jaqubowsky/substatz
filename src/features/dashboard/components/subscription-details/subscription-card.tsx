@@ -1,3 +1,4 @@
+import { Calendar, CreditCard, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -5,16 +6,15 @@ import {
   formatCurrency,
   formatDate,
 } from "@/features/dashboard/lib";
-import { Calendar, CreditCard, Tag } from "lucide-react";
-import { SubscriptionDetailsButton } from "./subscription-details-button";
-import { SubscriptionCardActions } from "./subscription-card-actions";
-import { SubscriptionDetails } from "./subscription-details";
+import {
+  getCurrentValues,
+  type SubscriptionWithCurrentValues,
+} from "@/features/dashboard/lib/subscription-utils";
 import { SubscriptionHistoryButton } from "./history/subscription-history-button";
 import { SubscriptionHistoryWrapper } from "./history/subscription-history-wrapper";
-import {
-  SubscriptionWithCurrentValues,
-  getCurrentValues,
-} from "@/features/dashboard/lib/subscription-utils";
+import { SubscriptionCardActions } from "./subscription-card-actions";
+import { SubscriptionDetails } from "./subscription-details";
+import { SubscriptionDetailsButton } from "./subscription-details-button";
 
 interface SubscriptionCardProps {
   subscription: SubscriptionWithCurrentValues;
@@ -22,7 +22,7 @@ interface SubscriptionCardProps {
 
 const getStatusBadge = (
   subscription: SubscriptionWithCurrentValues,
-  nextPaymentDate: Date
+  nextPaymentDate: Date,
 ) => {
   if (subscription.isCancelled) {
     return <Badge variant="destructive">Cancelled</Badge>;
@@ -34,7 +34,7 @@ const getStatusBadge = (
   paymentDate.setHours(0, 0, 0, 0);
 
   const daysUntilPayment = Math.ceil(
-    (paymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (paymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   );
   if (daysUntilPayment < 0) {
     return <Badge variant="destructive">Overdue</Badge>;
@@ -60,7 +60,7 @@ export const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
 
   const nextPaymentDate = calculateNextPaymentDate(
     new Date(subscription.startDate),
-    currentValues.billingCycle
+    currentValues.billingCycle,
   );
 
   const formattedDate = formatDate(nextPaymentDate.toISOString());

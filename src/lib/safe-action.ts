@@ -1,15 +1,12 @@
-import { getServerAuth } from "@/hooks/get-server-auth";
 import * as Sentry from "@sentry/nextjs";
 import { createSafeActionClient } from "next-safe-action";
-import { zodAdapter } from "next-safe-action/adapters/zod";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { errors } from "./errorMessages";
-import { getIp, publicApiRateLimiter, RateLimiter } from "./rate-limit";
+import { getIp, publicApiRateLimiter, type RateLimiter } from "./rate-limit";
 
 export class ActionError extends Error {}
 
 export const action = createSafeActionClient({
-  validationAdapter: zodAdapter(),
-
   handleServerError: (e) => {
     if (e instanceof ActionError) return e.message;
 
@@ -49,7 +46,7 @@ export const publicAction = action.use(async ({ next }) => {
 
 export const publicActionWithLimiter = (
   limiter: RateLimiter,
-  customIdentifier?: string
+  customIdentifier?: string,
 ) =>
   action.use(async ({ next }) => {
     const ip = await getIp();

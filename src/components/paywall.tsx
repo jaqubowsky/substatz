@@ -1,7 +1,7 @@
-import { getServerAuth } from "@/hooks/get-server-auth";
-import { SubscriptionPlan } from "@prisma/client";
 import { LockIcon } from "lucide-react";
 import { Suspense } from "react";
+import { SubscriptionPlan } from "@/generated/prisma/client";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { PurchaseButton } from "./purchase-button";
 
 interface PaywallProps {
@@ -36,6 +36,12 @@ async function PaywallContent({ children }: PaywallProps) {
             plan. It&apos;s just $5 for lifetime access!
           </p>
           <PurchaseButton className="w-full">Unlock Now</PurchaseButton>
+          <div className="mt-3 rounded-md bg-amber-50 p-2 ring-1 ring-amber-200">
+            <p className="text-xs text-amber-700">
+              Demo — use card{" "}
+              <span className="font-mono">4242 4242 4242 4242</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

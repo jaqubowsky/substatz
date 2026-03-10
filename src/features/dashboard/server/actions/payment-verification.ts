@@ -1,18 +1,18 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { SubscriptionPlan } from "@/generated/prisma/client";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
 import { stripe } from "@/lib/stripe";
 import { updateUserPlan } from "@/server/db/subscription-plan";
-import { SubscriptionPlan } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
 
 export const verifyPaymentAction = privateAction
-  .schema(
+  .inputSchema(
     z.object({
       sessionId: z.string().optional(),
-    })
+    }),
   )
   .action(async ({ ctx, parsedInput }) => {
     const { session } = ctx;
@@ -24,17 +24,17 @@ export const verifyPaymentAction = privateAction
 
     if (!parsedInput.sessionId) {
       throw new ActionError(
-        errors.SUBSCRIPTION.CHECKOUT_SESSION_NOT_FOUND.message
+        errors.SUBSCRIPTION.CHECKOUT_SESSION_NOT_FOUND.message,
       );
     }
 
     const checkoutSession = await stripe.checkout.sessions.retrieve(
-      parsedInput.sessionId
+      parsedInput.sessionId,
     );
 
     if (checkoutSession.metadata?.userId !== userId) {
       throw new ActionError(
-        errors.SUBSCRIPTION.CHECKOUT_SESSION_NOT_BELONG_TO_USER.message
+        errors.SUBSCRIPTION.CHECKOUT_SESSION_NOT_BELONG_TO_USER.message,
       );
     }
 
@@ -42,14 +42,14 @@ export const verifyPaymentAction = privateAction
       throw new ActionError(
         errors.SUBSCRIPTION.PAYMENT_STATUS_IS.message.replace(
           "{{status}}",
-          checkoutSession.payment_status
-        )
+          checkoutSession.payment_status,
+        ),
       );
     }
 
     await updateUserPlan(
       checkoutSession.customer as string,
-      SubscriptionPlan.PAID
+      SubscriptionPlan.PAID,
     );
 
     revalidatePath("/dashboard");

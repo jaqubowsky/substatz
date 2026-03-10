@@ -1,16 +1,16 @@
-import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
-import { Separator } from "@/components/ui/separator";
-import { getSubscriptionSummary } from "@/features/dashboard/server/queries";
-import { formatCurrency } from "@/features/dashboard/lib";
-import { getServerAuth } from "@/hooks/get-server-auth";
 import { PieChart } from "lucide-react";
 import { Suspense } from "react";
+import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/features/dashboard/lib";
+import { getSubscriptionSummary } from "@/features/dashboard/server/queries";
+import { Currency } from "@/generated/prisma/client";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { MonthlySpendingCard } from "./monthly-spending-card";
 import { TopCategoriesList } from "./top-categories-list";
 import { UpcomingPaymentsList } from "./upcoming-payments-list";
 import { YearlySpendingCard } from "./yearly-spending-card";
-import { Currency } from "@prisma/client";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const LoadingSummary = () => {
   return (

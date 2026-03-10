@@ -1,13 +1,10 @@
 "use client";
 
-import { formatCurrency, formatCurrencyValue } from "@/features/dashboard/lib";
-import { Currency } from "@prisma/client";
 import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
   CartesianGrid,
-  Cell,
   Legend,
   Pie,
   PieChart,
@@ -16,7 +13,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatCurrency, formatCurrencyValue } from "@/features/dashboard/lib";
+import type { Currency } from "@/generated/prisma/client";
 import { CustomTooltip } from "./tooltip";
+
 const COLORS = [
   "#FF7A00",
   "#FF9A3D",
@@ -91,7 +91,10 @@ export const CategoryBreakdownChart = ({
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={data}
+            data={data.map((entry, index) => ({
+              ...entry,
+              fill: COLORS[index % COLORS.length],
+            }))}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -101,10 +104,10 @@ export const CategoryBreakdownChart = ({
             label={({
               cx,
               cy,
-              midAngle,
+              midAngle = 0,
               innerRadius,
               outerRadius,
-              percent,
+              percent = 0,
               name,
             }) => {
               const RADIAN = Math.PI / 180;
@@ -126,14 +129,7 @@ export const CategoryBreakdownChart = ({
                 </text>
               );
             }}
-          >
-            {data.map((_entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
+          />
           <Tooltip
             content={
               <CustomTooltip

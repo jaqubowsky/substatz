@@ -1,23 +1,22 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import {
+  createInitialHistory,
+  trackSubscriptionChanges,
+} from "@/features/dashboard/lib/history";
 import {
   addSubscriptionSchema,
   editSubscriptionSchema,
 } from "@/features/dashboard/schemas/subscription";
 import * as db from "@/features/dashboard/server/db/subscription";
+import { SubscriptionPlan } from "@/generated/prisma/client";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
-import { SubscriptionPlan } from "@prisma/client";
-
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import {
-  trackSubscriptionChanges,
-  createInitialHistory,
-} from "@/features/dashboard/lib/history";
 
 export const addSubscriptionAction = privateAction
-  .schema(addSubscriptionSchema)
+  .inputSchema(addSubscriptionSchema)
   .action(async ({ ctx, parsedInput }) => {
     const { name, price, currency, category, billingCycle, startDate } =
       parsedInput;
@@ -26,12 +25,12 @@ export const addSubscriptionAction = privateAction
 
     if (isFree) {
       const userSubscriptions = await db.getSubscriptionCountByUserId(
-        ctx.session.user.id
+        ctx.session.user.id,
       );
 
       if (userSubscriptions >= 1) {
         throw new ActionError(
-          "Free users can only create one subscription. Upgrade to the paid plan for unlimited subscriptions."
+          "Free users can only create one subscription. Upgrade to the paid plan for unlimited subscriptions.",
         );
       }
     }
@@ -39,7 +38,7 @@ export const addSubscriptionAction = privateAction
     const subscription = await db.createSubscription(
       ctx.session.user.id,
       name,
-      new Date(startDate)
+      new Date(startDate),
     );
 
     await createInitialHistory({
@@ -56,14 +55,9 @@ export const addSubscriptionAction = privateAction
   });
 
 export const updateSubscriptionAction = privateAction
-  .schema(editSubscriptionSchema)
+  .inputSchema(editSubscriptionSchema)
   .action(async ({ parsedInput }) => {
-    const {
-      id,
-      name,
-      startDate,
-      isCancelled,
-    } = parsedInput;
+    const { id, name, startDate, isCancelled } = parsedInput;
     if (!id) throw new ActionError(errors.SUBSCRIPTION.NO_SUBSCRIPTION.message);
 
     const originalSubscription = await db.getSubscriptionById(id);
@@ -85,7 +79,7 @@ export const updateSubscriptionAction = privateAction
   });
 
 export const removeSubscriptionAction = privateAction
-  .schema(z.object({ id: z.string() }))
+  .inputSchema(z.object({ id: z.string() }))
   .action(async ({ ctx, parsedInput }) => {
     const { user } = ctx.session;
 

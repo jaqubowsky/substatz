@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MigrationOutputProps {
   output: string;
@@ -7,7 +7,11 @@ interface MigrationOutputProps {
   isVisible: boolean;
 }
 
-export function MigrationOutput({ output, onClose, isVisible }: MigrationOutputProps) {
+export function MigrationOutput({
+  output,
+  onClose,
+  isVisible,
+}: MigrationOutputProps) {
   if (!isVisible || !output) return null;
 
   return (

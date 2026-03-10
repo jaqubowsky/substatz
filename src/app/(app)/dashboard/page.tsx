@@ -1,7 +1,7 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { Dashboard } from "@/features/dashboard/components/dashboard";
 import { getServerAuth } from "@/hooks/get-server-auth";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Dashboard",

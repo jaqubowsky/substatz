@@ -1,8 +1,8 @@
+import { Mail } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { LandingFooter } from "@/features/landing-page/components/landing-footer";
 import { LandingHeader } from "@/features/landing-page/components/landing-header";
-import { Mail } from "lucide-react";
-import { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contact Us - SubStatz",

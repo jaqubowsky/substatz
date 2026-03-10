@@ -1,7 +1,7 @@
+import { Shield } from "lucide-react";
+import type { Metadata } from "next";
 import { LandingFooter } from "@/features/landing-page/components/landing-footer";
 import { LandingHeader } from "@/features/landing-page/components/landing-header";
-import { Shield } from "lucide-react";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - SubStatz",

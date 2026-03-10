@@ -1,6 +1,6 @@
+import type { SubscriptionHistory } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { SubscriptionHistory } from "@prisma/client";
-import { calculateDayBefore, calculateDayAfter } from "./period-date-utils";
+import { calculateDayAfter, calculateDayBefore } from "./period-date-utils";
 
 export interface PeriodInput {
   effectiveFrom: Date;
@@ -10,7 +10,7 @@ export interface PeriodInput {
 export async function findOverlappingPeriods(
   subscriptionId: string,
   period: PeriodInput,
-  excludeId?: string
+  excludeId?: string,
 ): Promise<SubscriptionHistory[]> {
   const { effectiveFrom, effectiveTo } = period;
 
@@ -56,7 +56,7 @@ export async function resolveOverlaps(
     "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
   >,
   overlappingPeriods: SubscriptionHistory[],
-  newPeriod: PeriodInput
+  newPeriod: PeriodInput,
 ): Promise<void> {
   const { effectiveFrom, effectiveTo } = newPeriod;
 
@@ -99,7 +99,7 @@ export async function resolveOverlaps(
 export async function validateCurrentPeriodExists(
   subscriptionId: string,
   periodId: string | null,
-  newEffectiveTo: Date | null | undefined
+  newEffectiveTo: Date | null | undefined,
 ): Promise<void> {
   if (newEffectiveTo === null || newEffectiveTo === undefined) {
     return;
@@ -111,7 +111,7 @@ export async function validateCurrentPeriodExists(
 
   if (allPeriods.length === 1) {
     throw new Error(
-      "Cannot set an end date for the only period. The subscription must always have at least one current period."
+      "Cannot set an end date for the only period. The subscription must always have at least one current period.",
     );
   }
 
@@ -119,11 +119,11 @@ export async function validateCurrentPeriodExists(
     const existingPeriod = allPeriods.find((p) => p.id === periodId);
     if (existingPeriod?.effectiveTo === null) {
       const hasOtherCurrentPeriod = allPeriods.some(
-        (p) => p.id !== periodId && p.effectiveTo === null
+        (p) => p.id !== periodId && p.effectiveTo === null,
       );
       if (!hasOtherCurrentPeriod) {
         throw new Error(
-          "Cannot set an end date for this period as it's the only current period. Please create a new current period first."
+          "Cannot set an end date for this period as it's the only current period. Please create a new current period first.",
         );
       }
     }

@@ -1,6 +1,5 @@
-
+import type { Metadata } from "next";
 import { RegisterForm } from "@/features/auth";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Register",

@@ -16,3 +16,7 @@ runs:
     - name: Copy env variables
       run: cp .env.example .env
       shell: bash
+
+    - name: Generate Prisma client
+      run: npx prisma generate
+      shell: bash

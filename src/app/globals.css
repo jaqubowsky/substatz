@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
 
@@ -118,24 +118,24 @@
 }
 
 [data-radix-popper-content-wrapper] {
-  background-color: var(--color-popover) !important;
-  z-index: 50 !important;
+  background-color: var(--color-popover);
+  z-index: 50;
 }
 
 [data-radix-popper-content-wrapper] > * {
-  background-color: var(--color-popover) !important;
+  background-color: var(--color-popover);
 }
 
-[role="listbox"] {
-  background-color: var(--color-popover) !important;
+[role='listbox'] {
+  background-color: var(--color-popover);
 }
 
-[role="menu"] {
-  background-color: var(--color-popover) !important;
+[role='menu'] {
+  background-color: var(--color-popover);
 }
 
-[class*="bg-background/"] {
-  background-color: var(--color-background) !important;
+[class*='bg-background/'] {
+  background-color: var(--color-background);
 }
 
 @layer base {
