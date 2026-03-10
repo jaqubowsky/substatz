@@ -15,7 +15,7 @@ export const LandingPage = async () => {
   "use cache";
   cacheLife("days");
 
-  const baseUrl = env.BASE_URL || "https://substatz.me";
+  const baseUrl = env.BASE_URL;
 
   const websiteSchema = {
     "@context": "https://schema.org",

@@ -2,7 +2,6 @@ import "@/app/globals.css";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Suspense } from "react";
 import { Providers } from "@/app/providers";
 import { env } from "@/lib/env";
@@ -35,7 +34,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(env.BASE_URL || "https://substatz.me"),
+  metadataBase: new URL(env.BASE_URL),
   alternates: {
     canonical: "/",
     languages: {
@@ -95,16 +94,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {env.NODE_ENV === "production" && (
-          <Script
-            defer
-            src="https://umami.substatz.me/script.js"
-            data-website-id="f1413321-91d3-4f2f-923b-d80847578f82"
-            strategy="afterInteractive"
-          />
-        )}
-      </head>
+      <head />
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} min-h-screen bg-background font-sans antialiased`}
         style={{ scrollBehavior: "smooth" }}
