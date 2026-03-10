@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
 import { cacheLife, cacheTag } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
 export async function verifyUserEmail(token: string) {
   const verificationToken = await prisma.verificationToken.findFirst({

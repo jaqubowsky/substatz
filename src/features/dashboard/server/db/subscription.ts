@@ -1,6 +1,6 @@
+import { cacheLife, cacheTag } from "next/cache";
 import type { BillingCycle, Currency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { cacheLife, cacheTag } from "next/cache";
 
 export const getSubscriptionsByUserId = async (userId: string) => {
   "use cache";

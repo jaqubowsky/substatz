@@ -1,8 +1,8 @@
 "use server";
 
+import { cacheLife, cacheTag } from "next/cache";
 import { auth } from "@/auth";
 import { userDb } from "@/server";
-import { cacheLife, cacheTag } from "next/cache";
 
 export const getUserData = async (userId: string) => {
   "use cache";

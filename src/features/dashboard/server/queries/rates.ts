@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
+import { cacheLife, cacheTag } from "next/cache";
 import type { Currency } from "@/generated/prisma/client";
 import { getCurrencyRates } from "@/server/db/currency-rates";
-import { cacheLife, cacheTag } from "next/cache";
 
 export const fallbackExchangeRates: Record<Currency, number> = {
   USD: 1,
