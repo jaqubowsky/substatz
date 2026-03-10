@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = env.BASE_URL || "https://substatz.me";
+  const baseUrl = env.BASE_URL;
 
   const mainPages = [
     {
