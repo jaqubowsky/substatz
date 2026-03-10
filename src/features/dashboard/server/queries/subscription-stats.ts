@@ -1,21 +1,9 @@
 import { differenceInDays, differenceInMonths } from "date-fns";
+import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
+import type { SubscriptionStats } from "@/features/dashboard/schemas/subscription-stats";
 import type { BillingCycle, Subscription } from "@/generated/prisma/client";
 import { formatDuration } from "@/lib/billing-utils";
 import { prisma } from "@/lib/prisma";
-import { calculateNextPaymentDate } from "./calculate-next-payment-date";
-
-export interface SubscriptionStats {
-  totalSpent: number;
-  activeFor: {
-    days: number;
-    months: number;
-    years: number;
-    formatted: string;
-  };
-  renewalCount: number;
-  averageCostPerMonth: number;
-  nextPaymentDate: Date;
-}
 
 function calculateCyclesInPeriod(
   periodStart: Date,

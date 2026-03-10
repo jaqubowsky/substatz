@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Paywall } from "@/components/paywall";
 import { Card, CardContent } from "@/components/ui/card";
-import { calculateMonthlySpendingWithHistory } from "@/features/dashboard/lib/analytics";
 import {
   getSubscriptionSummary,
   getSubscriptions,
 } from "@/features/dashboard/server/queries";
+import { calculateMonthlySpendingWithHistory } from "@/features/dashboard/server/queries/analytics";
 import { getLatestExchangeRates } from "@/features/dashboard/server/queries/rates";
 import { Currency, SubscriptionPlan } from "@/generated/prisma/client";
 import { getServerAuth } from "@/hooks/get-server-auth";
@@ -23,7 +23,7 @@ const PlaceholderSkeleton = () => {
           <div key={i} className="bg-card rounded-lg shadow-sm p-6 h-32" />
         ))}
       </div>
-      <div className="bg-card rounded-lg shadow-sm p-6 h-[400px]" />
+      <div className="bg-card rounded-lg shadow-sm p-6 h-100" />
     </div>
   );
 };

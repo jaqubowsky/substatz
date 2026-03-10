@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { getServerAuth } from "@/hooks/get-server-auth";
 
 export const metadata: Metadata = {
@@ -7,11 +8,7 @@ export const metadata: Metadata = {
   description: "Sign in or register to manage your subscriptions",
 };
 
-export default async function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function AuthContent({ children }: { children: React.ReactNode }) {
   const session = await getServerAuth();
   if (session) redirect("/dashboard");
 
@@ -21,5 +18,17 @@ export default async function AuthLayout({
         {children}
       </main>
     </div>
+  );
+}
+
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense>
+      <AuthContent>{children}</AuthContent>
+    </Suspense>
   );
 }

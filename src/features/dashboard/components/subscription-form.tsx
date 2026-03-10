@@ -40,7 +40,7 @@ import {
   addSubscriptionAction,
   updateSubscriptionAction,
 } from "@/features/dashboard/server/actions";
-import { BillingCycle, Currency } from "@/generated/prisma/client";
+import { BillingCycle, Currency } from "@/generated/prisma/browser";
 import { currencySymbols } from "@/schemas";
 
 interface SubscriptionFormProps {

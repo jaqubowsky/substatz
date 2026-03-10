@@ -5,12 +5,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { calculateSubscriptionStats } from "@/features/dashboard/lib";
 import { generateSavingsOpportunities } from "@/features/dashboard/lib/savings-opportunities";
 import {
   getCurrentValues,
   type SubscriptionWithCurrentValues,
 } from "@/features/dashboard/lib/subscription-utils";
+import { calculateSubscriptionStats } from "@/features/dashboard/server/queries/subscription-stats";
 import { FinancialSummary } from "./financial-summary";
 import { RenewalHistory } from "./renewal-history";
 import { SavingsOpportunities } from "./savings-opportunities";

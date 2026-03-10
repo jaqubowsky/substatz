@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useCheckoutRedirect } from "@/features/settings/hooks";
-import { SubscriptionPlan } from "@/generated/prisma/client";
+import { SubscriptionPlan } from "@/generated/prisma/browser";
 import { ExportModal } from "./export-modal";
 
 interface ExportDataSectionProps {

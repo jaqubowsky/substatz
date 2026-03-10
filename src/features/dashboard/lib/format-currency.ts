@@ -1,4 +1,4 @@
-import { Currency } from "@/generated/prisma/client";
+import { Currency } from "@/generated/prisma/browser";
 
 export const formatCurrency = (
   amount: number,

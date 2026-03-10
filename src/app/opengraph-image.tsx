@@ -1,7 +1,10 @@
 import { ImageResponse } from "@vercel/og";
+import { connection } from "next/server";
 import { LogoSection } from "@/components/shared-image-components";
 
 export default async function Image() {
+  await connection();
+
   return new ImageResponse(
     <div
       style={{
