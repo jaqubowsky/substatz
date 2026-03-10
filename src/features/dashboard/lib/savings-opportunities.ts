@@ -1,5 +1,5 @@
 import type { SavingsOpportunity } from "@/features/dashboard/components/subscription-details/savings-opportunity-card";
-import { BillingCycle } from "@/generated/prisma/client";
+import { BillingCycle } from "@/generated/prisma/browser";
 
 import type { SubscriptionWithFinancials } from "./subscription-utils";
 

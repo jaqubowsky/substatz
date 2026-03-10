@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/navigation";
 import { getServerAuth } from "@/hooks/get-server-auth";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   description: "Track and manage all your subscriptions in one place",
 };
 
-export default async function AppLayout({
+async function AuthenticatedLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 inset-x-0 z-40 w-full border-b border-border bg-background backdrop-blur supports-[backdrop-filter]:bg-background/95">
+      <header className="sticky top-0 inset-x-0 z-40 w-full border-b border-border bg-background backdrop-blur supports-backdrop-filter:bg-background/95">
         <Header />
       </header>
       <main className="flex-1 flex flex-col bg-secondary/30">{children}</main>
@@ -34,5 +35,13 @@ export default async function AppLayout({
         <Footer />
       </footer>
     </div>
+  );
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense>
+      <AuthenticatedLayout>{children}</AuthenticatedLayout>
+    </Suspense>
   );
 }

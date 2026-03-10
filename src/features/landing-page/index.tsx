@@ -1,5 +1,6 @@
+import { cacheLife } from "next/cache";
 import { JsonLd } from "@/components/json-ld";
-import { Currency } from "@/generated/prisma/client";
+import { Currency } from "@/generated/prisma/browser";
 import { env } from "@/lib/env";
 import { FAQSection } from "./components";
 import { CTASection } from "./components/cta-section";
@@ -10,7 +11,10 @@ import { LandingHeader } from "./components/landing-header";
 import { PricingSection } from "./components/pricing-section";
 import { TestimonialsSection } from "./components/testimonials-section";
 
-export const LandingPage = () => {
+export const LandingPage = async () => {
+  "use cache";
+  cacheLife("days");
+
   const baseUrl = env.BASE_URL || "https://substatz.me";
 
   const websiteSchema = {

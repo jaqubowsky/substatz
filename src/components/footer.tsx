@@ -1,6 +1,9 @@
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 
-export function Footer() {
+export async function Footer() {
+  "use cache";
+  cacheLife("days");
   const currentYear = new Date().getFullYear();
 
   return (

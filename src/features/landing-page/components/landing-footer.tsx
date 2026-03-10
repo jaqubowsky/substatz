@@ -1,7 +1,11 @@
 import { ClipboardList } from "lucide-react";
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 
-export function LandingFooter() {
+export async function LandingFooter() {
+  "use cache";
+  cacheLife("days");
+
   const navigation = {
     product: [
       { name: "Features", href: "#features" },

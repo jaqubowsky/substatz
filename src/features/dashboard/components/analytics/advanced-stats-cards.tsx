@@ -12,10 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  calculateTotalStatistics,
-  formatCurrency,
-} from "@/features/dashboard/lib";
+import { formatCurrency } from "@/features/dashboard/lib";
+import { calculateTotalStatistics } from "@/features/dashboard/server/queries/analytics";
 import type { Currency, Subscription } from "@/generated/prisma/client";
 
 interface AdvancedStatsCardsProps {

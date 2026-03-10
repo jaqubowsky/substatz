@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 import { updateCurrencySchema } from "@/features/settings/schemas/currency";
 import { updateCurrencyAction } from "@/features/settings/server/actions";
-import { Currency } from "@/generated/prisma/client";
+import { Currency } from "@/generated/prisma/browser";
 import { currencySymbols } from "@/schemas";
 
 export const CurrencySettingsForm = ({
