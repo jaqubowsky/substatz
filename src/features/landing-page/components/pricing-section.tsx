@@ -88,6 +88,17 @@ export const PricingSection = () => {
                 <p className="mt-6 text-xs leading-5 text-accent-foreground">
                   Invoices and receipts available for easy company reimbursement
                 </p>
+                <div className="mt-4 rounded-md bg-amber-50 p-3 ring-1 ring-amber-200">
+                  <p className="text-xs font-medium text-amber-800">
+                    Demo Mode — Use test card:
+                  </p>
+                  <p className="mt-1 font-mono text-xs text-amber-700">
+                    4242 4242 4242 4242
+                  </p>
+                  <p className="mt-0.5 text-xs text-amber-600">
+                    Any future expiry, any CVC
+                  </p>
+                </div>
               </div>
             </div>
           </div>
