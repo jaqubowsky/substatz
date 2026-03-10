@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { updateCurrencySchema } from "@/features/settings/schemas/currency";
 import { exportSubscriptionSchema } from "@/features/settings/schemas/export";
 import { changePasswordSchema } from "@/features/settings/schemas/settings";
@@ -24,6 +24,7 @@ export const updateCurrencyAction = privateAction
 
     await updateUserCurrency(user.id, defaultCurrency);
 
+    revalidateTag(`user-${user.id}`, "max");
     revalidatePath("/settings");
     revalidatePath("/dashboard");
 

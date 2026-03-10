@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { cacheLife, cacheTag } from "next/cache";
 import type { Currency } from "@/generated/prisma/client";
 import { getCurrencyRates } from "@/server/db/currency-rates";
 
@@ -19,6 +20,8 @@ export const getLatestExchangeRates = async (): Promise<
   Record<Currency, number>
 > => {
   "use cache";
+  cacheLife("hours");
+  cacheTag("currency-rates");
 
   try {
     const dbRates = await getCurrencyRates();

@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { calculateNextPaymentDate } from "@/features/dashboard/lib/calculate-next-payment-date";
 import { convertCurrency } from "@/features/dashboard/lib/convert-currency";
 import type {
@@ -18,6 +19,8 @@ export interface SubscriptionSummary {
 
 export const getSubscriptions = async (userId: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscriptions-${userId}`);
 
   return db.getSubscriptionsByUserId(userId);
 };
@@ -26,8 +29,6 @@ export const getSubscriptionSummary = async (
   userId: string,
   defaultCurrency: Currency,
 ) => {
-  "use cache";
-
   const subscriptions = await getSubscriptions(userId);
   const rates = await getLatestExchangeRates();
 

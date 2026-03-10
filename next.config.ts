@@ -17,10 +17,11 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
+  cacheComponents: true,
   experimental: {
     optimizePackageImports: ["lucide-react"],
-    useCache: true,
   },
+  serverExternalPackages: ["mariadb"],
   output: "standalone",
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   poweredByHeader: false,
@@ -59,12 +60,12 @@ const nextConfig: NextConfig = {
             value:
               env.NODE_ENV === "production"
                 ? "default-src 'self'; " +
-                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleusercontent.com; " +
-                  "script-src-elem 'self' 'unsafe-inline' https://js.stripe.com https://umami.substatz.me https://accounts.google.com https://*.googleapis.com; " +
-                  "style-src 'self' 'unsafe-inline' https://substatz.me https://accounts.google.com https://fonts.googleapis.com; " +
-                  "img-src 'self' data: https://substatz.me https://umami.substatz.me https://*.stripe.com https://*.googleusercontent.com https://lh3.googleusercontent.com; " +
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://accounts.google.com https://*.googleusercontent.com; " +
+                  "script-src-elem 'self' 'unsafe-inline' https://js.stripe.com https://accounts.google.com https://*.googleapis.com; " +
+                  "style-src 'self' 'unsafe-inline' https://substatz.jnalewajk.me https://accounts.google.com https://fonts.googleapis.com; " +
+                  "img-src 'self' data: https://substatz.jnalewajk.me https://*.stripe.com https://*.googleusercontent.com https://lh3.googleusercontent.com; " +
                   "font-src 'self' data: https://fonts.gstatic.com; " +
-                  "connect-src 'self' https://api.stripe.com https://umami.substatz.me https://*.ingest.sentry.io https://accounts.google.com https://*.googleapis.com; " +
+                  "connect-src 'self' https://api.stripe.com https://*.ingest.sentry.io https://accounts.google.com https://*.googleapis.com; " +
                   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://accounts.google.com https://*.googleusercontent.com; " +
                   "object-src 'none'; " +
                   "worker-src 'self' blob:; " +
@@ -90,6 +91,4 @@ export default withSentryConfig(withBundleAnalyzer(nextConfig), {
   project: "substatz",
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  disableLogger: true,
-  automaticVercelMonitors: true,
 });

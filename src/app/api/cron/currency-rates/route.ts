@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { revalidateTag } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 import { fetchLatestExchangeRates } from "@/lib/currency-rates";
 import { env } from "@/lib/env";
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     await upsertCurrencyRates(rates);
+    revalidateTag("currency-rates", "max");
 
     return NextResponse.json({
       success: true,
