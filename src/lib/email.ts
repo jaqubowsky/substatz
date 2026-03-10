@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { transporter } from "@/server/mailer";
+import { resend } from "@/server/mailer";
 import { env } from "./env";
 
 type MailOptions = {
@@ -123,9 +123,15 @@ const styles = {
   `,
 };
 
-const sendMail = (mailOptions: MailOptions) => {
+const sendMail = async (mailOptions: MailOptions) => {
   try {
-    transporter.sendMail(mailOptions);
+    await resend.emails.send({
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      text: mailOptions.text,
+      html: mailOptions.html,
+    });
 
     return {
       success: true,
