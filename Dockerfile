@@ -1,7 +1,7 @@
 # Start with a minimal Alpine Linux
-FROM alpine:3.19 AS base
-# Install Node.js and only essential dependencies
-RUN apk add --no-cache nodejs-current icu-data-full npm libc6-compat
+FROM alpine:3.21 AS base
+# Install Node.js (22.x LTS) and only essential dependencies
+RUN apk add --no-cache nodejs icu-data-full npm libc6-compat
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -34,10 +34,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx prisma generate && npm run build
 
 # Final production stage with absolute minimal footprint
-FROM alpine:3.19 AS runner
+FROM alpine:3.21 AS runner
 
-# Install Node.js and npm (npm needed for prisma migrate deploy)
-RUN apk add --no-cache nodejs-current icu-data-full npm
+# Install Node.js (22.x LTS) and npm (npm needed for prisma migrate deploy)
+RUN apk add --no-cache nodejs icu-data-full npm
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs && \
