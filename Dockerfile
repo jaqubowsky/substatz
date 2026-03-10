@@ -2,7 +2,6 @@
 
 # Base stage with Node.js 22 LTS on Alpine
 FROM node:22-alpine AS base
-RUN apk add --no-cache libc6-compat
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -46,16 +45,15 @@ ENV HOSTNAME="0.0.0.0"
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy Prisma schema, migrations, config, and runtime dependencies
+# Copy Prisma schema, migrations, and config
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
-COPY --from=builder /app/node_modules/jiti ./node_modules/jiti
-COPY --from=builder /app/node_modules/mariadb ./node_modules/mariadb
+
+# Install prisma CLI with all its dependencies for migrate deploy
+COPY --from=builder /app/package.json ./package.json
+RUN npm install prisma --no-package-lock
 
 USER nextjs
 EXPOSE 3000
 
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
