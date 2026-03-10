@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  verify:
+  pr-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
