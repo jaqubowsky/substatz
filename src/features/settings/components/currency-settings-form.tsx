@@ -1,5 +1,9 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { DollarSign, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,12 +30,8 @@ import {
 } from "@/components/ui/select";
 import { updateCurrencySchema } from "@/features/settings/schemas/currency";
 import { updateCurrencyAction } from "@/features/settings/server/actions";
+import { Currency } from "@/generated/prisma/client";
 import { currencySymbols } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { Currency } from "@prisma/client";
-import { DollarSign, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 export const CurrencySettingsForm = ({
   defaultCurrency,
@@ -48,7 +48,7 @@ export const CurrencySettingsForm = ({
         },
         onError: (error) => {
           toast.error(
-            error.error.serverError || "Failed to update default currency."
+            error.error.serverError || "Failed to update default currency.",
           );
         },
       },
@@ -57,7 +57,7 @@ export const CurrencySettingsForm = ({
           defaultCurrency: defaultCurrency || Currency.USD,
         },
       },
-    }
+    },
   );
 
   return (

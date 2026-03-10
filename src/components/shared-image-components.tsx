@@ -117,7 +117,7 @@ export const BaseContainer = ({
   height?: number;
   isSquare?: boolean;
 }) => {
-  const borderRadius = isSquare ? width * 0.12 + "px" : baseStyles.radii.sm;
+  const borderRadius = isSquare ? `${width * 0.12}px` : baseStyles.radii.sm;
 
   return (
     <div

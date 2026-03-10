@@ -1,6 +1,6 @@
-import { getCurrencyRates } from "@/server/db/currency-rates";
-import { Currency } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
+import type { Currency } from "@/generated/prisma/client";
+import { getCurrencyRates } from "@/server/db/currency-rates";
 
 export const fallbackExchangeRates: Record<Currency, number> = {
   USD: 1,

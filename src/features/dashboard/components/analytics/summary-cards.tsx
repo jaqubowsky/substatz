@@ -1,3 +1,4 @@
+import { CreditCard, DollarSign, Layers } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -6,8 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatCurrency } from "@/features/dashboard/lib";
-import { Currency } from "@prisma/client";
-import { CreditCard, DollarSign, Layers } from "lucide-react";
+import type { Currency } from "@/generated/prisma/client";
 
 export interface SubscriptionSummaryCardsProps {
   activeSubscriptions: number;

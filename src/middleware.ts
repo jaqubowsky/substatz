@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
+import { type NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 import authConfig from "./auth.config";
 import { getIp, publicApiRateLimiter } from "./lib/rate-limit";
 
@@ -32,7 +32,7 @@ export default auth(async function middleware(request: NextRequest) {
           "Content-Type": "application/json",
           ...headers,
         },
-      }
+      },
     );
   }
 

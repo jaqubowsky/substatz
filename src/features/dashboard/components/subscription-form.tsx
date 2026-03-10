@@ -1,5 +1,15 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import {
+  CalendarIcon,
+  CreditCard,
+  DollarSign,
+  Loader2,
+  Tag,
+} from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
@@ -19,9 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 import {
+  type AddSubscriptionValues,
   addSubscriptionSchema,
-  AddSubscriptionValues,
   editSubscriptionSchema,
   SUB_CATEGORIES,
 } from "@/features/dashboard/schemas";
@@ -29,20 +40,8 @@ import {
   addSubscriptionAction,
   updateSubscriptionAction,
 } from "@/features/dashboard/server/actions";
+import { BillingCycle, Currency } from "@/generated/prisma/client";
 import { currencySymbols } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { BillingCycle, Currency } from "@prisma/client";
-import {
-  CalendarIcon,
-  CreditCard,
-  DollarSign,
-  Loader2,
-  Tag,
-} from "lucide-react";
-import { toast } from "sonner";
-
-import { SubscriptionWithFinancials } from "@/features/dashboard/lib/subscription-utils";
 
 interface SubscriptionFormProps {
   initialSubscription?: Partial<SubscriptionWithFinancials>;
@@ -89,7 +88,7 @@ export function SubscriptionForm({
           toast.success(
             isEditMode
               ? "Subscription updated successfully."
-              : "Subscription added successfully."
+              : "Subscription added successfully.",
           );
           onSuccess?.();
         },
@@ -98,14 +97,14 @@ export function SubscriptionForm({
             error.error.serverError ||
               (isEditMode
                 ? "Failed to update subscription."
-                : "Failed to add subscription.")
+                : "Failed to add subscription."),
           );
         },
       },
       formProps: {
         defaultValues,
       },
-    }
+    },
   );
 
   const submitButtonText = isEditMode

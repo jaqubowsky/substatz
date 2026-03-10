@@ -1,5 +1,5 @@
-import { transporter } from "@/server/mailer";
 import * as Sentry from "@sentry/nextjs";
+import { transporter } from "@/server/mailer";
 import { env } from "./env";
 
 type MailOptions = {
@@ -141,7 +141,7 @@ const sendMail = (mailOptions: MailOptions) => {
 export async function sendVerificationEmail(
   email: string,
   name: string,
-  verificationToken: string
+  verificationToken: string,
 ) {
   const verificationUrl = `${env.BASE_URL}/api/auth/verify-email?token=${verificationToken}`;
 
@@ -171,8 +171,8 @@ The SubStatz Team`,
 
         <div style="${styles.content}">
           <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
-      name || "there"
-    } 👋</h2>
+            name || "there"
+          } 👋</h2>
 
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
@@ -219,18 +219,18 @@ The SubStatz Team`,
               <a href="${
                 env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Website</a>
+                styles.linkText
+              }">Website</a>
               <a href="${
                 env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Help Center</a>
+                styles.linkText
+              }">Help Center</a>
               <a href="${
                 env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Contact Us</a>
+                styles.linkText
+              }">Contact Us</a>
             </div>
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
@@ -340,18 +340,18 @@ The SubStatz Team`,
               <a href="${
                 env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Website</a>
+                styles.linkText
+              }">Website</a>
               <a href="${
                 env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Help Center</a>
+                styles.linkText
+              }">Help Center</a>
               <a href="${
                 env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Contact Us</a>
+                styles.linkText
+              }">Contact Us</a>
             </div>
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
@@ -369,7 +369,7 @@ The SubStatz Team`,
 export async function sendPasswordResetEmail(
   email: string,
   name: string,
-  resetToken: string
+  resetToken: string,
 ) {
   const resetUrl = `${env.BASE_URL}/reset-password?token=${resetToken}`;
 
@@ -401,8 +401,8 @@ The SubStatz Team`,
 
         <div style="${styles.content}">
           <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
-      name || "there"
-    } 👋</h2>
+            name || "there"
+          } 👋</h2>
 
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
@@ -438,18 +438,18 @@ The SubStatz Team`,
               <a href="${
                 env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Website</a>
+                styles.linkText
+              }">Website</a>
               <a href="${
                 env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Help Center</a>
+                styles.linkText
+              }">Help Center</a>
               <a href="${
                 env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Contact Us</a>
+                styles.linkText
+              }">Contact Us</a>
             </div>
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
@@ -466,7 +466,7 @@ The SubStatz Team`,
 
 export async function sendSubscriptionThankYouEmail(
   email: string,
-  name: string
+  name: string,
 ) {
   const mailOptions = {
     from: env.EMAIL_FROM,
@@ -499,8 +499,8 @@ The SubStatz Team`,
 
         <div style="${styles.content}">
           <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
-      name || "there"
-    } 👋</h2>
+            name || "there"
+          } 👋</h2>
 
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
@@ -583,18 +583,18 @@ The SubStatz Team`,
               <a href="${
                 env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Website</a>
+                styles.linkText
+              }">Website</a>
               <a href="${
                 env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Help Center</a>
+                styles.linkText
+              }">Help Center</a>
               <a href="${
                 env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Contact Us</a>
+                styles.linkText
+              }">Contact Us</a>
             </div>
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
@@ -680,18 +680,18 @@ The SubStatz Team`,
               <a href="${
                 env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Website</a>
+                styles.linkText
+              }">Website</a>
               <a href="${
                 env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Help Center</a>
+                styles.linkText
+              }">Help Center</a>
               <a href="${
                 env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Contact Us</a>
+                styles.linkText
+              }">Contact Us</a>
             </div>
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${
@@ -734,8 +734,8 @@ The SubStatz Team`,
 
         <div style="${styles.content}">
           <h2 style="color: ${colors.textDark}; margin-top: 0;">Hey ${
-      name || "there"
-    } 👋</h2>
+            name || "there"
+          } 👋</h2>
 
           <p style="font-size: 16px; line-height: 1.6; color: ${
             colors.textDark
@@ -776,18 +776,18 @@ The SubStatz Team`,
               <a href="${
                 env.BASE_URL
               }" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Website</a>
+                styles.linkText
+              }">Website</a>
               <a href="${
                 env.BASE_URL
               }/help" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Help Center</a>
+                styles.linkText
+              }">Help Center</a>
               <a href="${
                 env.BASE_URL
               }/contact" style="display: inline-block; margin: 0 10px; ${
-      styles.linkText
-    }">Contact Us</a>
+                styles.linkText
+              }">Contact Us</a>
             </div>
 
             <p style="font-size: 12px; margin-top: 20px; text-align: center; color: ${

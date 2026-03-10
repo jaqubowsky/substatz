@@ -1,3 +1,4 @@
+import { Sparkles } from "lucide-react";
 import { PurchaseButton } from "@/components/purchase-button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,12 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
-import { Sparkles } from "lucide-react";
-import { RefundButton } from "./refund-button";
 import { BillingFeatures } from "./billing-features";
+import { RefundButton } from "./refund-button";
 
 export async function Billing({ isPro }: { isPro: boolean }) {
-  
   const planDetails = {
     free: {
       name: "Free",
@@ -64,7 +63,7 @@ export async function Billing({ isPro }: { isPro: boolean }) {
               variant={currentPlan.badgeVariant}
               className={cn(
                 "px-2 py-0.5 text-xs",
-                isPro ? "bg-primary/10 hover:bg-primary/20 text-primary" : ""
+                isPro ? "bg-primary/10 hover:bg-primary/20 text-primary" : "",
               )}
             >
               Active

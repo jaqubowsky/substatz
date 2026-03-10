@@ -1,11 +1,11 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SubscriptionHistory } from "@prisma/client";
 import { formatCurrency, formatDate } from "@/features/dashboard/lib";
-import { Pencil, Trash2 } from "lucide-react";
+import type { SubscriptionHistory } from "@/generated/prisma/client";
 
 interface SubscriptionHistoryCardProps {
   history: SubscriptionHistory;

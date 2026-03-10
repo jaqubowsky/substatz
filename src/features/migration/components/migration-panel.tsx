@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -7,12 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MigrationList } from "./migration-list";
+import type { MigrationStatus } from "@/features/migration/schemas/migration";
 import { MigrationActions } from "./migration-actions.client";
 import { MigrationErrorBoundary } from "./migration-error-boundary";
+import { MigrationList } from "./migration-list";
 import { MigrationLoadingState } from "./migration-loading-state";
-import { MigrationStatus } from "@/features/migration/schemas/migration";
-import { Suspense } from "react";
 
 interface MigrationPanelProps {
   initialStatus: MigrationStatus;

@@ -1,10 +1,10 @@
 "use client";
 
+import { Info } from "lucide-react";
+import { type ReactNode, Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Info } from "lucide-react";
-import { ReactNode, Suspense, useState } from "react";
 
 interface SubscriptionDetailsButtonProps {
   children: ReactNode;

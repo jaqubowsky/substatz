@@ -1,8 +1,8 @@
+import { Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency, formatDate } from "@/features/dashboard/lib";
-import { UpcomingPayment } from "@/features/dashboard/schemas/subscription";
-import { Currency } from "@prisma/client";
-import { Calendar } from "lucide-react";
+import type { UpcomingPayment } from "@/features/dashboard/schemas/subscription";
+import type { Currency } from "@/generated/prisma/client";
 
 interface UpcomingPaymentsListProps {
   upcomingPayments: UpcomingPayment[];

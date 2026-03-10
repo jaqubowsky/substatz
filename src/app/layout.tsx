@@ -1,10 +1,10 @@
 import "@/app/globals.css";
-import { Providers } from "@/app/providers";
-import { env } from "@/lib/env";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
-import { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Providers } from "@/app/providers";
+import { env } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: {

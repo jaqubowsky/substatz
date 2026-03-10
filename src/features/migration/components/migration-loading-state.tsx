@@ -1,12 +1,14 @@
+import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Loader2 } from "lucide-react";
 
 interface MigrationLoadingStateProps {
   type?: "list" | "panel" | "actions";
 }
 
-export function MigrationLoadingState({ type = "panel" }: MigrationLoadingStateProps) {
+export function MigrationLoadingState({
+  type = "panel",
+}: MigrationLoadingStateProps) {
   if (type === "list") {
     return (
       <div className="space-y-3">

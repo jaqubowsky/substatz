@@ -1,19 +1,19 @@
+import { Suspense } from "react";
 import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import { Paywall } from "@/components/paywall";
+import { Card, CardContent } from "@/components/ui/card";
+import { calculateMonthlySpendingWithHistory } from "@/features/dashboard/lib/analytics";
 import {
-  getSubscriptions,
   getSubscriptionSummary,
+  getSubscriptions,
 } from "@/features/dashboard/server/queries";
 import { getLatestExchangeRates } from "@/features/dashboard/server/queries/rates";
+import { Currency, SubscriptionPlan } from "@/generated/prisma/client";
 import { getServerAuth } from "@/hooks/get-server-auth";
-import { Currency, SubscriptionPlan } from "@prisma/client";
-import { Suspense } from "react";
+import { AdvancedStatsCards } from "./advanced-stats-cards";
 import { AnalyticsContent } from "./analytics-content.client";
 import { LoadingAnalytics } from "./loading-analytics";
 import { SubscriptionSummaryCards } from "./summary-cards";
-import { Card, CardContent } from "@/components/ui/card";
-import { AdvancedStatsCards } from "./advanced-stats-cards";
-import { calculateMonthlySpendingWithHistory } from "@/features/dashboard/lib/analytics";
 
 const PlaceholderSkeleton = () => {
   return (
@@ -52,13 +52,13 @@ const AnalyticsTabContent = async () => {
   const { totalMonthly, totalYearly, categoriesBreakdown } = summary;
 
   const activeSubscriptions = subscriptions.filter(
-    (s) => !s.isCancelled
+    (s) => !s.isCancelled,
   ).length;
 
   const monthlySpendingData = await calculateMonthlySpendingWithHistory(
     subscriptions,
     defaultCurrency,
-    rates
+    rates,
   );
 
   return (

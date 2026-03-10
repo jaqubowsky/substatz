@@ -1,3 +1,4 @@
+import { Lightbulb } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -5,12 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Currency } from "@prisma/client";
-import { Lightbulb } from "lucide-react";
+import type { Currency } from "@/generated/prisma/client";
 import {
-  SavingsOpportunity,
+  type SavingsOpportunity,
   SavingsOpportunityCard,
 } from "./savings-opportunity-card";
+
 interface SavingsOpportunitiesProps {
   savingsOpportunities: SavingsOpportunity[];
   currency: Currency;

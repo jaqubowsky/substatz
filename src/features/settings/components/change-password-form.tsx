@@ -1,5 +1,8 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,13 +21,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  ChangePasswordFormValues,
+  type ChangePasswordFormValues,
   changePasswordSchema,
 } from "@/features/settings/schemas/settings";
 import { changePasswordAction } from "@/features/settings/server/actions";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { toast } from "sonner";
 
 const defaultValues: ChangePasswordFormValues = {
   currentPassword: "",
@@ -50,7 +50,7 @@ export function ChangePasswordForm() {
       formProps: {
         defaultValues,
       },
-    }
+    },
   );
   return (
     <Card>

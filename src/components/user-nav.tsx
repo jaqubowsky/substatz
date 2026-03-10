@@ -1,5 +1,8 @@
 "use client";
 
+import { Settings, ShieldAlert, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LogoutButton } from "@/components/logout-button.client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,9 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useClientAuth } from "@/hooks";
 import { cn } from "@/lib/cn";
-import { Settings, ShieldAlert, User } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 
 export function UserNav() {
@@ -65,7 +65,7 @@ export function UserNav() {
         asChild
         className={cn(
           "flex items-center",
-          isActive("/dashboard") && "bg-primary text-primary-foreground"
+          isActive("/dashboard") && "bg-primary text-primary-foreground",
         )}
       >
         <Link href="/dashboard">
@@ -79,7 +79,7 @@ export function UserNav() {
         asChild
         className={cn(
           "flex items-center",
-          isActive("/settings") && "bg-primary text-primary-foreground"
+          isActive("/settings") && "bg-primary text-primary-foreground",
         )}
       >
         <Link href="/settings">
@@ -94,7 +94,7 @@ export function UserNav() {
           asChild
           className={cn(
             "flex items-center",
-            isActive("/admin") && "bg-primary text-primary-foreground"
+            isActive("/admin") && "bg-primary text-primary-foreground",
           )}
         >
           <Link href="/admin">

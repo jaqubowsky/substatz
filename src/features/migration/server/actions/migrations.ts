@@ -1,14 +1,14 @@
 "use server";
 
-import { adminAction, ActionError } from "@/lib/safe-action";
-import { errors } from "@/lib/errorMessages";
-import { revalidatePath } from "next/cache";
-import { MigrationEngine } from "@/features/migration/server/lib/migration-engine";
-import { migrationActionSchema } from "@/features/migration/schemas/migration";
 import * as Sentry from "@sentry/nextjs";
+import { revalidatePath } from "next/cache";
+import { migrationActionSchema } from "@/features/migration/schemas/migration";
+import { MigrationEngine } from "@/features/migration/server/lib/migration-engine";
+import { errors } from "@/lib/errorMessages";
+import { ActionError, adminAction } from "@/lib/safe-action";
 
 export const deployMigrations = adminAction
-  .schema(migrationActionSchema.pick({ action: true }))
+  .inputSchema(migrationActionSchema.pick({ action: true }))
   .action(async ({ parsedInput: { action } }) => {
     if (action !== "deploy") {
       throw new ActionError(errors.GENERAL.VALIDATION_ERROR.message);
@@ -34,7 +34,9 @@ export const deployMigrations = adminAction
   });
 
 export const rollbackMigration = adminAction
-  .schema(migrationActionSchema.pick({ action: true, migrationName: true }))
+  .inputSchema(
+    migrationActionSchema.pick({ action: true, migrationName: true }),
+  )
   .action(async ({ parsedInput: { action, migrationName } }) => {
     if (action !== "rollback") {
       throw new ActionError(errors.GENERAL.VALIDATION_ERROR.message);
@@ -55,7 +57,7 @@ export const rollbackMigration = adminAction
   });
 
 export const getMigrationStatusAction = adminAction
-  .schema(migrationActionSchema.pick({ action: true }))
+  .inputSchema(migrationActionSchema.pick({ action: true }))
   .action(async ({ parsedInput: { action } }) => {
     if (action !== "status") {
       throw new ActionError(errors.GENERAL.VALIDATION_ERROR.message);

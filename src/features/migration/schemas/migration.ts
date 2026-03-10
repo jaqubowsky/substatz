@@ -25,15 +25,17 @@ export const migrationFileSchema = z.object({
 });
 
 export const migrationStatusSchema = z.object({
-  migrations: z.array(z.object({
-    name: z.string(),
-    path: z.string(),
-    applied: z.boolean(),
-    timestamp: z.string(),
-    description: z.string(),
-    checksum: z.string(),
-    sqlContent: z.string(),
-  })),
+  migrations: z.array(
+    z.object({
+      name: z.string(),
+      path: z.string(),
+      applied: z.boolean(),
+      timestamp: z.string(),
+      description: z.string(),
+      checksum: z.string(),
+      sqlContent: z.string(),
+    }),
+  ),
   pendingCount: z.number(),
   appliedCount: z.number(),
   databaseUpToDate: z.boolean(),

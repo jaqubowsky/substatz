@@ -1,9 +1,9 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Clock, FileText } from "lucide-react";
 import { memo, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Migration {
   name: string;
@@ -18,13 +18,18 @@ interface MigrationListProps {
 
 function formatDate(timestamp: string): string {
   try {
-    const date = new Date(timestamp.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3 $4:$5:$6'));
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    const date = new Date(
+      timestamp.replace(
+        /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
+        "$1-$2-$3 $4:$5:$6",
+      ),
+    );
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return timestamp;
@@ -32,7 +37,10 @@ function formatDate(timestamp: string): string {
 }
 
 const MigrationItem = memo(({ migration }: { migration: Migration }) => {
-  const formattedDate = useMemo(() => formatDate(migration.timestamp), [migration.timestamp]);
+  const formattedDate = useMemo(
+    () => formatDate(migration.timestamp),
+    [migration.timestamp],
+  );
 
   return (
     <Card className="transition-colors hover:bg-muted/50">
@@ -47,9 +55,7 @@ const MigrationItem = memo(({ migration }: { migration: Migration }) => {
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium truncate">
-                {migration.name}
-              </p>
+              <p className="text-sm font-medium truncate">{migration.name}</p>
               <p className="text-xs text-muted-foreground">
                 {migration.description || "No description"}
               </p>

@@ -1,11 +1,15 @@
-name: Pull Request
+name: CI
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  pr-check:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -14,11 +18,11 @@ jobs:
       - name: Setup Project
         uses: ./.github/actions/setup-project
 
+      - name: Verify Project
+        uses: ./.github/actions/verify-project
+
       - name: Check Outdated Dependencies
         uses: ./.github/actions/deps-outdated
 
       - name: Check Critical Dependencies
         uses: ./.github/actions/deps-audit
-
-      - name: Verify Project
-        uses: ./.github/actions/verify-project

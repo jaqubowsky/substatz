@@ -1,3 +1,4 @@
+import { DollarSign, HelpCircle } from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -9,7 +10,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { DollarSign, HelpCircle } from "lucide-react";
 
 export function YearlySpendingCard({
   totalSpending,

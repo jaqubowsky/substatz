@@ -1,16 +1,21 @@
-import { MigrationFile, MigrationResult } from "@/features/migration/schemas/migration";
+import * as Sentry from "@sentry/nextjs";
+import type {
+  MigrationFile,
+  MigrationResult,
+} from "@/features/migration/schemas/migration";
 import * as dbOperations from "@/features/migration/server/db/migration";
 import { MigrationReader } from "@/features/migration/server/lib/migration-reader";
-import * as Sentry from "@sentry/nextjs";
 
 export class MigrationExecutor {
   static async executeMigration(
-    migration: MigrationFile
+    migration: MigrationFile,
   ): Promise<MigrationResult> {
     const startTime = Date.now();
 
     try {
-      const migrationSql = await MigrationReader.readMigrationSql(migration.path);
+      const migrationSql = await MigrationReader.readMigrationSql(
+        migration.path,
+      );
       const statements = MigrationReader.splitSqlStatements(migrationSql);
 
       await dbOperations.executeMigrationSql(statements);
@@ -20,7 +25,7 @@ export class MigrationExecutor {
       await dbOperations.recordMigration(
         migration.name,
         migration.checksum,
-        executionTime
+        executionTime,
       );
 
       return {
@@ -39,7 +44,7 @@ export class MigrationExecutor {
       await dbOperations.recordFailedMigration(
         migration.name,
         migration.checksum,
-        errorMessage
+        errorMessage,
       );
 
       Sentry.captureException(error, {

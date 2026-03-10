@@ -1,10 +1,10 @@
-import { Currency } from "@prisma/client";
+import type { Currency } from "@/generated/prisma/client";
 
 export const convertCurrency = (
   amount: number,
   fromCurrency: Currency,
   toCurrency: Currency,
-  rates: Record<Currency, number>
+  rates: Record<Currency, number>,
 ): number => {
   if (fromCurrency === toCurrency) return amount;
 

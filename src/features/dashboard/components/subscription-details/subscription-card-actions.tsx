@@ -1,5 +1,10 @@
 "use client";
 
+import { AlertTriangle, Edit, MoreVertical, Trash } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useAction } from "next-safe-action/hooks";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import {
@@ -16,17 +21,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { removeSubscriptionAction } from "@/features/dashboard/server/actions";
-import { AlertTriangle, Edit, MoreVertical, Trash } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { useState } from "react";
-import { toast } from "sonner";
-import dynamic from "next/dynamic";
 import { SubscriptionFormLoading } from "@/features/dashboard/components/subscription-form-loading";
 import {
-  SubscriptionWithCurrentValues,
   getCurrentValues,
+  type SubscriptionWithCurrentValues,
 } from "@/features/dashboard/lib/subscription-utils";
+import { removeSubscriptionAction } from "@/features/dashboard/server/actions";
 
 interface SubscriptionCardActionsProps {
   subscription: SubscriptionWithCurrentValues;
@@ -36,7 +36,7 @@ const DynamicSubscriptionForm = dynamic(
   () => import("../subscription-form").then((mod) => mod.SubscriptionForm),
   {
     loading: () => <SubscriptionFormLoading />,
-  }
+  },
 );
 
 export const SubscriptionCardActions = ({

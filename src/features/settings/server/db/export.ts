@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 export async function getFilteredSubscriptions(
   userId: string,
   dateFrom: Date | null,
-  dateTo: Date | null
+  dateTo: Date | null,
 ) {
   "use cache";
 

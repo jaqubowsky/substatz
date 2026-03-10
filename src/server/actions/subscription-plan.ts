@@ -1,5 +1,6 @@
 "use server";
 
+import { SubscriptionPlan } from "@/generated/prisma/client";
 import { env } from "@/lib/env";
 import { errors } from "@/lib/errorMessages";
 import { ActionError, privateAction } from "@/lib/safe-action";
@@ -8,7 +9,6 @@ import {
   getUserWithPlan,
   updateStripeCustomerId,
 } from "@/server/db/subscription-plan";
-import { SubscriptionPlan } from "@prisma/client";
 
 export const createCheckoutSessionAction = privateAction.action(
   async ({ ctx }) => {
@@ -65,5 +65,5 @@ export const createCheckoutSessionAction = privateAction.action(
     });
 
     return { url: checkoutSession.url };
-  }
+  },
 );

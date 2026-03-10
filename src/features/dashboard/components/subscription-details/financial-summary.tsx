@@ -1,7 +1,7 @@
+import { DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/features/dashboard/lib";
-import { BillingCycle, Currency } from "@prisma/client";
-import { DollarSign } from "lucide-react";
+import type { BillingCycle, Currency } from "@/generated/prisma/client";
 
 interface FinancialSummaryProps {
   price: number;

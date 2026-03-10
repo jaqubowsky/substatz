@@ -1,5 +1,8 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
+import { AlertTriangle } from "lucide-react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,9 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { env } from "@/lib/env";
-import * as Sentry from "@sentry/nextjs";
-import { AlertTriangle } from "lucide-react";
-import { useEffect } from "react";
 
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };

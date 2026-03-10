@@ -1,5 +1,12 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,17 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  ResetPasswordFormValues,
+  type ResetPasswordFormValues,
   resetPasswordSchema,
 } from "@/features/auth/schemas";
 import { resetPasswordAction } from "@/features/auth/server/actions";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { toast } from "sonner";
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -57,7 +57,7 @@ export function ResetPasswordForm() {
       formProps: {
         defaultValues,
       },
-    }
+    },
   );
 
   if (!token) {

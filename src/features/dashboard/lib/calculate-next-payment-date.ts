@@ -1,10 +1,10 @@
-import { CYCLE_TO_MONTHS, calculateBillingCycles } from "@/lib/billing-utils";
-import { BillingCycle } from "@prisma/client";
 import { addMonths, isBefore, isSameDay } from "date-fns";
+import type { BillingCycle } from "@/generated/prisma/client";
+import { CYCLE_TO_MONTHS, calculateBillingCycles } from "@/lib/billing-utils";
 
 export function calculateNextPaymentDate(
   startDate: Date,
-  billingCycle: BillingCycle
+  billingCycle: BillingCycle,
 ): Date {
   const today = new Date();
   const start = new Date(startDate);
@@ -14,14 +14,14 @@ export function calculateNextPaymentDate(
 
   let nextPaymentDate = new Date(start);
   nextPaymentDate.setMonth(
-    start.getMonth() + (periodsElapsed + 1) * periodInMonths
+    start.getMonth() + (periodsElapsed + 1) * periodInMonths,
   );
 
   const originalDay = start.getDate();
   const lastDayOfMonth = new Date(
     nextPaymentDate.getFullYear(),
     nextPaymentDate.getMonth() + 1,
-    0
+    0,
   ).getDate();
 
   nextPaymentDate.setDate(Math.min(originalDay, lastDayOfMonth));

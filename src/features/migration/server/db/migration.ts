@@ -27,7 +27,7 @@ export async function getAppliedMigrations(): Promise<MigrationRecord[]> {
 }
 
 export async function isMigrationApplied(
-  migrationName: string
+  migrationName: string,
 ): Promise<boolean> {
   const migration = await prisma.migration.findFirst({
     where: {
@@ -41,7 +41,7 @@ export async function isMigrationApplied(
 export async function recordMigration(
   migrationName: string,
   checksum: string,
-  executionTimeMs: number
+  executionTimeMs: number,
 ): Promise<void> {
   await prisma.migration.create({
     data: {
@@ -56,7 +56,7 @@ export async function recordMigration(
 export async function recordFailedMigration(
   migrationName: string,
   checksum: string,
-  errorMessage: string
+  errorMessage: string,
 ): Promise<void> {
   await prisma.migration.create({
     data: {
@@ -69,7 +69,7 @@ export async function recordFailedMigration(
 }
 
 export async function removeMigrationRecord(
-  migrationName: string
+  migrationName: string,
 ): Promise<void> {
   await prisma.migration.delete({
     where: { name: migrationName },
@@ -81,7 +81,7 @@ export async function clearAllMigrationRecords(): Promise<void> {
 }
 
 export async function executeMigrationSql(
-  sqlStatements: string[]
+  sqlStatements: string[],
 ): Promise<void> {
   await prisma.$transaction(async (tx) => {
     for (const statement of sqlStatements) {
@@ -104,7 +104,7 @@ export async function getUserTables(): Promise<Array<{ TABLE_NAME: string }>> {
 }
 
 export async function dropTable(tableName: string): Promise<void> {
-  const validTableName = tableName.replace(/[^a-zA-Z0-9_]/g, '');
+  const validTableName = tableName.replace(/[^a-zA-Z0-9_]/g, "");
   if (!validTableName) {
     throw new Error("Invalid table name");
   }
@@ -120,7 +120,7 @@ export async function acquireMigrationLock(): Promise<void> {
       },
     });
     return;
-  } catch (error) {
+  } catch (_error) {
     const existingLock = await prisma.migrationLock.findFirst({
       orderBy: { createdAt: "desc" },
     });
@@ -131,7 +131,7 @@ export async function acquireMigrationLock(): Promise<void> {
     }
 
     throw new Error(
-      "Migration lock is currently active. Please wait and try again."
+      "Migration lock is currently active. Please wait and try again.",
     );
   }
 }

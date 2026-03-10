@@ -1,6 +1,6 @@
-import { env } from "@/lib/env";
-import { Currency } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
+import { Currency } from "@/generated/prisma/client";
+import { env } from "@/lib/env";
 
 interface ExchangeRateResponse {
   result: string;
@@ -9,11 +9,11 @@ interface ExchangeRateResponse {
 }
 
 export async function fetchLatestExchangeRates(
-  apiKey: string
+  apiKey: string,
 ): Promise<{ currency: Currency; rate: number }[]> {
   try {
     const response = await fetch(
-      `${env.EXCHANGE_RATES_API_URL}/${apiKey}/latest/USD`
+      `${env.EXCHANGE_RATES_API_URL}/${apiKey}/latest/USD`,
     );
 
     if (!response.ok) {

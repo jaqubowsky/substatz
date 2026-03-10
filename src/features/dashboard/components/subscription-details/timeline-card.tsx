@@ -1,6 +1,6 @@
+import { Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/features/dashboard/lib";
-import { Clock } from "lucide-react";
 
 interface TimelineCardProps {
   activeFor: { formatted: string };

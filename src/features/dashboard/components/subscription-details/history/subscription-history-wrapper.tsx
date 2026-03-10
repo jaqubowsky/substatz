@@ -1,6 +1,6 @@
 import { getSubscriptionHistory } from "@/features/dashboard/server/db/subscription";
+import type { Subscription } from "@/generated/prisma/client";
 import { SubscriptionHistory } from "./subscription-history";
-import { Subscription } from "@prisma/client";
 
 interface SubscriptionHistoryWrapperProps {
   subscription: Subscription;

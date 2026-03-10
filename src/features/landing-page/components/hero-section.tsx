@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Check, Plus } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const SubscriptionCards = () => {
   const subscriptions = [

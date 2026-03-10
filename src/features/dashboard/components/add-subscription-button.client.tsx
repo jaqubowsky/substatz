@@ -1,5 +1,8 @@
 "use client";
 
+import { Plus } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useState } from "react";
 import { PurchaseButton } from "@/components/purchase-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,16 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import dynamic from "next/dynamic";
-import { Plus } from "lucide-react";
-import { useState } from "react";
 import { SubscriptionFormLoading } from "./subscription-form-loading";
 
 const DynamicSubscriptionForm = dynamic(
   () => import("./subscription-form").then((mod) => mod.SubscriptionForm),
   {
     loading: () => <SubscriptionFormLoading />,
-  }
+  },
 );
 
 export const AddSubscriptionButtonClient = ({

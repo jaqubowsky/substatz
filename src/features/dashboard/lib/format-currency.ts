@@ -1,8 +1,8 @@
-import { Currency } from "@prisma/client";
+import { Currency } from "@/generated/prisma/client";
 
 export const formatCurrency = (
   amount: number,
-  currency: Currency = Currency.USD
+  currency: Currency = Currency.USD,
 ): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

@@ -1,5 +1,5 @@
+import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
-import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = env.BASE_URL || "https://substatz.me";

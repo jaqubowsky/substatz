@@ -1,6 +1,6 @@
-import { getServerAuth } from "@/hooks/get-server-auth";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getServerAuth } from "@/hooks/get-server-auth";
 
 export const metadata: Metadata = {
   title: "SubStatz - Authentication",

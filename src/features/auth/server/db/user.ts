@@ -1,6 +1,6 @@
+import crypto from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { getUserByEmail } from "@/server/db/user";
-import crypto from "crypto";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -8,7 +8,7 @@ const ONE_HOUR = 60 * 60 * 1000;
 export async function createUser(
   name: string,
   email: string,
-  hashedPassword: string
+  hashedPassword: string,
 ) {
   const user = await prisma.user.create({
     data: {

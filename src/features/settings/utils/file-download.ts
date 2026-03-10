@@ -1,7 +1,7 @@
 export function downloadFile(
   fileData: string,
   filename: string,
-  mimeType: string
+  mimeType: string,
 ): void {
   const byteCharacters = atob(fileData);
   const byteNumbers = new Array(byteCharacters.length);

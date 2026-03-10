@@ -1,25 +1,23 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { updateCurrencySchema } from "@/features/settings/schemas/currency";
+import { exportSubscriptionSchema } from "@/features/settings/schemas/export";
 import { changePasswordSchema } from "@/features/settings/schemas/settings";
 import * as db from "@/features/settings/server/db";
-import { updateUserCurrency } from "@/features/settings/server/db/user";
-import { hashPassword, verifyPassword } from "@/lib/auth";
-import { errors } from "@/lib/errorMessages";
-import { ActionError, privateAction } from "@/lib/safe-action";
-import { Provider } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-
-import { exportSubscriptionSchema } from "@/features/settings/schemas/export";
 import { getFilteredSubscriptions } from "@/features/settings/server/db/export";
+import { updateUserCurrency } from "@/features/settings/server/db/user";
 import {
   generateExcelFile,
   generatePdfFile,
 } from "@/features/settings/server/export-utils";
-import { SubscriptionPlan } from "@prisma/client";
+import { Provider, SubscriptionPlan } from "@/generated/prisma/client";
+import { hashPassword, verifyPassword } from "@/lib/auth";
+import { errors } from "@/lib/errorMessages";
+import { ActionError, privateAction } from "@/lib/safe-action";
 
 export const updateCurrencyAction = privateAction
-  .schema(updateCurrencySchema)
+  .inputSchema(updateCurrencySchema)
   .action(async ({ ctx, parsedInput }) => {
     const { defaultCurrency } = parsedInput;
     const { user } = ctx.session;
@@ -33,7 +31,7 @@ export const updateCurrencyAction = privateAction
   });
 
 export const changePasswordAction = privateAction
-  .schema(changePasswordSchema)
+  .inputSchema(changePasswordSchema)
   .action(async ({ ctx, parsedInput }) => {
     const { currentPassword, newPassword } = parsedInput;
 
@@ -60,7 +58,7 @@ export const deleteAccountAction = privateAction.action(async ({ ctx }) => {
 });
 
 export const exportSubscriptionsAction = privateAction
-  .schema(exportSubscriptionSchema)
+  .inputSchema(exportSubscriptionSchema)
   .action(async ({ ctx, parsedInput }) => {
     const { dateFrom, dateTo, format } = parsedInput;
     const { user } = ctx.session;
@@ -72,12 +70,12 @@ export const exportSubscriptionsAction = privateAction
     const subscriptions = await getFilteredSubscriptions(
       user.id,
       dateFrom,
-      dateTo
+      dateTo,
     );
 
     if (subscriptions.length === 0) {
       throw new ActionError(
-        errors.SUBSCRIPTION.NO_SUBSCRIPTIONS_TO_EXPORT.message
+        errors.SUBSCRIPTION.NO_SUBSCRIPTIONS_TO_EXPORT.message,
       );
     }
 
@@ -106,7 +104,7 @@ export const exportSubscriptionsAction = privateAction
       }
     } catch {
       throw new ActionError(
-        errors.SUBSCRIPTION.EXPORT_GENERATION_FAILED.message
+        errors.SUBSCRIPTION.EXPORT_GENERATION_FAILED.message,
       );
     }
 

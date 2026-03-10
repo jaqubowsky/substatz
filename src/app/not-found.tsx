@@ -1,3 +1,5 @@
+import { FileQuestion } from "lucide-react";
+import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/navigation";
 import { Button } from "@/components/ui/button";
@@ -8,8 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileQuestion } from "lucide-react";
-import Link from "next/link";
 
 export default function NotFound() {
   return (

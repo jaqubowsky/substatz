@@ -1,9 +1,9 @@
+import type { SubscriptionPlan } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { SubscriptionPlan } from "@prisma/client";
 
 export async function updateUserPlan(
   customerId: string,
-  plan: SubscriptionPlan
+  plan: SubscriptionPlan,
 ) {
   return await prisma.user.update({
     where: { stripeCustomerId: customerId },
@@ -20,7 +20,7 @@ export async function getUserWithPlan(userId: string) {
 
 export async function updateStripeCustomerId(
   userId: string,
-  stripeCustomerId: string
+  stripeCustomerId: string,
 ) {
   return await prisma.user.update({
     where: { id: userId },

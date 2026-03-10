@@ -2,8 +2,8 @@
 // The config you add here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import { env } from "@/lib/env";
 import * as Sentry from "@sentry/nextjs";
+import { env } from "@/lib/env";
 
 Sentry.init({
   dsn: env.SENTRY_DSN,

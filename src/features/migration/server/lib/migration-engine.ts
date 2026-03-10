@@ -1,10 +1,10 @@
-import * as dbOperations from "@/features/migration/server/db/migration";
-import {
-  MigrationStatus,
+import type {
   MigrationResult,
+  MigrationStatus,
 } from "@/features/migration/schemas/migration";
-import { MigrationReader } from "@/features/migration/server/lib/migration-reader";
+import * as dbOperations from "@/features/migration/server/db/migration";
 import { MigrationExecutor } from "@/features/migration/server/lib/migration-executor";
+import { MigrationReader } from "@/features/migration/server/lib/migration-reader";
 
 export class MigrationEngine {
   static async getStatus(): Promise<MigrationStatus> {
@@ -41,14 +41,10 @@ export class MigrationEngine {
   }
 
   static async deployMigrations(): Promise<MigrationResult[]> {
-    try {
-      await dbOperations.acquireMigrationLock();
-    } catch (error) {
-      throw error;
-    }
+    await dbOperations.acquireMigrationLock();
 
     try {
-      const status = await this.getStatus();
+      const status = await MigrationEngine.getStatus();
       const pendingMigrations = status.migrations.filter((m) => !m.applied);
 
       if (pendingMigrations.length === 0) {

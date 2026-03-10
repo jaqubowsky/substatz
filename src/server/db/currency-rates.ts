@@ -1,5 +1,5 @@
+import type { Currency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { Currency } from "@prisma/client";
 
 export const getCurrencyRates = async () => {
   "use cache";
@@ -8,7 +8,7 @@ export const getCurrencyRates = async () => {
 };
 
 export async function upsertCurrencyRates(
-  rates: { currency: Currency; rate: number }[]
+  rates: { currency: Currency; rate: number }[],
 ) {
   const transactions = rates.map(({ currency, rate }) =>
     prisma.currencyRate.upsert({
@@ -21,7 +21,7 @@ export async function upsertCurrencyRates(
         currency,
         rate,
       },
-    })
+    }),
   );
 
   return prisma.$transaction(transactions);

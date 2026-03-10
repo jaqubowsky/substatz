@@ -18,7 +18,7 @@ export const exportSubscriptionSchema = z
     {
       message: "Start date must be before end date",
       path: ["dateTo"],
-    }
+    },
   );
 
 export type ExportSubscriptionInput = z.infer<typeof exportSubscriptionSchema>;

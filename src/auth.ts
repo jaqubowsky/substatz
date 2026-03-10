@@ -1,12 +1,12 @@
+import { randomUUID } from "node:crypto";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Provider } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
-import { randomUUID } from "crypto";
 import NextAuth from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import { encode as defaultEncode } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import { SignOutParams } from "next-auth/react";
+import type { SignOutParams } from "next-auth/react";
+import { Provider } from "@/generated/prisma/client";
 import authConfig from "./auth.config";
 import { isAdmin } from "./lib/admin";
 import { verifyPassword } from "./lib/auth";
@@ -15,6 +15,7 @@ import { sendWelcomeEmail } from "./lib/email";
 import { env } from "./lib/env";
 import prisma from "./lib/prisma";
 import { getUserByEmail } from "./server/db/user";
+
 const adapter = PrismaAdapter(prisma) as Adapter;
 
 export const {
@@ -98,7 +99,7 @@ export const {
     },
   },
   jwt: {
-    encode: async function (params) {
+    encode: async (params) => {
       if (params.token?.credentials) {
         const sessionToken = randomUUID();
 

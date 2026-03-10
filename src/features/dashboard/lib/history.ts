@@ -1,6 +1,6 @@
+import type { EditSubscriptionValues } from "@/features/dashboard/schemas/subscription";
+import type { BillingCycle, Currency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { BillingCycle, Currency } from "@prisma/client";
-import { EditSubscriptionValues } from "@/features/dashboard/schemas/subscription";
 
 function hasTrackedChanges(
   originalValues: {
@@ -9,7 +9,7 @@ function hasTrackedChanges(
     billingCycle: BillingCycle;
     category: string;
   },
-  updated: EditSubscriptionValues
+  updated: EditSubscriptionValues,
 ): boolean {
   return (
     originalValues.price !== updated.price ||
@@ -42,13 +42,13 @@ export async function createInitialHistory(data: {
 
 export async function trackSubscriptionChanges(
   subscriptionId: string,
-  updatedData: EditSubscriptionValues
+  updatedData: EditSubscriptionValues,
 ) {
   const currentValues = await getCurrentSubscriptionValues(subscriptionId);
 
   if (!currentValues) {
     throw new Error(
-      `Subscription ${subscriptionId} has no current period in history`
+      `Subscription ${subscriptionId} has no current period in history`,
     );
   }
 
@@ -83,7 +83,7 @@ export async function trackSubscriptionChanges(
 
 export async function getHistoricalValuesAt(
   subscriptionId: string,
-  date: Date
+  date: Date,
 ) {
   const historyRecord = await prisma.subscriptionHistory.findFirst({
     where: {
@@ -104,7 +104,7 @@ export async function getHistoricalValuesAt(
 export async function getHistoryPeriodsInRange(
   subscriptionId: string,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ) {
   const historyRecords = await prisma.subscriptionHistory.findMany({
     where: {
@@ -161,7 +161,7 @@ export async function getSubscriptionWithCurrentValues(subscriptionId: string) {
 
   if (!currentValues) {
     throw new Error(
-      `Subscription ${subscriptionId} has no current period in history`
+      `Subscription ${subscriptionId} has no current period in history`,
     );
   }
 

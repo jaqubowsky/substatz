@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Download, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -10,20 +12,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DateRangePicker } from "@/components/ui/date-picker";
 import {
   useDatePresets,
   useExportSubscriptions,
 } from "@/features/settings/hooks";
 import { downloadFile } from "@/features/settings/utils/file-download";
+import { cn } from "@/lib/cn";
 import { DatePresetButtons } from "./date-preset-buttons";
 import {
-  ExportFormatSelector,
   type ExportFormat,
+  ExportFormatSelector,
 } from "./export-format-selector";
 import { ExportLoadingState } from "./export-loading-state";
-import { Download, Loader2 } from "lucide-react";
-import { cn } from "@/lib/cn";
 
 interface ExportModalProps {
   open: boolean;
@@ -69,9 +69,9 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
           />
 
           <div className="space-y-3">
-            <label className="text-sm font-medium leading-none">
+            <span className="text-sm font-medium leading-none">
               Custom Date Range
-            </label>
+            </span>
             <DateRangePicker
               from={dateFrom}
               to={dateTo}

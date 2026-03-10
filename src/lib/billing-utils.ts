@@ -1,4 +1,4 @@
-import { BillingCycle } from "@prisma/client";
+import type { BillingCycle } from "@/generated/prisma/client";
 
 export const CYCLE_TO_MONTHS: Record<BillingCycle, number> = {
   MONTHLY: 1,
@@ -9,7 +9,7 @@ export const CYCLE_TO_MONTHS: Record<BillingCycle, number> = {
 
 export function calculateMonthsDifference(
   startDate: Date,
-  endDate: Date = new Date()
+  endDate: Date = new Date(),
 ): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -28,7 +28,7 @@ export function calculateMonthsDifference(
 export function calculateBillingCycles(
   startDate: Date,
   billingCycle: BillingCycle,
-  endDate: Date = new Date()
+  endDate: Date = new Date(),
 ): number {
   const monthsDiff = calculateMonthsDifference(startDate, endDate);
   const periodInMonths = CYCLE_TO_MONTHS[billingCycle];
@@ -38,7 +38,7 @@ export function calculateBillingCycles(
 export function formatDuration(
   days: number,
   months: number,
-  years: number
+  years: number,
 ): string {
   let formattedDuration = "";
 
@@ -59,7 +59,7 @@ export function formatDuration(
 
 export function calculateAnnualCost(
   price: number,
-  billingCycle: BillingCycle
+  billingCycle: BillingCycle,
 ): number {
   switch (billingCycle) {
     case "MONTHLY":
@@ -77,7 +77,7 @@ export function calculateAnnualCost(
 
 export function calculateMonthlyCost(
   price: number,
-  billingCycle: BillingCycle
+  billingCycle: BillingCycle,
 ): number {
   switch (billingCycle) {
     case "MONTHLY":

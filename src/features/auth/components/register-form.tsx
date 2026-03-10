@@ -1,8 +1,11 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,14 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { Separator } from "@/components/ui/separator";
-import { RegisterFormValues, registerSchema } from "@/features/auth/schemas";
+import {
+  type RegisterFormValues,
+  registerSchema,
+} from "@/features/auth/schemas";
 import { registerAction } from "@/features/auth/server/actions/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { GoogleSignInButton } from "./google-sign-in-button";
 
 const defaultValues: RegisterFormValues = {
@@ -40,7 +41,7 @@ export function RegisterForm() {
       actionProps: {
         onSuccess: async (result) => {
           toast.success(
-            result?.data?.message || "Account created successfully!"
+            result?.data?.message || "Account created successfully!",
           );
 
           router.push("/login?verification=pending");
@@ -53,7 +54,7 @@ export function RegisterForm() {
       formProps: {
         defaultValues,
       },
-    }
+    },
   );
 
   return (

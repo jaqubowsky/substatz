@@ -1,5 +1,9 @@
 "use client";
 
+import { CheckCircle, Loader2, XCircle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,10 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { verifyPaymentAction } from "@/features/dashboard/server/actions";
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 type PaymentVerificationState =
   | { status: "idle" }
@@ -80,7 +80,7 @@ export function PaymentVerification() {
       verifyAction.execute({ sessionId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId, paymentStatus, state.status]);
+  }, [sessionId, paymentStatus, state.status, verifyAction.execute]);
 
   const getDialogContent = () => {
     switch (state.status) {

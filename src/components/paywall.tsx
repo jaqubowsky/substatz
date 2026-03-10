@@ -1,7 +1,7 @@
-import { getServerAuth } from "@/hooks/get-server-auth";
-import { SubscriptionPlan } from "@prisma/client";
 import { LockIcon } from "lucide-react";
 import { Suspense } from "react";
+import { SubscriptionPlan } from "@/generated/prisma/client";
+import { getServerAuth } from "@/hooks/get-server-auth";
 import { PurchaseButton } from "./purchase-button";
 
 interface PaywallProps {

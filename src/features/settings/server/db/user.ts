@@ -1,9 +1,9 @@
+import type { Currency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { Currency } from "@prisma/client";
 
 export async function updateUserPassword(
   userId: string,
-  hashedPassword: string
+  hashedPassword: string,
 ) {
   return prisma.user.update({
     where: { id: userId },
@@ -27,7 +27,7 @@ export async function deleteUser(userId: string) {
 
 export async function updateUserCurrency(
   userId: string,
-  defaultCurrency: Currency
+  defaultCurrency: Currency,
 ) {
   return prisma.user.update({
     where: { id: userId },

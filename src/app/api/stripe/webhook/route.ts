@@ -1,3 +1,8 @@
+import * as Sentry from "@sentry/nextjs";
+import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
+import { SubscriptionPlan } from "@/generated/prisma/client";
 import {
   sendPaymentFailedEmail,
   sendRefundFeedbackEmail,
@@ -6,11 +11,6 @@ import {
 import { env } from "@/lib/env";
 import { stripe } from "@/lib/stripe";
 import { updateUserPlan } from "@/server/db/subscription-plan";
-import { SubscriptionPlan } from "@prisma/client";
-import * as Sentry from "@sentry/nextjs";
-import { headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      env.STRIPE_WEBHOOK_SECRET
+      env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (error) {
     Sentry.captureException(error, {
@@ -44,19 +44,19 @@ export async function POST(req: NextRequest) {
         if (!paymentIntent.customer) {
           return NextResponse.json(
             { error: "Invalid payment intent data" },
-            { status: 400 }
+            { status: 400 },
           );
         }
 
         const updatedUser = await updateUserPlan(
           paymentIntent.customer as string,
-          SubscriptionPlan.PAID
+          SubscriptionPlan.PAID,
         );
 
         try {
           const emailResult = await sendSubscriptionThankYouEmail(
             updatedUser.email,
-            updatedUser.name
+            updatedUser.name,
           );
 
           if (!emailResult?.success) {
@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
         }
 
         await updateUserPlan(charge.customer as string, SubscriptionPlan.FREE);
+        break;
       }
 
       case "customer.subscription.deleted": {
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
 
         await updateUserPlan(
           subscription.customer as string,
-          SubscriptionPlan.FREE
+          SubscriptionPlan.FREE,
         );
 
         break;
@@ -136,7 +137,7 @@ export async function POST(req: NextRequest) {
         event: event.type,
         message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,18 +1,18 @@
+import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Provider, SubscriptionPlan } from "@/generated/prisma/client";
 import { getServerAuth } from "@/hooks/get-server-auth";
-import { Provider, SubscriptionPlan } from "@prisma/client";
+import { Billing } from "./billing";
 import { CurrencySettingsForm } from "./currency-settings-form";
 import { DeleteAccount } from "./delete-account";
-import { Billing } from "./billing";
-import dynamic from "next/dynamic";
 
 const DynamicChangePasswordForm = dynamic(() =>
-  import("./change-password-form").then((mod) => mod.ChangePasswordForm)
+  import("./change-password-form").then((mod) => mod.ChangePasswordForm),
 );
 
 const DynamicExportDataSection = dynamic(() =>
-  import("./export-data-section.client").then((mod) => mod.ExportDataSection)
+  import("./export-data-section.client").then((mod) => mod.ExportDataSection),
 );
 
 export const Settings = async () => {
