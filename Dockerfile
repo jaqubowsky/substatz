@@ -49,9 +49,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 
-# Install prisma CLI with all its dependencies for migrate deploy
+# Install prisma CLI for migrate deploy, then copy dotenv for prisma.config.ts
 COPY --from=builder /app/package.json ./package.json
-RUN npm install prisma dotenv --no-package-lock
+RUN npm install prisma --no-package-lock
+COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
 
 USER nextjs
 EXPOSE 3000
