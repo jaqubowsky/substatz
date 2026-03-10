@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react"],
     useCache: true,
   },
+  serverExternalPackages: ["mariadb"],
   output: "standalone",
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   poweredByHeader: false,
