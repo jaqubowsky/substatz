@@ -1,8 +1,11 @@
 import type { BillingCycle, Currency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { cacheLife, cacheTag } from "next/cache";
 
 export const getSubscriptionsByUserId = async (userId: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscriptions-${userId}`);
 
   return prisma.subscription.findMany({
     where: { userId },
@@ -18,6 +21,8 @@ export const getSubscriptionsByUserId = async (userId: string) => {
 
 export const getSubscriptionCountByUserId = async (userId: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscriptions-${userId}`);
 
   return prisma.subscription.count({
     where: { userId },
@@ -26,6 +31,8 @@ export const getSubscriptionCountByUserId = async (userId: string) => {
 
 export const getSubscriptionById = async (id: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscription-${id}`);
 
   return prisma.subscription.findUnique({
     where: { id },
@@ -69,6 +76,8 @@ export async function deleteSubscription(id: string) {
 
 export const getSubscriptionHistory = async (subscriptionId: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscription-${subscriptionId}`);
 
   return prisma.subscriptionHistory.findMany({
     where: { subscriptionId },

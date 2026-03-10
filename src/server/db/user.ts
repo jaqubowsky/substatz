@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { cacheLife, cacheTag } from "next/cache";
 
 export async function verifyUserEmail(token: string) {
   const verificationToken = await prisma.verificationToken.findFirst({
@@ -33,6 +34,8 @@ export async function verifyUserEmail(token: string) {
 
 export const getUserByEmail = async (email: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("user", `user-email-${email}`);
 
   return prisma.user.findUnique({
     where: { email },
@@ -41,6 +44,8 @@ export const getUserByEmail = async (email: string) => {
 
 export const getUserById = async (id: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("user", `user-${id}`);
 
   return prisma.user.findUnique({
     where: { id },
@@ -49,6 +54,8 @@ export const getUserById = async (id: string) => {
 
 export const getUserForSession = async (id: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("user", `user-${id}`);
 
   return prisma.user.findUnique({
     where: { id },

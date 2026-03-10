@@ -2,9 +2,12 @@
 
 import { auth } from "@/auth";
 import { userDb } from "@/server";
+import { cacheLife, cacheTag } from "next/cache";
 
 export const getUserData = async (userId: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("user", `user-${userId}`);
 
   return userDb.getUserForSession(userId);
 };

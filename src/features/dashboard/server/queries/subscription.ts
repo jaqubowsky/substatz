@@ -7,6 +7,7 @@ import type {
 import * as db from "@/features/dashboard/server/db/subscription";
 import type { Currency } from "@/generated/prisma/client";
 import { calculateAnnualCost, calculateMonthlyCost } from "@/lib/billing-utils";
+import { cacheLife, cacheTag } from "next/cache";
 import { getLatestExchangeRates } from "./rates";
 
 export interface SubscriptionSummary {
@@ -18,6 +19,8 @@ export interface SubscriptionSummary {
 
 export const getSubscriptions = async (userId: string) => {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscriptions-${userId}`);
 
   return db.getSubscriptionsByUserId(userId);
 };
@@ -26,8 +29,6 @@ export const getSubscriptionSummary = async (
   userId: string,
   defaultCurrency: Currency,
 ) => {
-  "use cache";
-
   const subscriptions = await getSubscriptions(userId);
   const rates = await getLatestExchangeRates();
 

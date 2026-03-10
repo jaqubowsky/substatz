@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import {
   createInitialHistory,
@@ -49,6 +49,7 @@ export const addSubscriptionAction = privateAction
       billingCycle,
     });
 
+    revalidateTag(`subscriptions-${ctx.session.user.id}`, "max");
     revalidatePath("/dashboard");
 
     return subscription;
@@ -73,6 +74,8 @@ export const updateSubscriptionAction = privateAction
 
     await trackSubscriptionChanges(id, parsedInput);
 
+    revalidateTag(`subscription-${id}`, "max");
+    revalidateTag("subscriptions", "max");
     revalidatePath("/dashboard");
 
     return subscription;
@@ -97,6 +100,8 @@ export const removeSubscriptionAction = privateAction
 
     await db.deleteSubscription(id);
 
+    revalidateTag(`subscription-${id}`, "max");
+    revalidateTag("subscriptions", "max");
     revalidatePath("/dashboard");
 
     return { success: true };

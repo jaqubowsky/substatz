@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import {
   findOverlappingPeriods,
@@ -74,6 +74,7 @@ export const addHistoricalPeriodAction = privateAction
       }
     });
 
+    revalidateTag("subscriptions", "max");
     revalidatePath("/dashboard");
 
     return { success: true };
@@ -166,6 +167,7 @@ export const updateHistoricalPeriodAction = privateAction
       }
     });
 
+    revalidateTag("subscriptions", "max");
     revalidatePath("/dashboard");
 
     return { success: true };
@@ -208,6 +210,7 @@ export const deleteHistoricalPeriodAction = privateAction
     }
 
     await db.deleteSubscriptionHistory(id);
+    revalidateTag("subscriptions", "max");
     revalidatePath("/dashboard");
 
     return { success: true };

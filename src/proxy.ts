@@ -1,12 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { type NextRequest, NextResponse } from "next/server";
-import NextAuth from "next-auth";
-import authConfig from "./auth.config";
 import { getIp, publicApiRateLimiter } from "./lib/rate-limit";
 
-export const { auth } = NextAuth(authConfig);
-
-export default auth(async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (path.startsWith("/api/auth/session")) return NextResponse.next();
 
@@ -39,7 +35,7 @@ export default auth(async function middleware(request: NextRequest) {
   return NextResponse.next({
     headers: headers,
   });
-});
+}
 
 export const config = {
   matcher: ["/api/auth/:path*"],

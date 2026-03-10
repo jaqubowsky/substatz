@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { cacheLife, cacheTag } from "next/cache";
 
 export async function getFilteredSubscriptions(
   userId: string,
@@ -6,6 +7,8 @@ export async function getFilteredSubscriptions(
   dateTo: Date | null,
 ) {
   "use cache";
+  cacheLife("minutes");
+  cacheTag("subscriptions", `subscriptions-${userId}`);
 
   const where: {
     userId: string;
