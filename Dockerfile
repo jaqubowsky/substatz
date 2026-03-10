@@ -51,9 +51,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.
 
 # Install prisma CLI with all its dependencies for migrate deploy
 COPY --from=builder /app/package.json ./package.json
-RUN npm install prisma --no-package-lock
+RUN npm install prisma dotenv --no-package-lock
 
 USER nextjs
 EXPOSE 3000
 
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
