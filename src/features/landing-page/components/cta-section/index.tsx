@@ -405,7 +405,7 @@ export const CTASection = () => {
             </p>
             <div className="flex flex-col space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
               <Button size="lg" asChild className="w-full sm:w-auto">
-                <Link href="/register">Get Started — Just $5</Link>
+                <Link href="/register" data-umami-event="cta-get-started">Get Started — Just $5</Link>
               </Button>
               <Button
                 variant="outline"

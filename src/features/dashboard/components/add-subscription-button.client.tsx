@@ -44,6 +44,7 @@ export const AddSubscriptionButtonClient = ({
           size="sm"
           className="gap-1"
           aria-label="Add subscription"
+          data-umami-event="add-subscription"
         >
           <Plus className="h-4 w-4" />
           Add

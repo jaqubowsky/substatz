@@ -48,6 +48,7 @@ export function DeleteAccountButton() {
             onClick={() => action.execute()}
             disabled={action.isExecuting}
             className="bg-red-600 hover:bg-red-700"
+            data-umami-event="delete-account"
           >
             {action.isExecuting ? "Deleting..." : "Delete Account"}
           </AlertDialogAction>

@@ -83,7 +83,7 @@ export const PricingSection = () => {
                   </p>
                 </div>
                 <Button className="mt-10 w-full" size="lg" asChild>
-                  <Link href="/register">Get Access Now</Link>
+                  <Link href="/register" data-umami-event="pricing-get-access">Get Access Now</Link>
                 </Button>
                 <p className="mt-6 text-xs leading-5 text-accent-foreground">
                   Invoices and receipts available for easy company reimbursement

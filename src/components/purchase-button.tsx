@@ -28,6 +28,7 @@ export function PurchaseButton({ children, className, ...props }: ButtonProps) {
       onClick={() => action.execute()}
       className={cn(className)}
       disabled={action.isExecuting}
+      data-umami-event="premium-upgrade"
       {...props}
     >
       {action.isExecuting ? "Processing..." : children}

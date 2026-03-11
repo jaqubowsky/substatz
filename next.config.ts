@@ -60,12 +60,12 @@ const nextConfig: NextConfig = {
             value:
               env.NODE_ENV === "production"
                 ? "default-src 'self'; " +
-                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://accounts.google.com https://*.googleusercontent.com; " +
-                  "script-src-elem 'self' 'unsafe-inline' https://js.stripe.com https://accounts.google.com https://*.googleapis.com; " +
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://accounts.google.com https://*.googleusercontent.com https://umami.jnalewajk.me; " +
+                  "script-src-elem 'self' 'unsafe-inline' https://js.stripe.com https://accounts.google.com https://*.googleapis.com https://umami.jnalewajk.me; " +
                   "style-src 'self' 'unsafe-inline' https://substatz.jnalewajk.me https://accounts.google.com https://fonts.googleapis.com; " +
                   "img-src 'self' data: https://substatz.jnalewajk.me https://*.stripe.com https://*.googleusercontent.com https://lh3.googleusercontent.com; " +
                   "font-src 'self' data: https://fonts.gstatic.com; " +
-                  "connect-src 'self' https://api.stripe.com https://*.ingest.sentry.io https://accounts.google.com https://*.googleapis.com; " +
+                  "connect-src 'self' https://api.stripe.com https://*.ingest.sentry.io https://accounts.google.com https://*.googleapis.com https://umami.jnalewajk.me; " +
                   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://accounts.google.com https://*.googleusercontent.com; " +
                   "object-src 'none'; " +
                   "worker-src 'self' blob:; " +

@@ -23,6 +23,7 @@ export const GoogleSignInButton = () => {
       type="button"
       className="w-full"
       onClick={handleClick}
+      data-umami-event="signup-google"
     >
       <svg
         className="mr-2 h-4 w-4"

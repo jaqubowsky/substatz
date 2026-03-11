@@ -154,7 +154,7 @@ export function LoginForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={action.isPending}>
+          <Button type="submit" className="w-full" disabled={action.isPending} data-umami-event="login-submit">
             {action.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

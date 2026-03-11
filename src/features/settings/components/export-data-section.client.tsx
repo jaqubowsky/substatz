@@ -49,6 +49,7 @@ export function ExportDataSection({ userPlan }: ExportDataSectionProps) {
             disabled={isRedirecting}
             variant={isPaidUser ? "default" : "outline"}
             className="w-full sm:w-auto"
+            data-umami-event="export-data"
           >
             {isRedirecting ? (
               <>

@@ -103,12 +103,12 @@ export const HeroSection = () => {
 
             <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0 justify-center lg:justify-start">
               <Button size="lg" asChild>
-                <Link href="/register" prefetch={true}>
+                <Link href="/register" prefetch={true} data-umami-event="hero-get-started">
                   Get Started — Just $5
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="#features">See How It Works</Link>
+                <Link href="#features" data-umami-event="hero-see-how-it-works">See How It Works</Link>
               </Button>
             </div>
 

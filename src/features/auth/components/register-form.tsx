@@ -140,7 +140,7 @@ export function RegisterForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={action.isPending}>
+          <Button type="submit" className="w-full" disabled={action.isPending} data-umami-event="signup-submit">
             {action.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
