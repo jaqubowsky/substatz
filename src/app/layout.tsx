@@ -94,7 +94,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <script
+          defer
+          src="https://umami.jnalewajk.me/script.js"
+          data-website-id="f95429b6-82d4-4754-a603-9d83750cabcb"
+        />
+      </head>
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} min-h-screen bg-background font-sans antialiased`}
         style={{ scrollBehavior: "smooth" }}
