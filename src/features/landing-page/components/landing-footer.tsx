@@ -94,9 +94,20 @@ export async function LandingFooter() {
           </div>
         </div>
 
-        <div className="mt-10 sm:mt-16 border-t border-gray-900/10 pt-6 sm:pt-8">
-          <p className="text-xs leading-5 text-gray-500 text-center">
+        <div className="mt-10 sm:mt-16 border-t border-gray-900/10 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-xs leading-5 text-gray-500">
             &copy; {currentYear} SubStatz. All rights reserved.
+          </p>
+          <p className="text-xs leading-5 text-gray-500">
+            Built by{" "}
+            <a
+              className="text-gray-700 hover:text-primary transition-colors underline underline-offset-2"
+              href="https://jnalewajk.me"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Jakub Nalewajk
+            </a>
           </p>
         </div>
       </div>

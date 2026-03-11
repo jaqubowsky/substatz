@@ -9,7 +9,15 @@ export async function Footer() {
   return (
     <div className="mx-auto container flex flex-col items-center justify-between gap-4 py-6 md:flex-row px-4 sm:px-8 w-full">
       <p className="text-center text-sm text-accent-foreground md:text-left">
-        &copy; {currentYear} SubStatz. All rights reserved.
+        &copy; {currentYear} SubStatz. All rights reserved. Built by{" "}
+        <a
+          className="text-foreground hover:underline transition-colors underline-offset-2"
+          href="https://jnalewajk.me"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Jakub Nalewajk
+        </a>
       </p>
       <nav className="flex gap-4 text-sm text-accent-foreground">
         <Link

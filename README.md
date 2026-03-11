@@ -70,3 +70,11 @@ npm run dev                  # start dev server (Turbopack)
 ```
 
 Requires Node.js 22+ and a MySQL database.
+
+## Author
+
+**Jakub Nalewajk** — Frontend Developer
+
+- Portfolio: [jnalewajk.me](https://jnalewajk.me)
+- GitHub: [@jaqubowsky](https://github.com/jaqubowsky)
+- LinkedIn: [jakub-nalewajk](https://www.linkedin.com/in/jakub-nalewajk/)
