@@ -1,10 +1,10 @@
-# SubStatz — Subscription Management Made Easy
+# SubStatz — Fullstack Subscription Tracker
 
-> A full-stack subscription management app that helps users track spending, analyze costs across currencies, and never miss a renewal.
+> Lost track of how much I was paying monthly for various services. Built a fullstack app to track subscriptions, analyze spending across currencies, and never miss a renewal.
 
-**[Live Demo](https://substatz.me)**
+**[Live Demo](https://substatz.jnalewajk.me)**
 
-![SubStatz Banner](./public/og-image.webp)
+![SubStatz Banner](./public/og-image.png)
 
 ---
 
@@ -37,11 +37,12 @@ Each feature is fully isolated — no cross-feature imports. App routes only acc
 
 ## Key technical decisions
 
-- **Feature-based module isolation** — strict import boundaries between features, enforced by convention. Each feature owns its components, server actions, DB queries, and Zod schemas
+- **MySQL schema with Prisma ORM** — designed the data model, migrations, and seed scripts. Subscription history uses an append-only log pattern with `effectiveFrom`/`effectiveTo` ranges for full audit trail
 - **Tiered server actions with `next-safe-action`** — base, `privateAction`, `publicAction`, `adminAction` wrappers that layer auth, rate limiting, and Sentry error capture
-- **Subscription history as an append-only log** — price/currency/cycle changes are stored as `SubscriptionHistory` records with `effectiveFrom`/`effectiveTo` ranges, enabling full audit trail and historical analytics
-- **Dynamic OG image generation** — server-rendered Open Graph images via `@vercel/og` with branded gradient design, no static assets needed
-- **Type-safe environment validation** — `@t3-oss/env-nextjs` with Zod schemas ensuring all env vars are validated at build time
+- **Stripe integration** — one-time payment for premium features, webhook handling for payment confirmation, idempotent event processing
+- **Cron-based exchange rate syncing** — external API pulls rates for 10 currencies on schedule, stored locally for offline analytics
+- **Feature-based module isolation** — strict import boundaries between features. Each feature owns its components, server actions, DB queries, and Zod schemas
+- **Self-hosted on Hetzner VPS** — Docker deployment via Dokploy, full control over infrastructure and data
 
 ## Tech stack
 
@@ -56,7 +57,7 @@ Each feature is fully isolated — no cross-feature imports. App routes only acc
 | Validation | Zod + React Hook Form + next-safe-action |
 | Email | Resend |
 | Monitoring | Sentry |
-| Infrastructure | Docker, Biome (lint + format) |
+| Infrastructure | Docker, Hetzner VPS + Dokploy, Biome (lint + format) |
 
 ## Getting started
 
@@ -73,7 +74,7 @@ Requires Node.js 22+ and a MySQL database.
 
 ## Author
 
-**Jakub Nalewajk** — Frontend Developer
+**Jakub Nalewajk** — Fullstack Developer
 
 - Portfolio: [jnalewajk.me](https://jnalewajk.me)
 - GitHub: [@jaqubowsky](https://github.com/jaqubowsky)
