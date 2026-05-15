@@ -10,12 +10,6 @@ Sentry.init({
 
   enabled: env.NODE_ENV === "production",
 
-  // Disable import-in-the-middle ESM loader hooks: Turbopack standalone
-  // builds emit unresolvable hashed external specifiers for it, which
-  // crashes the instrumentation hook (every route -> 500). Error
-  // reporting still works; only ESM auto-tracing instrumentation is off.
-  registerEsmLoaderHooks: false,
-
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
 
