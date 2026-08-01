@@ -2,8 +2,6 @@
 
 > Lost track of how much I was paying monthly for various services. Built a fullstack app to track subscriptions, analyze spending across currencies, and never miss a renewal.
 
-**[Live Demo](https://substatz.jnalewajk.me)**
-
 ![SubStatz Banner](./public/og-image.png)
 
 ---
